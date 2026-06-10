@@ -205,6 +205,8 @@ textarea{resize:vertical;min-height:72px}
 .price-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px}
 .price-val{font-size:15px;font-weight:700;color:var(--cyan);font-family:monospace}
 .price-up{font-size:13px;font-weight:600;color:var(--green)}
+.price-down{font-size:13px;font-weight:600;color:var(--accent)}
+.price-live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:4px;animation:blink 2s infinite;vertical-align:middle}
 .token-btns{display:flex;gap:8px;padding:0 16px 13px}
 .token-btns a{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .15s}
 .token-btns a:hover{opacity:.85}
@@ -444,7 +446,7 @@ textarea{resize:vertical;min-height:72px}
         </div>
         <div class="price-row">
           <div>
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px">PRICE</div>
+            <div style="font-size:10px;color:var(--dim);margin-bottom:2px">PRICE <span id="price-live-badge" style="display:none"><span class="price-live-dot"></span><span style="font-size:9px;color:var(--green);letter-spacing:.06em">LIVE</span></span></div>
             <div class="price-val" id="tk-price">—</div>
           </div>
           <div class="price-up" id="tk-change">—</div>
@@ -756,6 +758,14 @@ function applyCampaignBranding() {
     document.getElementById('tk-ca').dataset.full = ti.contract;
     document.getElementById('tk-price').textContent = ti.price || '—';
     document.getElementById('tk-change').textContent = ti.change || '';
+
+    // fetch live price from DEX Screener API, refresh every 30s
+    if (ti.chartUrl) {
+      const pairAddress = ti.chartUrl.split('/').pop().split('?')[0];
+      fetchLivePrice(pairAddress);
+      clearInterval(window._priceInterval);
+      window._priceInterval = setInterval(() => fetchLivePrice(pairAddress), 30000);
+    }
     document.getElementById('chart-link').href = ti.chartUrl || '#';
     if (ti.chartUrl) {
       const base = ti.chartUrl.split('?')[0];
@@ -1372,6 +1382,35 @@ window.restoreSession = async function() {
     toast('Restore failed — try again', 'err');
   }
 };
+
+// ============================================================
+// LIVE PRICE
+// ============================================================
+async function fetchLivePrice(pairAddress) {
+  if (!pairAddress) return;
+  try {
+    const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`);
+    const data = await res.json();
+    const pair = data?.pairs?.[0];
+    if (!pair) return;
+
+    const price = pair.priceUsd ? '$' + parseFloat(pair.priceUsd).toPrecision(4) : null;
+    const change = pair.priceChange?.h24 != null
+      ? (pair.priceChange.h24 >= 0 ? '+' : '') + pair.priceChange.h24.toFixed(2) + '%'
+      : null;
+    const isUp = pair.priceChange?.h24 >= 0;
+
+    if (price) document.getElementById('tk-price').textContent = price;
+    if (change) {
+      const el = document.getElementById('tk-change');
+      el.textContent = change;
+      el.className = isUp ? 'price-up' : 'price-down';
+    }
+    document.getElementById('price-live-badge').style.display = '';
+  } catch(e) {
+    // silently fall back to static values
+  }
+}
 
 // ============================================================
 // INIT
