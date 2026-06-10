@@ -192,9 +192,44 @@ textarea{resize:vertical;min-height:72px}
 
 /* UNLOCK COUNTDOWN */
 .unlock-info{font-size:12px;color:var(--purple);margin-top:6px}
+
+/* ── GAMIFICATION ─────────────────────────────────────────── */
+
+/* Buy button — pulsing fire glow */
+@keyframes buy-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,61,0,.5),0 0 18px rgba(255,87,34,.35)}50%{box-shadow:0 0 0 7px rgba(255,61,0,0),0 0 32px rgba(255,87,34,.6)}}
+.token-btns a.buy-btn{animation:buy-pulse 2s ease-in-out infinite;background:linear-gradient(135deg,#FF3D00,#FF6D00)!important;position:relative;overflow:hidden}
+.token-btns a.buy-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);pointer-events:none}
+.token-btns a.buy-btn:hover{transform:scale(1.04);animation:none;box-shadow:0 0 28px rgba(255,61,0,.65)!important}
+.token-btns a.buy-btn:active{transform:scale(.97)}
+
+/* Floating +pts pop */
+.pts-pop{position:fixed;pointer-events:none;font-size:18px;font-weight:800;color:var(--gold);text-shadow:0 0 12px rgba(255,213,79,.8);z-index:999;animation:pts-fly 1.2s ease-out forwards}
+@keyframes pts-fly{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-60px) scale(1.2)}100%{opacity:0;transform:translateY(-100px) scale(.8)}}
+
+/* Mission done flash */
+@keyframes mission-flash{0%{background:rgba(0,230,118,.12);border-color:rgba(0,230,118,.7)}100%{background:transparent;border-color:rgba(0,230,118,.35)}}
+.mission.just-done{animation:mission-flash .6s ease-out}
+
+/* Points badge bounce */
+@keyframes badge-pop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+.badge-bounce{animation:badge-pop .45s cubic-bezier(.36,.07,.19,.97)}
+
+/* Streak banner */
+#streak-banner{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-120%);background:linear-gradient(135deg,#9B6FFF,#FF3D00);border-radius:100px;padding:8px 22px;font-size:13px;font-weight:800;color:#fff;z-index:200;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 4px 24px rgba(155,111,255,.5)}
+#streak-banner.show{transform:translateX(-50%) translateY(0)}
+
+/* Confetti canvas */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:998}
+
+/* Particle burst container */
+.particle{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:50%;z-index:997;animation:particle-burst .8s ease-out forwards}
+@keyframes particle-burst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:var(--tx) scale(.3)}}
 </style>
 </head>
 <body>
+
+<canvas id="confetti-canvas"></canvas>
+<div id="streak-banner">🔥 <span id="streak-text"></span></div>
 
 <div id="loading">
   <div class="spinner"></div>
@@ -565,7 +600,7 @@ function applyCampaignBranding() {
       document.getElementById('tk-logo').style.display = '';
     }
     let btns = '';
-    if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" style="background:var(--purple);color:#fff">Buy</a>`;
+    if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" class="buy-btn" onclick="buyBurst(event)" style="color:#fff">🔥 Buy $STACCANA</a>`;
     if (ti.siteUrl) btns += `<a href="${ti.siteUrl}" target="_blank" style="background:transparent;border:1px solid var(--border);color:var(--muted)">Site</a>`;
     document.getElementById('tk-btns').innerHTML = btns;
   }
@@ -720,8 +755,24 @@ window.markDone = function(id) {
   proofs[id] = proof.value.trim();
   completed[id] = new Date().toISOString();
   saveLocal();
-  toast('+' + mission.pts + ' entries!', 'ok');
+
+  // dopamine sequence
+  const btn = document.querySelector(`#mbody-${id} .btn-done`);
+  const rect = btn ? btn.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0 };
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  ptsPopAt(cx, cy, '+' + mission.pts);
+  particleBurst(cx, cy);
+  const doneCount = Object.keys(completed).length;
+  if (doneCount >= 3) showStreak(doneCount);
+  toast('+' + mission.pts + ' entries! 🎯', 'ok');
+
   renderMissions();
+  // flash the card
+  setTimeout(() => {
+    const card = document.getElementById('mission-' + id);
+    if (card) { card.classList.add('just-done'); card.addEventListener('animationend', () => card.classList.remove('just-done'), { once: true }); }
+  }, 50);
 };
 
 function getTotalPts() {
@@ -749,8 +800,17 @@ function getQualityScore() {
 
 function updatePtsBadge() {
   const pts = getTotalPts();
-  document.getElementById('pts-badge').textContent = pts + ' pts';
+  const badge = document.getElementById('pts-badge');
+  const prev = parseInt(badge.dataset.pts || '0');
+  badge.textContent = pts + ' pts';
+  badge.dataset.pts = pts;
   document.getElementById('sc-pts').textContent = pts;
+  if (pts > prev) {
+    badge.classList.remove('badge-bounce');
+    void badge.offsetWidth;
+    badge.classList.add('badge-bounce');
+    badge.addEventListener('animationend', () => badge.classList.remove('badge-bounce'), { once: true });
+  }
 }
 
 // ============================================================
@@ -834,6 +894,7 @@ window.submitEntry = async function() {
     document.getElementById('form-body').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
     toast('You\'re in! 🚀', 'ok');
+    confettiBurst();
 
   } catch(err) {
     console.error(err);
@@ -938,6 +999,96 @@ window.toast = function(msg, type) {
   t.className = 'show' + (type ? ' ' + type : '');
   clearTimeout(window._tt);
   window._tt = setTimeout(() => { t.className = ''; }, 2600);
+};
+
+// ============================================================
+// GAMIFICATION
+// ============================================================
+
+// Floating "+pts" pop that rises from a coordinate
+function ptsPopAt(x, y, label) {
+  const el = document.createElement('div');
+  el.className = 'pts-pop';
+  el.textContent = label;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// Coloured particle ring burst
+function particleBurst(cx, cy) {
+  const colors = ['#FF3D00','#FFD54F','#9B6FFF','#00E676','#00F5FF'];
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    const angle = (i / 14) * 2 * Math.PI;
+    const dist = 55 + Math.random() * 40;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    el.style.cssText = `left:${cx}px;top:${cy}px;background:${colors[i%colors.length]};--tx:translate(${tx}px,${ty}px)`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// Streak banner ("X missions done!")
+let _streakTimer;
+function showStreak(count) {
+  const banner = document.getElementById('streak-banner');
+  const msgs = ['','','','🔥 On a roll!','🔥 Heating up!','⚡ 5 done — keep going!','🚀 Crushing it!','💎 Almost there!','🏆 Legend run!'];
+  const msg = msgs[Math.min(count, msgs.length-1)] || `🔥 ${count} missions done!`;
+  document.getElementById('streak-text').textContent = msg;
+  banner.classList.add('show');
+  clearTimeout(_streakTimer);
+  _streakTimer = setTimeout(() => banner.classList.remove('show'), 2800);
+}
+
+// Full-screen confetti on submit
+function confettiBurst() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const colors = ['#FF3D00','#FFD54F','#9B6FFF','#00E676','#00F5FF','#fff'];
+  const pieces = Array.from({length:140}, () => ({
+    x: Math.random() * canvas.width,
+    y: -10 - Math.random() * canvas.height * 0.5,
+    r: 4 + Math.random() * 6,
+    d: 2 + Math.random() * 4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    tilt: Math.random() * 10 - 5,
+    tiltAngle: Math.random() * Math.PI * 2,
+    tiltSpeed: 0.05 + Math.random() * 0.1
+  }));
+  let frame;
+  let elapsed = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.tiltAngle += p.tiltSpeed;
+      p.y += p.d;
+      p.x += Math.sin(p.tiltAngle) * 1.5;
+      p.tilt = Math.sin(p.tiltAngle) * 12;
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r/2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/2);
+      ctx.stroke();
+    });
+    elapsed++;
+    if (elapsed < 160) frame = requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  cancelAnimationFrame(frame);
+  draw();
+}
+
+// Particle burst on buy button click (non-blocking — opens link normally)
+window.buyBurst = function(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  particleBurst(rect.left + rect.width/2, rect.top + rect.height/2);
 };
 
 // ============================================================
