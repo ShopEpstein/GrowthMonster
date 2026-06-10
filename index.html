@@ -3,411 +3,363 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">GrowthMonster Campaign</title>
-<meta property="og:title" id="og-title" content="GrowthMonster Campaign">
-<meta property="og:description" id="og-desc" content="Complete missions. Earn points. Get rewarded for being part of the Stacverse.">
+<title id="page-title">GrowthGenie — Cheat Code for Growth</title>
+<meta property="og:title" id="og-title" content="GrowthGenie — Cheat Code for Growth">
+<meta property="og:description" id="og-desc" content="Complete quests. Earn XP. Climb the leaderboard. The ultimate cheat code for community growth.">
 <meta property="og:image" id="og-img" content="">
 <meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#08080F;--surface:#111120;--card:#161625;--border:#22223A;
-  --text:#F0F0F5;--muted:#7777AA;--dim:#44445A;
-  --accent:#FF3D00;--accent-dim:rgba(255,61,0,0.12);--accent-glow:rgba(255,61,0,0.25);
-  --green:#00E676;--green-dim:rgba(0,230,118,0.1);
-  --gold:#FFD54F;--cyan:#00F5FF;--purple:#9B6FFF;
-  --r:12px;
+  --bg:#0A0A0A;
+  --surface:#111111;
+  --card:#1A1A1A;
+  --border:#333333;
+  --pixel:#00FF41;
+  --pixel-dim:rgba(0,255,65,0.12);
+  --pixel-glow:rgba(0,255,65,0.3);
+  --yellow:#FFE600;
+  --yellow-dim:rgba(255,230,0,0.12);
+  --red:#FF3131;
+  --red-dim:rgba(255,49,49,0.12);
+  --blue:#00B4FF;
+  --blue-dim:rgba(0,180,255,0.12);
+  --purple:#CC00FF;
+  --text:#E8E8E8;
+  --muted:#888888;
+  --dim:#444444;
+  --r:4px;
+  --scan:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
 }
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--cyan);text-decoration:none}
-img{max-width:100%}
+
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'VT323',monospace;-webkit-font-smoothing:none;image-rendering:pixelated}
+
+/* CRT EFFECT */
+body::before{content:'';position:fixed;inset:0;background:var(--scan);pointer-events:none;z-index:1000;opacity:.4}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.5) 100%);pointer-events:none;z-index:999}
 
 /* LOADING */
-#loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:20px}
+.loading-text{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--pixel);animation:blink 1s infinite;letter-spacing:.1em}
+.loading-bar-wrap{width:240px;height:16px;border:2px solid var(--pixel);padding:2px}
+.loading-bar{height:100%;background:var(--pixel);width:0;animation:loadbar 2s ease forwards}
+@keyframes loadbar{to{width:100%}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* PIXEL BORDER MIXIN */
+.px-border{border:2px solid var(--pixel);box-shadow:0 0 0 1px var(--pixel),inset 0 0 0 1px rgba(0,255,65,0.1),0 0 20px var(--pixel-dim)}
+.px-border-yellow{border:2px solid var(--yellow);box-shadow:0 0 0 1px var(--yellow),inset 0 0 0 1px rgba(255,230,0,0.1),0 0 20px var(--yellow-dim)}
+.px-border-red{border:2px solid var(--red);box-shadow:0 0 0 1px var(--red),inset 0 0 0 1px rgba(255,49,49,0.1),0 0 20px var(--red-dim)}
 
 /* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:rgba(8,8,15,0.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:50}
-.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)}
-.logo-img{width:32px;height:32px;border-radius:50%;border:1px solid var(--purple);object-fit:cover;background:var(--purple)}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:2px solid var(--pixel);background:rgba(0,0,0,0.9);position:sticky;top:0;z-index:50;box-shadow:0 2px 0 var(--pixel),0 4px 20px var(--pixel-dim)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo-cart{width:36px;height:36px;background:var(--yellow);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:11px;color:#000;font-weight:700;flex-shrink:0;image-rendering:pixelated}
+.logo-name{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--pixel);letter-spacing:.05em;text-shadow:0 0 10px var(--pixel)}
+.logo-project{font-size:14px;color:var(--yellow);margin-left:4px}
 .hlinks{display:flex;gap:16px}
-.hlinks a{color:var(--muted);font-size:13px;transition:color .2s}
-.hlinks a:hover{color:var(--cyan)}
+.hlinks a{color:var(--muted);font-size:16px;text-decoration:none;transition:color .15s;font-family:'VT323',monospace}
+.hlinks a:hover{color:var(--pixel)}
+
+/* MARQUEE */
+.marquee-wrap{background:#000;border-bottom:2px solid var(--pixel);padding:6px 0;overflow:hidden;white-space:nowrap}
+.marquee-inner{display:inline-block;animation:marquee 20s linear infinite;font-size:14px;color:var(--pixel);letter-spacing:.1em}
+@keyframes marquee{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
 
 /* HERO */
-.hero{text-align:center;padding:60px 24px 44px;max-width:820px;margin:0 auto}
-.live-badge{display:inline-flex;align-items:center;gap:7px;background:var(--accent-dim);border:1px solid rgba(255,61,0,0.3);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-size:clamp(36px,7vw,66px);font-weight:800;line-height:1.0;letter-spacing:-.03em;margin-bottom:14px}
-.hero-sub{font-size:16px;color:var(--muted);line-height:1.6;margin-bottom:28px;max-width:480px;margin-left:auto;margin-right:auto}
-/* multi-prize grid */
-.prizes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;max-width:560px;margin-left:auto;margin-right:auto}
-.prize-card{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card);border:1px solid rgba(255,213,79,0.22);border-radius:14px;padding:16px 12px;text-align:center;transition:border-color .2s,transform .2s}
-.prize-card:hover{border-color:rgba(255,213,79,.5);transform:translateY(-2px)}
-.prize-card-icon{font-size:32px;line-height:1}
-.prize-card-amount{font-size:clamp(16px,3vw,22px);font-weight:800;color:var(--gold);letter-spacing:-.01em;line-height:1.1}
-.prize-card-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-/* keep old .prize-box classes so JS refs still resolve */
-.prize-box{display:none}
-.prize-icon,.prize-amount,.prize-meta{display:none}
+.hero{text-align:center;padding:52px 24px 40px;max-width:820px;margin:0 auto;position:relative}
+.insert-coin{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--yellow);padding:6px 16px;font-size:14px;color:var(--yellow);letter-spacing:.08em;margin-bottom:24px;text-shadow:0 0 8px var(--yellow);animation:coinblink 1.5s infinite}
+@keyframes coinblink{0%,100%{opacity:1;box-shadow:0 0 10px var(--yellow-dim)}50%{opacity:.6;box-shadow:none}}
+.hero-title{font-family:'Press Start 2P',monospace;font-size:clamp(18px,4vw,36px);line-height:1.4;letter-spacing:.02em;margin-bottom:16px;color:var(--pixel);text-shadow:2px 2px 0 #005500,0 0 20px var(--pixel)}
+.hero-title .hl{color:var(--yellow);text-shadow:2px 2px 0 #665500,0 0 20px var(--yellow)}
+.hero-sub{font-size:20px;color:var(--muted);line-height:1.5;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto}
+.cheat-code{display:inline-block;background:#000;border:2px solid var(--pixel);padding:8px 20px;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pixel);letter-spacing:.15em;margin-bottom:28px;text-shadow:0 0 8px var(--pixel)}
+
+/* PRIZE */
+.prize-box{display:inline-flex;align-items:center;gap:16px;background:#000;border:2px solid var(--yellow);padding:14px 24px;margin-bottom:20px;box-shadow:0 0 20px var(--yellow-dim),inset 0 0 20px rgba(255,230,0,0.03)}
+.prize-icon{font-size:32px}
+.prize-amount{font-family:'Press Start 2P',monospace;font-size:clamp(16px,4vw,28px);color:var(--yellow);text-shadow:2px 2px 0 #665500,0 0 15px var(--yellow);letter-spacing:-.01em}
+.prize-meta .top{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.prize-meta .bot{font-size:16px;color:var(--text)}
 
 /* TIMER */
-.timer{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:44px}
-.tblock{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 16px;text-align:center;min-width:62px}
-.tnum{font-size:26px;font-weight:800;line-height:1;color:var(--cyan)}
-.tlbl{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.timer{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+.tblock{background:#000;border:2px solid var(--pixel);padding:10px 14px;text-align:center;min-width:68px;box-shadow:0 0 10px var(--pixel-dim)}
+.tnum{font-family:'Press Start 2P',monospace;font-size:22px;line-height:1;color:var(--pixel);text-shadow:0 0 10px var(--pixel)}
+.tlbl{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:5px}
 
-/* STATS */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;max-width:1040px;margin:0 auto 24px}
-.stat-cell{background:var(--surface);padding:14px;text-align:center}
-.stat-val{font-size:22px;font-weight:800;color:var(--cyan);line-height:1;margin-bottom:3px}
-.stat-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+/* LIVES / STATS */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--pixel);border:2px solid var(--pixel);max-width:1040px;margin:0 auto 24px;box-shadow:0 0 20px var(--pixel-dim)}
+.stat-cell{background:var(--bg);padding:14px;text-align:center}
+.stat-val{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--pixel);line-height:1;margin-bottom:5px;text-shadow:0 0 8px var(--pixel)}
+.stat-lbl{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
 
 /* MAIN */
-.main{display:grid;grid-template-columns:1fr 310px;gap:18px;max-width:1040px;margin:0 auto;padding:0 20px 80px}
-@media(max-width:820px){
-  .main{grid-template-columns:1fr}
-  .stats-bar{grid-template-columns:repeat(2,1fr)}
-  .hero{padding:40px 20px 32px}
-  .prizes-grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:540px){
-  header{padding:11px 16px}
-  .hlinks{gap:10px}
-  .hlinks a{font-size:12px}
-  .hero{padding:28px 16px 24px}
-  h1{font-size:clamp(28px,9vw,48px)}
-  .hero-sub{font-size:14px}
-  .prizes-grid{grid-template-columns:1fr;max-width:280px;margin-left:auto;margin-right:auto}
-  .prize-card{flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:14px 16px}
-  .prize-card-icon{font-size:28px;flex-shrink:0}
-  .stats-bar{grid-template-columns:repeat(2,1fr)}
-  .stat-val{font-size:18px}
-  .tnum{font-size:22px}
-  .tblock{min-width:52px;padding:8px 12px}
-  .main{padding:0 12px 60px;gap:12px}
-  .panel{border-radius:12px}
-  .mission-head{padding:11px 12px}
-  .mission-body{padding:11px 12px}
-  .mission-name{font-size:13px}
-  .mission-desc{font-size:11px}
-  .btn-primary{font-size:14px;padding:14px}
-  input[type=text],input[type=email],textarea{font-size:16px}
-  .token-btns a{padding:10px 8px;font-size:12px}
-  #chart-embed iframe{height:260px}
-  .lb-row{padding:9px 12px}
-}
+.main{display:grid;grid-template-columns:1fr 300px;gap:16px;max-width:1040px;margin:0 auto;padding:0 20px 80px}
+@media(max-width:820px){.main{grid-template-columns:1fr}.stats-bar{grid-template-columns:repeat(2,1fr)}.hero{padding:36px 20px 28px}}
 
 /* PANEL */
-.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px}
-.panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
-.panel-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
-.panel-badge{font-size:11px;font-weight:600;color:var(--cyan);background:rgba(0,245,255,0.08);border:1px solid rgba(0,245,255,0.15);border-radius:100px;padding:3px 10px}
-.panel-body{padding:18px}
+.panel{background:var(--bg);border:2px solid var(--pixel);margin-bottom:14px;box-shadow:0 0 15px var(--pixel-dim)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:2px solid var(--pixel);background:#000}
+.panel-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);letter-spacing:.1em;text-shadow:0 0 6px var(--pixel)}
+.panel-badge{font-size:14px;color:var(--yellow);background:#000;border:1px solid var(--yellow);padding:2px 9px}
+.panel-body{padding:16px}
+
+/* XP BAR */
+.xp-bar-wrap{margin-bottom:14px}
+.xp-label{font-size:13px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
+.xp-track{height:12px;background:#000;border:2px solid var(--pixel);overflow:hidden}
+.xp-fill{height:100%;background:var(--pixel);transition:width .4s;box-shadow:0 0 8px var(--pixel)}
 
 /* FORM */
-.fg{margin-bottom:13px}
-.fl{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;letter-spacing:.02em}
-.fl .req{color:var(--accent)}
-input[type=text],input[type=email],textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--r);padding:10px 13px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s}
-input[type=text]:focus,input[type=email]:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:14px;color:var(--muted);margin-bottom:5px;letter-spacing:.04em}
+.fl .req{color:var(--red)}
+input[type=text],input[type=email],textarea{width:100%;background:#000;border:2px solid var(--dim);padding:9px 12px;color:var(--pixel);font-size:16px;font-family:'VT323',monospace;outline:none;transition:border-color .15s,box-shadow .15s;letter-spacing:.04em}
+input[type=text]:focus,input[type=email]:focus,textarea:focus{border-color:var(--pixel);box-shadow:0 0 10px var(--pixel-dim);caret-color:var(--pixel)}
 input::placeholder,textarea::placeholder{color:var(--dim)}
-.mono{font-family:'SF Mono',Monaco,monospace;font-size:12px}
+.mono{font-family:'VT323',monospace;font-size:14px;letter-spacing:.05em}
 
-/* MISSIONS */
-.mission{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;transition:border-color .15s}
-.mission.done{border-color:rgba(0,230,118,0.35)}
-.mission.locked{opacity:.5;pointer-events:none}
-.mission-head{display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;user-select:none}
-.mission-head:hover{background:rgba(255,255,255,0.02)}
-.mission-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.mission-info{flex:1;min-width:0}
-.mission-name{font-size:14px;font-weight:600;margin-bottom:2px}
-.mission-desc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mission-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
-.mission-pts{font-size:13px;font-weight:700;color:var(--gold)}
-.mission-check{color:var(--green);font-size:15px;font-weight:700}
-.mission-tag{font-size:9px;font-weight:700;border-radius:4px;padding:2px 6px;letter-spacing:.04em}
-.tag-space{color:var(--purple);background:rgba(155,111,255,0.12)}
-.tag-hv{color:var(--accent);background:var(--accent-dim)}
-.tag-daily{color:var(--green);background:var(--green-dim)}
-.tag-locked{color:var(--dim);background:rgba(255,255,255,0.06)}
-.mission-body{padding:13px 15px;border-top:1px solid var(--border);display:none}
-.mission-body.open{display:block}
-.open-link{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--text);margin-bottom:11px;transition:background .15s;text-decoration:none}
-.open-link:hover{background:rgba(255,255,255,0.09);color:var(--text)}
-.char-count{font-size:11px;margin-top:5px;margin-bottom:8px;color:var(--dim)}
-textarea{resize:vertical;min-height:72px}
+/* QUESTS */
+.quest{background:#000;border:2px solid var(--dim);margin-bottom:10px;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.quest.done{border-color:var(--pixel);box-shadow:0 0 10px var(--pixel-dim)}
+.quest.locked{opacity:.4;pointer-events:none}
+.quest-head{display:flex;align-items:center;gap:10px;padding:11px 13px}
+.quest-head:hover{background:rgba(0,255,65,0.03)}
+.quest-icon{width:36px;height:36px;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:#111}
+.quest.done .quest-icon{border-color:var(--pixel)}
+.quest-info{flex:1;min-width:0}
+.quest-name{font-size:17px;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quest-desc{font-size:14px;color:var(--dim)}
+.quest-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.quest-xp{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yellow);white-space:nowrap}
+.quest-check{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel)}
+.quest-tag{font-size:11px;font-weight:700;padding:2px 6px;letter-spacing:.04em;font-family:'Press Start 2P',monospace;font-size:7px}
+.tag-space{color:var(--purple);border:1px solid var(--purple)}
+.tag-hv{color:var(--yellow);border:1px solid var(--yellow)}
+.tag-daily{color:var(--pixel);border:1px solid var(--pixel)}
+.tag-mega{color:var(--red);border:1px solid var(--red);animation:megablink 1s infinite}
+@keyframes megablink{0%,100%{opacity:1}50%{opacity:.5}}
+.quest-body{padding:12px 13px;border-top:2px solid var(--dim);display:none;background:#050505}
+.quest-body.open{display:block}
+.open-link{display:inline-flex;align-items:center;gap:6px;background:#000;border:2px solid var(--pixel);padding:6px 12px;font-size:15px;color:var(--pixel);margin-bottom:10px;text-decoration:none;transition:box-shadow .15s}
+.open-link:hover{box-shadow:0 0 10px var(--pixel-dim);color:var(--pixel)}
+.char-count{font-size:14px;margin-top:5px;margin-bottom:8px;color:var(--dim)}
+textarea{resize:vertical;min-height:68px}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s;text-decoration:none;white-space:nowrap}
-.btn-primary{background:var(--accent);color:#fff;width:100%;font-size:15px;padding:15px}
-.btn-primary:hover{background:#FF5722;transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
-.btn-primary:active{transform:translateY(0)}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-done{background:var(--purple);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;margin-top:10px}
-.btn-done:hover{opacity:.85}
-.btn-x{background:#000;border:1px solid #333;color:#fff;width:100%;margin-bottom:8px}
-.btn-tg{background:#229ED9;color:#fff;width:100%;margin-bottom:8px}
-.btn-copy{background:transparent;border:1px solid var(--border);color:var(--muted);width:100%}
-.btn-copy:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn-sm{padding:7px 13px;font-size:12px;border-radius:8px;width:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;font-size:16px;font-family:'VT323',monospace;font-weight:400;cursor:pointer;border:2px solid;transition:all .12s;text-decoration:none;letter-spacing:.06em;white-space:nowrap}
+.btn-primary{background:var(--pixel);color:#000;border-color:var(--pixel);width:100%;font-size:19px;padding:13px;box-shadow:0 0 15px var(--pixel-dim);font-family:'Press Start 2P',monospace;font-size:11px;letter-spacing:.08em}
+.btn-primary:hover{background:#000;color:var(--pixel);box-shadow:0 0 25px var(--pixel-glow)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-quest{background:var(--purple);color:#fff;border-color:var(--purple);padding:7px 13px;font-size:14px}
+.btn-quest:hover{background:#000;color:var(--purple);box-shadow:0 0 10px rgba(204,0,255,0.3)}
+.btn-x{background:#000;border-color:#333;color:#fff;width:100%;margin-bottom:8px}
+.btn-x:hover{border-color:var(--text);color:var(--text)}
+.btn-tg{background:#229ED9;border-color:#229ED9;color:#fff;width:100%;margin-bottom:8px}
+.btn-tg:hover{background:#000;color:#229ED9}
+.btn-copy{background:transparent;border-color:var(--dim);color:var(--muted);width:100%}
+.btn-copy:hover{border-color:var(--pixel);color:var(--pixel)}
+.btn-sm{padding:5px 11px;font-size:13px;font-family:'VT323',monospace}
 
 /* NOTE */
-.note{font-size:11px;color:var(--dim);text-align:center;margin-top:10px;line-height:1.6}
+.note{font-size:14px;color:var(--dim);text-align:center;margin-top:10px;line-height:1.6}
 
 /* REF */
-.ref-box{background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.12);border-radius:var(--r);padding:13px;margin-top:14px;display:none}
-.ref-label{font-size:11px;color:var(--muted);margin-bottom:7px}
+.ref-box{background:#000;border:2px solid var(--blue);padding:12px;margin-top:13px;display:none;box-shadow:0 0 10px var(--blue-dim)}
+.ref-label{font-size:14px;color:var(--blue);margin-bottom:7px}
 .ref-row{display:flex;gap:7px}
-.ref-link-text{flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:11px;color:var(--cyan);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ref-link-text{flex:1;background:#000;border:2px solid var(--dim);padding:7px 10px;font-size:13px;color:var(--blue);font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* SUCCESS */
-#success-screen{display:none;text-align:center;padding:36px 20px}
-.success-icon{font-size:48px;margin-bottom:14px}
-.success-h{font-size:22px;font-weight:800;color:var(--gold);margin-bottom:8px}
-.success-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px}
-.success-pts{font-size:48px;font-weight:800;color:var(--accent);line-height:1;margin-bottom:4px}
-.success-pts-lbl{font-size:12px;color:var(--dim);margin-bottom:24px}
+#success-screen{display:none;text-align:center;padding:32px 20px}
+.success-art{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pixel);line-height:1.8;margin-bottom:16px;text-shadow:0 0 10px var(--pixel)}
+.success-h{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--yellow);margin-bottom:10px;text-shadow:0 0 10px var(--yellow)}
+.success-sub{font-size:18px;color:var(--muted);line-height:1.5;margin-bottom:18px}
+.success-xp{font-family:'Press Start 2P',monospace;font-size:32px;color:var(--pixel);text-shadow:0 0 20px var(--pixel);margin-bottom:4px}
+.success-xp-lbl{font-size:15px;color:var(--dim);margin-bottom:22px}
 
 /* LEADERBOARD */
-.lb-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .1s}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(0,255,65,0.08);transition:background .1s}
 .lb-row:last-child{border-bottom:none}
-.lb-row:hover{background:rgba(255,255,255,0.02)}
-.lb-rank{font-size:13px;font-weight:700;width:26px;text-align:center;flex-shrink:0}
-.lb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:#fff}
+.lb-row:hover{background:rgba(0,255,65,0.03)}
+.lb-rank{font-family:'Press Start 2P',monospace;font-size:9px;width:28px;text-align:center;flex-shrink:0}
+.lb-av{width:28px;height:28px;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:9px;flex-shrink:0}
 .lb-nc{flex:1;min-width:0}
-.lb-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lb-wallet{font-size:10px;color:var(--dim);font-family:monospace}
-.lb-pts{font-size:13px;font-weight:700;color:var(--cyan)}
-.lb-empty{padding:28px;text-align:center;color:var(--dim);font-size:13px}
+.lb-name{font-size:16px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-wallet{font-size:12px;color:var(--dim);font-family:monospace}
+.lb-xp{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel)}
+.lb-empty{padding:28px;text-align:center;color:var(--dim);font-size:16px}
 
 /* SHARE CARD */
-.share-card{background:linear-gradient(135deg,#0D0025,#180040);border:1px solid rgba(155,111,255,0.25);border-radius:14px;padding:18px;text-align:center;margin-bottom:13px}
-.sc-img{width:50px;height:50px;border-radius:50%;border:2px solid var(--purple);margin-bottom:9px;object-fit:cover}
-.sc-title{font-size:15px;font-weight:800;color:var(--cyan);margin-bottom:3px}
-.sc-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
-.sc-pts{font-size:34px;font-weight:800;color:var(--gold);line-height:1;margin-bottom:3px}
-.sc-lbl{font-size:11px;color:var(--dim)}
+.share-card{background:#000;border:2px solid var(--yellow);padding:16px;text-align:center;margin-bottom:12px;box-shadow:0 0 15px var(--yellow-dim)}
+.sc-logo{width:48px;height:48px;border:2px solid var(--yellow);margin-bottom:8px;object-fit:cover}
+.sc-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--yellow);margin-bottom:4px;text-shadow:0 0 6px var(--yellow)}
+.sc-sub{font-size:14px;color:var(--muted);margin-bottom:10px}
+.sc-xp{font-family:'Press Start 2P',monospace;font-size:24px;color:var(--pixel);text-shadow:0 0 15px var(--pixel);line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:13px;color:var(--dim)}
 
 /* TOKEN */
-.token-row{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--border)}
-.token-row img{width:36px;height:36px;border-radius:50%;border:1px solid var(--purple);object-fit:cover}
-.token-name{font-size:14px;font-weight:700}
-.ca-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.ca-row:hover{background:rgba(155,111,255,.06)}
-.ca-row:hover .ca-copy-btn{opacity:1}
-.token-ca{font-size:10px;color:var(--cyan);font-family:monospace;word-break:break-all;line-height:1.4}
-.ca-copy-btn{flex-shrink:0;font-size:10px;font-weight:600;padding:4px 9px;border-radius:6px;border:1px solid var(--purple);background:transparent;color:var(--purple);cursor:pointer;opacity:.6;transition:opacity .15s,background .15s,color .15s}
-.ca-copy-btn:hover{background:var(--purple);color:#fff;opacity:1}
-.price-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px}
-.price-val{font-size:15px;font-weight:700;color:var(--cyan);font-family:monospace}
-.price-up{font-size:13px;font-weight:600;color:var(--green)}
-.price-down{font-size:13px;font-weight:600;color:var(--accent)}
-.price-live-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);margin-right:4px;animation:blink 2s infinite;vertical-align:middle}
-.token-btns{display:flex;gap:8px;padding:0 16px 13px}
-.token-btns a{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .15s}
-.token-btns a:hover{opacity:.85}
+.token-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:2px solid var(--pixel)}
+.token-row img{width:34px;height:34px;border:2px solid var(--pixel);object-fit:cover}
+.token-name{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel)}
+.token-ca{font-size:13px;color:var(--muted);font-family:monospace;cursor:pointer}
+.token-ca:hover{color:var(--pixel)}
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+.price-val{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pixel)}
+.price-up{font-size:16px;color:var(--pixel)}
+.token-btns{display:flex;gap:8px;padding:0 14px 12px}
+.token-btns a{flex:1;text-align:center;padding:8px;font-size:15px;font-family:'VT323',monospace;text-decoration:none;border:2px solid;transition:all .15s;letter-spacing:.04em}
+.token-btns a:hover{background:#000}
 
 /* ABOUT */
-.about-body{padding:16px;font-size:13px;color:var(--muted);line-height:1.7}
-.about-body p{margin-bottom:10px}
-.about-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.about-tags a{font-size:12px;border:1px solid rgba(0,245,255,0.18);padding:5px 10px;border-radius:8px;color:var(--cyan)}
-
-/* NO PURCHASE NECESSARY banner */
-.npn-bar{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.25);border-radius:10px;padding:11px 18px;margin-bottom:16px;flex-wrap:wrap;text-align:center}
-.npn-badge{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--green);color:#000;border-radius:5px;padding:3px 8px;flex-shrink:0}
-.npn-text{font-size:12px;color:var(--green);font-weight:600;line-height:1.4}
-
-/* PROVABLY FAIR */
-.pf-section{max-width:1040px;margin:0 auto 32px;padding:0 20px}
-.pf-panel{background:var(--card);border:1px solid rgba(155,111,255,0.3);border-radius:16px;overflow:hidden}
-.pf-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
-.pf-head:hover{background:rgba(155,111,255,.04)}
-.pf-title-wrap{display:flex;align-items:center;gap:10px}
-.pf-icon{font-size:20px}
-.pf-title{font-size:14px;font-weight:700;color:var(--text)}
-.pf-subtitle{font-size:11px;color:var(--muted);margin-top:1px}
-.pf-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(135deg,rgba(155,111,255,.2),rgba(0,245,255,.12));border:1px solid rgba(155,111,255,.4);color:var(--purple);border-radius:6px;padding:4px 10px}
-.pf-body{display:none;padding:20px}
-.pf-body.open{display:block}
-.pf-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-@media(max-width:600px){.pf-steps{grid-template-columns:1fr}}
-.pf-step{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px}
-.pf-step-num{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
-.pf-step-title{font-size:13px;font-weight:700;margin-bottom:4px}
-.pf-step-desc{font-size:12px;color:var(--muted);line-height:1.5}
-.pf-algo{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:monospace;font-size:12px;color:var(--cyan);margin-bottom:20px;line-height:1.8;overflow-x:auto;white-space:pre}
-.pf-commit{display:flex;align-items:flex-start;gap:12px;background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:14px;margin-bottom:20px}
-.pf-commit-icon{font-size:22px;flex-shrink:0;margin-top:1px}
-.pf-commit-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:4px}
-.pf-commit-hash{font-family:monospace;font-size:11px;color:var(--text);word-break:break-all;line-height:1.5}
-.pf-commit-note{font-size:11px;color:var(--muted);margin-top:4px}
-.pf-verify-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
-.pf-verify-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-@media(max-width:540px){.pf-verify-grid{grid-template-columns:1fr}}
-.pf-verify-result{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--dim);min-height:44px;font-family:monospace;line-height:1.5;display:flex;align-items:center}
-.pf-verify-result.ok{border-color:rgba(0,230,118,.4);color:var(--green)}
-.pf-verify-result.err{border-color:rgba(255,61,0,.4);color:var(--accent)}
+.about-body{padding:14px;font-size:16px;color:var(--muted);line-height:1.6}
+.about-body p{margin-bottom:9px}
+.about-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.about-tags a{font-size:15px;border:2px solid var(--pixel);padding:4px 9px;color:var(--pixel);text-decoration:none}
+.about-tags a:hover{background:var(--pixel);color:#000}
 
 /* FOOTER */
-.disclaimer{text-align:center;padding:28px 24px;font-size:11px;color:var(--dim);max-width:680px;margin:0 auto;line-height:1.7}
-.powered{text-align:center;padding:14px;font-size:11px;color:var(--dim);border-top:1px solid var(--border)}
-.powered a{color:var(--accent);font-weight:600;text-decoration:none}
+.disclaimer{text-align:center;padding:24px;font-size:14px;color:var(--dim);max-width:680px;margin:0 auto;line-height:1.7}
+.powered{text-align:center;padding:14px;font-size:14px;color:var(--dim);border-top:2px solid var(--dim)}
+.powered a{color:var(--pixel);text-decoration:none}
+.powered a:hover{text-shadow:0 0 8px var(--pixel)}
 
 /* TOAST */
-#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#000;border:2px solid var(--pixel);padding:10px 18px;font-size:16px;z-index:300;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none;color:var(--pixel);box-shadow:0 0 15px var(--pixel-dim)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast.ok{border-color:var(--green);color:var(--green)}
-#toast.err{border-color:var(--accent);color:var(--accent)}
+#toast.ok{border-color:var(--pixel);color:var(--pixel)}
+#toast.err{border-color:var(--red);color:var(--red)}
 
-/* UNLOCK COUNTDOWN */
-.unlock-info{font-size:12px;color:var(--purple);margin-top:6px}
+/* PIXEL CORNERS */
+.corner-tl::before,.corner-tr::before,.corner-bl::before,.corner-br::before{content:'■';position:absolute;font-size:8px;color:var(--pixel)}
 
-/* ── GAMIFICATION ─────────────────────────────────────────── */
+/* UNLOCK */
+.unlock-info{font-size:13px;color:var(--purple);margin-top:4px}
 
-/* Buy button — pulsing fire glow */
-@keyframes buy-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,61,0,.5),0 0 18px rgba(255,87,34,.35)}50%{box-shadow:0 0 0 7px rgba(255,61,0,0),0 0 32px rgba(255,87,34,.6)}}
-.token-btns a.buy-btn{animation:buy-pulse 2s ease-in-out infinite;background:linear-gradient(135deg,#FF3D00,#FF6D00)!important;position:relative;overflow:hidden}
-.token-btns a.buy-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);pointer-events:none}
-.token-btns a.buy-btn:hover{transform:scale(1.04);animation:none;box-shadow:0 0 28px rgba(255,61,0,.65)!important}
-.token-btns a.buy-btn:active{transform:scale(.97)}
-
-/* Floating +pts pop */
-.pts-pop{position:fixed;pointer-events:none;font-size:18px;font-weight:800;color:var(--gold);text-shadow:0 0 12px rgba(255,213,79,.8);z-index:999;animation:pts-fly 1.2s ease-out forwards}
-@keyframes pts-fly{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-60px) scale(1.2)}100%{opacity:0;transform:translateY(-100px) scale(.8)}}
-
-/* Mission done flash */
-@keyframes mission-flash{0%{background:rgba(0,230,118,.12);border-color:rgba(0,230,118,.7)}100%{background:transparent;border-color:rgba(0,230,118,.35)}}
-.mission.just-done{animation:mission-flash .6s ease-out}
-
-/* Points badge bounce */
-@keyframes badge-pop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
-.badge-bounce{animation:badge-pop .45s cubic-bezier(.36,.07,.19,.97)}
-
-/* Streak banner */
-#streak-banner{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-120%);background:linear-gradient(135deg,#9B6FFF,#FF3D00);border-radius:100px;padding:8px 22px;font-size:13px;font-weight:800;color:#fff;z-index:200;transition:transform .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 4px 24px rgba(155,111,255,.5)}
-#streak-banner.show{transform:translateX(-50%) translateY(0)}
-
-/* Confetti canvas */
-#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:998}
-
-/* Particle burst container */
-.particle{position:fixed;pointer-events:none;width:8px;height:8px;border-radius:50%;z-index:997;animation:particle-burst .8s ease-out forwards}
-@keyframes particle-burst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:var(--tx) scale(.3)}}
+/* SCANLINE FLICKER */
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:.98}94%{opacity:.95}96%{opacity:.98}}
+.hero{animation:flicker 8s infinite}
 </style>
 </head>
 <body>
 
-<canvas id="confetti-canvas"></canvas>
-<div id="streak-banner">🔥 <span id="streak-text"></span></div>
-
 <div id="loading">
-  <div class="spinner"></div>
-  <div style="font-size:13px;color:var(--muted)">Loading campaign...</div>
+  <div style="font-family:'Press Start 2P',monospace;font-size:20px;color:var(--yellow);text-shadow:0 0 15px var(--yellow);margin-bottom:20px">GROWTH<span style="color:var(--pixel)">GENIE</span></div>
+  <div class="loading-text">LOADING...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+  <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--dim);margin-top:12px">THE CHEAT CODE FOR GROWTH</div>
 </div>
 
 <header>
   <div class="logo">
-    <img id="hdr-logo" class="logo-img" src="" alt="" onerror="this.style.display='none'">
-    <span id="hdr-name">GrowthMonster</span>
+    <div class="logo-cart">GG</div>
+    <div>
+      <div class="logo-name">GROWTH<span style="color:var(--yellow)">GENIE</span></div>
+    </div>
+    <div class="logo-project" id="hdr-project"></div>
   </div>
   <div class="hlinks" id="hdr-links"></div>
 </header>
 
+<div class="marquee-wrap">
+  <div class="marquee-inner" id="marquee-text">★ GROWTHGENIE — THE CHEAT CODE FOR COMMUNITY GROWTH ★ COMPLETE QUESTS ★ EARN XP ★ CLIMB THE LEADERBOARD ★ WIN PRIZES ★ INSERT COIN TO PLAY ★ &nbsp;&nbsp;&nbsp;</div>
+</div>
+
 <div id="app" style="display:none">
-  <!-- HERO -->
   <div class="hero">
-    <div class="live-badge"><span class="dot"></span>Live Campaign</div>
-    <h1 id="hero-title">Community Rewards</h1>
-    <p class="hero-sub" id="hero-desc">Complete missions. Earn points. The Stacverse takes care of its own.</p>
-    <div class="prizes-grid" id="prizes-grid">
-      <div class="prize-card"><div class="prize-card-icon">◎</div><div class="prize-card-amount" id="prize-sol">SOL</div><div class="prize-card-label">Solana</div></div>
-      <div class="prize-card"><div class="prize-card-icon">💵</div><div class="prize-card-amount" id="prize-usd">USD</div><div class="prize-card-label">Cash Prize</div></div>
-      <div class="prize-card"><div class="prize-card-icon">🃏</div><div class="prize-card-amount" id="prize-poke">Cards</div><div class="prize-card-label">Pokémon TCG</div></div>
+    <div class="insert-coin">▶ INSERT COIN TO PLAY ◀</div>
+    <div class="hero-title" id="hero-title">ENTER THE <span class="hl">STACVERSE</span></div>
+    <p class="hero-sub" id="hero-desc">Complete quests. Stack XP. The Stacverse rewards its soldiers.</p>
+    <div class="cheat-code" id="cheat-code">↑ ↑ ↓ ↓ ← → ← → B A START</div>
+    <div class="prize-box">
+      <div class="prize-icon" id="prize-icon">🏆</div>
+      <div>
+        <div class="prize-amount" id="prize-amount">???</div>
+        <div class="prize-meta">
+          <div class="top">PRIZE POOL</div>
+          <div class="bot" id="prize-token">TOKENS</div>
+        </div>
+      </div>
     </div>
-    <!-- legacy hidden elements so JS doesn't error -->
-    <div class="prize-box" style="display:none"><div class="prize-icon" id="prize-icon"></div><div><div class="prize-amount" id="prize-amount"></div><div class="prize-meta"><div class="top"></div><div class="bot" id="prize-token"></div></div></div></div>
     <div class="timer">
-      <div class="tblock"><div class="tnum" id="t-d">--</div><div class="tlbl">Days</div></div>
-      <div class="tblock"><div class="tnum" id="t-h">--</div><div class="tlbl">Hours</div></div>
-      <div class="tblock"><div class="tnum" id="t-m">--</div><div class="tlbl">Mins</div></div>
-      <div class="tblock"><div class="tnum" id="t-s">--</div><div class="tlbl">Secs</div></div>
+      <div class="tblock"><div class="tnum" id="t-d">--</div><div class="tlbl">DAYS</div></div>
+      <div class="tblock"><div class="tnum" id="t-h">--</div><div class="tlbl">HRS</div></div>
+      <div class="tblock"><div class="tnum" id="t-m">--</div><div class="tlbl">MIN</div></div>
+      <div class="tblock"><div class="tnum" id="t-s">--</div><div class="tlbl">SEC</div></div>
     </div>
   </div>
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-cell"><div class="stat-val" id="stat-entries">0</div><div class="stat-lbl">Total Points</div></div>
-    <div class="stat-cell"><div class="stat-val" id="stat-entrants">0</div><div class="stat-lbl">Members</div></div>
-    <div class="stat-cell"><div class="stat-val" id="stat-missions">0</div><div class="stat-lbl">Missions</div></div>
-    <div class="stat-cell"><div class="stat-val" id="stat-winners">3</div><div class="stat-lbl">Winners</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">TOTAL XP</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-players">0</div><div class="stat-lbl">PLAYERS</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-quests">0</div><div class="stat-lbl">QUESTS</div></div>
+    <div class="stat-cell"><div class="stat-val" style="color:var(--yellow)">1</div><div class="stat-lbl">WINNER</div></div>
   </div>
 
-  <!-- MAIN GRID -->
   <div class="main">
     <!-- LEFT -->
     <div>
-      <!-- NO PURCHASE NECESSARY -->
-      <div class="npn-bar">
-        <span class="npn-badge">Free to Enter</span>
-        <span class="npn-text">No purchase necessary to participate or win. Open to all eligible community members. See terms below.</span>
-      </div>
-
       <div class="panel" id="entry-panel">
         <div class="panel-head">
-          <span class="panel-title">Earn Your Spot</span>
-          <span class="panel-badge" id="pts-badge">0 pts</span>
+          <span class="panel-title">PLAYER REGISTRATION</span>
+          <span class="panel-badge" id="xp-badge">0 XP</span>
         </div>
         <div class="panel-body" id="form-body">
+          <!-- XP BAR -->
+          <div class="xp-bar-wrap">
+            <div class="xp-label"><span>XP PROGRESS</span><span id="xp-progress-text">0 / MAX</span></div>
+            <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+          </div>
+
           <div class="fg">
-            <label class="fl">Display Name <span class="req">*</span></label>
-            <input type="text" id="inp-name" placeholder="Shown on leaderboard">
+            <label class="fl">PLAYER NAME <span class="req">*</span></label>
+            <input type="text" id="inp-name" placeholder="ENTER YOUR NAME_">
           </div>
           <div class="fg">
-            <label class="fl">Email <span class="req">*</span></label>
-            <input type="email" id="inp-email" placeholder="For winner notification">
+            <label class="fl">EMAIL <span class="req">*</span></label>
+            <input type="email" id="inp-email" placeholder="FOR WINNER NOTIFICATION_">
           </div>
           <div class="fg" style="margin-bottom:18px">
-            <label class="fl">Solana Wallet <span class="req">*</span></label>
-            <input type="text" id="inp-wallet" class="mono" placeholder="Your Solana wallet address">
+            <label class="fl">SOLANA WALLET <span class="req">*</span></label>
+            <input type="text" id="inp-wallet" class="mono" placeholder="YOUR WALLET ADDRESS_">
           </div>
-          <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:11px">Missions</div>
-          <div id="missions-list"></div>
-          <button class="btn btn-primary" id="btn-submit" onclick="submitEntry()" style="margin-top:14px">🚀 &nbsp;Lock In My Points</button>
-          <p class="note">Progress is saved in this browser. <a href="#" onclick="showRestore();return false" style="color:var(--cyan)">Returning on a new device?</a></p>
-          <p class="note" style="margin-top:4px">Fraudulent submissions disqualified before the draw.<br>By participating you agree to campaign terms.</p>
-          <div id="restore-box" style="display:none;margin-top:10px;background:rgba(0,245,255,0.05);border:1px solid rgba(0,245,255,0.15);border-radius:var(--r);padding:12px">
-            <div style="font-size:12px;color:var(--cyan);margin-bottom:8px;font-weight:600">Restore your submission</div>
-            <div style="display:flex;gap:7px">
-              <input type="email" id="restore-email" placeholder="Enter your submission email" style="flex:1;font-size:14px">
-              <button class="btn btn-sm" onclick="restoreSession()" style="background:var(--cyan);color:#000;border:none;flex-shrink:0">Restore</button>
-            </div>
-          </div>
+
+          <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);letter-spacing:.12em;margin-bottom:10px;text-shadow:0 0 6px var(--pixel)">▶ ACTIVE QUESTS</div>
+          <div id="quests-list"></div>
+
+          <button class="btn btn-primary" id="btn-submit" onclick="submitEntry()" style="margin-top:14px">
+            ▶ SUBMIT SCORE
+          </button>
+          <p class="note">Fraudulent entries disqualified before winner selection.<br>By entering you agree to campaign terms.</p>
+
           <div class="ref-box" id="ref-box">
-            <div class="ref-label">🔗 Referral link — earn bonus pts per signup</div>
+            <div class="ref-label">🔗 REFERRAL CODE — EARN BONUS XP PER RECRUIT</div>
             <div class="ref-row">
               <div class="ref-link-text" id="ref-link-display">—</div>
-              <button class="btn btn-sm" style="background:var(--purple);color:#fff;border:none;flex-shrink:0" onclick="copyRef()">Copy</button>
+              <button class="btn btn-sm" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="copyRef()">COPY</button>
             </div>
           </div>
         </div>
+
         <div id="success-screen">
-          <div class="success-icon">🚀</div>
-          <div class="success-h">You're in!</div>
-          <p class="success-sub">Your points are locked in. Share with friends to earn more and climb the board.</p>
-          <div class="success-pts" id="success-pts-num">0</div>
-          <div class="success-pts-lbl">points earned</div>
-          <button class="btn btn-x" onclick="shareX()" style="margin-top:8px">Share on X / Twitter</button>
-          <button class="btn btn-tg" onclick="shareTelegram()">Share on Telegram</button>
+          <div class="success-art">
+★ ★ ★ ★ ★<br>
+YOU WIN!<br>
+★ ★ ★ ★ ★</div>
+          <div class="success-h">SCORE SAVED!</div>
+          <p class="success-sub">Your XP is locked in. Share to recruit more players and climb the leaderboard.</p>
+          <div class="success-xp" id="success-xp-num">0</div>
+          <div class="success-xp-lbl">XP EARNED</div>
+          <button class="btn btn-x" onclick="shareX()" style="margin-top:6px">SHARE ON X / TWITTER</button>
+          <button class="btn btn-tg" onclick="shareTelegram()">SHARE ON TELEGRAM</button>
           <div class="ref-box" id="success-ref-box" style="display:block;margin-top:0">
-            <div class="ref-label">🔗 Your referral link</div>
+            <div class="ref-label">🔗 YOUR REFERRAL CODE</div>
             <div class="ref-row">
               <div class="ref-link-text" id="success-ref-display">—</div>
-              <button class="btn btn-sm" style="background:var(--purple);color:#fff;border:none;flex-shrink:0" onclick="copyRef()">Copy</button>
+              <button class="btn btn-sm" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="copyRef()">COPY</button>
             </div>
           </div>
         </div>
@@ -416,165 +368,75 @@ textarea{resize:vertical;min-height:72px}
       <!-- LEADERBOARD -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">Leaderboard</span>
-          <span class="panel-badge" id="lb-count">0 entrants</span>
+          <span class="panel-title">★ HIGH SCORES ★</span>
+          <span class="panel-badge" id="lb-count">0 PLAYERS</span>
         </div>
-        <div id="leaderboard"><div class="lb-empty">No members yet. Be the first.</div></div>
+        <div id="leaderboard"><div class="lb-empty">NO SCORES YET. BE PLAYER ONE.</div></div>
       </div>
     </div>
 
     <!-- SIDEBAR -->
     <div>
-      <!-- TOKEN INFO -->
+      <!-- TOKEN -->
       <div class="panel" id="token-panel" style="display:none">
         <div class="panel-head">
-          <span class="panel-title">Token</span>
-          <a id="chart-link" href="#" target="_blank" style="font-size:11px;color:var(--cyan)">Chart ↗</a>
+          <span class="panel-title">TOKEN</span>
+          <a id="chart-link" href="#" target="_blank" style="font-size:13px;color:var(--pixel);text-decoration:none">CHART ↗</a>
         </div>
         <div class="token-row">
           <img id="tk-logo" src="" alt="" onerror="this.style.display='none'">
           <div>
             <div class="token-name" id="tk-name">—</div>
+            <div class="token-ca" id="tk-ca" onclick="copyCA()">—</div>
           </div>
-        </div>
-        <div class="ca-row" onclick="copyCA()" title="Click to copy contract address">
-          <div>
-            <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Contract Address</div>
-            <div class="token-ca" id="tk-ca">—</div>
-          </div>
-          <button class="ca-copy-btn" id="ca-copy-btn" tabindex="-1">Copy</button>
         </div>
         <div class="price-row">
           <div>
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px">PRICE <span id="price-live-badge" style="display:none"><span class="price-live-dot"></span><span style="font-size:9px;color:var(--green);letter-spacing:.06em">LIVE</span></span></div>
+            <div style="font-size:12px;color:var(--dim);margin-bottom:2px">PRICE</div>
             <div class="price-val" id="tk-price">—</div>
           </div>
           <div class="price-up" id="tk-change">—</div>
         </div>
         <div class="token-btns" id="tk-btns"></div>
-        <div id="chart-embed" style="display:none;margin-top:12px;border-radius:8px;overflow:hidden">
-          <iframe
-            id="dex-chart-iframe"
-            src=""
-            style="width:100%;height:340px;border:none"
-            allow="clipboard-write *; fullscreen *"
-            loading="lazy"
-          ></iframe>
-        </div>
       </div>
 
       <!-- SHARE -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">Share & Earn</span>
-          <span class="panel-badge" id="ref-badge">+pts/ref</span>
+          <span class="panel-title">RECRUIT PLAYERS</span>
+          <span class="panel-badge" id="ref-badge">+XP/RECRUIT</span>
         </div>
         <div class="panel-body">
           <div class="share-card">
-            <img class="sc-img" id="sc-logo" src="" alt="" onerror="this.style.display='none'">
-            <div class="sc-title" id="sc-title">Campaign</div>
-            <div class="sc-sub">Enter to win</div>
-            <div class="sc-pts" id="sc-pts">0</div>
-            <div class="sc-lbl">points earned</div>
+            <img class="sc-logo" id="sc-logo" src="" alt="" onerror="this.style.display='none'">
+            <div class="sc-title" id="sc-title">CAMPAIGN</div>
+            <div class="sc-sub">Join the game — enter to win</div>
+            <div class="sc-xp" id="sc-xp-num">0</div>
+            <div class="sc-lbl">XP EARNED</div>
           </div>
-          <button class="btn btn-x" onclick="shareX()">Share on X</button>
-          <button class="btn btn-tg" onclick="shareTelegram()">Share on Telegram</button>
-          <button class="btn btn-copy" onclick="copyLink()">Copy Link</button>
+          <button class="btn btn-x" onclick="shareX()">SHARE ON X</button>
+          <button class="btn btn-tg" onclick="shareTelegram()">SHARE ON TELEGRAM</button>
+          <button class="btn btn-copy" onclick="copyLink()">COPY LINK</button>
         </div>
       </div>
 
       <!-- ABOUT -->
       <div class="panel" id="about-panel" style="display:none">
-        <div class="panel-head"><span class="panel-title">About</span></div>
+        <div class="panel-head"><span class="panel-title">ABOUT</span></div>
         <div class="about-body" id="about-body"></div>
       </div>
     </div>
   </div>
 
-  <!-- PROVABLY FAIR -->
-  <div class="pf-section">
-    <div class="pf-panel">
-      <div class="pf-head" onclick="togglePF()">
-        <div class="pf-title-wrap">
-          <span class="pf-icon">🔐</span>
-          <div>
-            <div class="pf-title">Provably Fair Draw</div>
-            <div class="pf-subtitle">Cryptographically verifiable — no admin can manipulate the result</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <span class="pf-badge">Verified Random</span>
-          <span id="pf-chevron" style="color:var(--muted);font-size:14px">▼</span>
-        </div>
-      </div>
-      <div class="pf-body" id="pf-body">
-
-        <div class="pf-steps">
-          <div class="pf-step">
-            <div class="pf-step-num">Step 1 · Before draw</div>
-            <div class="pf-step-title">Seed Commitment</div>
-            <div class="pf-step-desc">We generate a secret server seed and publish its SHA-256 hash on-chain <em>before</em> the draw closes. This locks us in — we can't change the seed after seeing participants.</div>
-          </div>
-          <div class="pf-step">
-            <div class="pf-step-num">Step 2 · Draw day</div>
-            <div class="pf-step-title">Public Randomness</div>
-            <div class="pf-step-desc">We use the hash of a pre-announced future Solana slot as the public random input. Neither we nor anyone else can predict or control it.</div>
-          </div>
-          <div class="pf-step">
-            <div class="pf-step-num">Step 3 · Anyone</div>
-            <div class="pf-step-title">Verify Yourself</div>
-            <div class="pf-step-desc">Once the server seed is revealed, paste both values below. You'll see exactly how the winner was calculated — same formula, same result, every time.</div>
-          </div>
-        </div>
-
-        <div class="pf-algo" id="pf-algo">// One round per winner — previous winner removed before each draw
-for round in 1..numWinners:
-    hash         = SHA256(serverSeed + slotHash + round)
-    winner_index = BigInt("0x" + hash) % remainingWeightedEntries
-    winner       = remaining_entries.sort(lexicographic)[winner_index]
-    remove winner from pool</div>
-
-        <div class="pf-commit" id="pf-commit-box">
-          <span class="pf-commit-icon">🔒</span>
-          <div>
-            <div class="pf-commit-label">Committed Seed Hash (SHA-256)</div>
-            <div class="pf-commit-hash" id="pf-seed-hash">Loading…</div>
-            <div class="pf-commit-note">Published before the draw closes. Revealed after draw to verify.</div>
-          </div>
-        </div>
-
-        <div class="pf-verify-title">🔍 Verify the draw yourself</div>
-        <div class="pf-verify-grid">
-          <div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600">Server Seed (revealed after draw)</div>
-            <input type="text" id="pf-input-seed" placeholder="e.g. a3f9c2…" style="font-family:monospace;font-size:12px">
-          </div>
-          <div>
-            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600">Solana Slot Hash</div>
-            <input type="text" id="pf-input-slot" placeholder="e.g. 4xT7k…" style="font-family:monospace;font-size:12px">
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
-          <input type="number" id="pf-input-total" placeholder="Total weighted points" style="font-family:monospace;font-size:12px;max-width:200px">
-          <input type="number" id="pf-input-winners" placeholder="# of winners" min="1" value="3" style="font-family:monospace;font-size:12px;max-width:130px">
-          <button class="btn btn-sm" onclick="pfVerify()" style="background:var(--purple);color:#fff;border:none">Verify All Draws</button>
-        </div>
-        <div class="pf-verify-result" id="pf-result">Enter the values above to verify all draw results.</div>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="disclaimer">⚠️ No purchase necessary to participate or win. Void where prohibited. Open to community members 18+. Fraudulent proof submissions are disqualified before the draw. Winners verified against committed seed hash — result is independently verifiable by anyone. This is not financial advice.</div>
-  <div class="powered">Powered by <a href="#">GrowthMonster</a></div>
+  <div class="disclaimer">⚠ FAKE OR FRAUDULENT PROOF SUBMISSIONS WILL BE DISQUALIFIED BEFORE WINNER SELECTION. BY ENTERING YOU CONFIRM ELIGIBILITY. NOT FINANCIAL ADVICE.</div>
+  <div class="powered">POWERED BY <a href="#">GROWTHGENIE</a> — THE CHEAT CODE FOR COMMUNITY GROWTH</div>
 </div>
 
 <div id="toast"></div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, getDoc, setDoc, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBHxMmNQSKr2JgsPgIpbnLzaXXYTw8kBMk",
@@ -585,838 +447,346 @@ const firebaseConfig = {
   appId: "1:97804410543:web:ffdefa9ea29b62ce6afe5a"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const fb = initializeApp(firebaseConfig);
+const db = getFirestore(fb);
 
-// ============================================================
-// STATE
-// ============================================================
-let campaign = null;
-let missions = [];
-let myEntry = null;
-let completed = {};
-let proofs = {};
-let endDate = null;
-let timerInterval = null;
+let campaign = null, missions = [], myEntry = null;
+let completed = {}, proofs = {}, endDate = null;
 
-// Load saved state
 try {
-  const s = localStorage.getItem('gm_entry');
-  if (s) {
-    const p = JSON.parse(s);
-    myEntry = p.myEntry;
-    completed = p.completed || {};
-    proofs = p.proofs || {};
-  }
-} catch(e) {}
+  const s = localStorage.getItem('gg_entry');
+  if (s) { const p = JSON.parse(s); myEntry = p.myEntry; completed = p.completed||{}; proofs = p.proofs||{}; }
+} catch(e){}
 
 function saveLocal() {
-  try { localStorage.setItem('gm_entry', JSON.stringify({ myEntry, completed, proofs })); } catch(e) {}
+  try { localStorage.setItem('gg_entry', JSON.stringify({myEntry,completed,proofs})); } catch(e){}
 }
 
-// ============================================================
-// LOAD CAMPAIGN
-// ============================================================
-async function loadCampaign() {
-  try {
-    // Get active campaign
-    const snap = await getDocs(collection(db, 'campaigns'));
-    let found = null;
-    snap.forEach(d => {
-      const data = d.data();
-      if (data.status === 'active') found = { id: d.id, ...data };
-    });
+async function init() {
+  const snap = await getDocs(collection(db, 'campaigns'));
+  let found = null;
+  snap.forEach(d => { if (d.data().status === 'active') found = {id:d.id,...d.data()}; });
 
-    if (!found) {
-      // Create default Staccana campaign if none exists
-      const defaultCampaign = {
-        name: '$STACCANA Community Appreciation',
-        description: 'Complete missions. Earn points. The Stacverse takes care of its own.',
-        prizeAmount: '$500',
-        prizeToken: 'in $STACCANA Tokens',
-        prizeIcon: '💎',
-        prizes: { sol: '2 SOL', usd: '$100', poke: 'Booster Box' },
-        numWinners: 3,
-        endDate: new Date(Date.now() + 7*24*60*60*1000).toISOString(),
-        status: 'active',
-        accentColor: '#FF3D00',
-        logoUrl: 'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
-        projectName: '$STACCANA',
-        headerLinks: [
-          { label: 'Twitter', url: 'https://x.com/stacverse' },
-          { label: 'Telegram', url: 'https://t.me/Staccana' },
-          { label: 'Chart', url: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr' }
-        ],
-        tokenInfo: {
-          name: '$STACCANA',
-          contract: '73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',
-          price: '$0.000403',
-          change: '+109%',
-          buyUrl: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',
-          siteUrl: 'https://www.stacverse.com',
-          logoUrl: 'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
-          chartUrl: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'
-        },
-        aboutText: 'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated.',
-        aboutLinks: [
-          { label: '@stacverse', url: 'https://x.com/stacverse' },
-          { label: 'Telegram', url: 'https://t.me/Staccana' },
-          { label: 'stacsol.app', url: 'https://stacsol.app' }
-        ],
-        referralBonus: 25,
-        totalEntries: 0,
-        totalEntrants: 0
-      };
-      const ref = await addDoc(collection(db, 'campaigns'), defaultCampaign);
-      found = { id: ref.id, ...defaultCampaign };
-
-      // Seed default missions
-      const defaultMissions = [
-        { name: 'Follow @stacverse on X', desc: 'Follow the official Stacverse Twitter account', icon: '𝕏', iconBg: 'rgba(255,255,255,0.06)', pts: 15, type: 'follow_x', proofType: 'username', proofLabel: 'Your X/Twitter @username', oneTime: true, quality: 'low', link: 'https://x.com/stacverse', order: 1, active: true, unlockAt: null },
-        { name: 'Retweet the announcement post', desc: 'RT the pinned post — paste URL as proof', icon: '🔁', iconBg: 'rgba(0,230,118,0.08)', pts: 20, type: 'retweet', proofType: 'url', proofLabel: 'URL of your retweet', oneTime: true, quality: 'low', link: 'https://x.com/stacverse', order: 2, active: true, unlockAt: null },
-        { name: 'Post with $STACCANA ticker', desc: 'Post on X with $STACCANA or $STACSOL — paste your post URL', icon: '📢', iconBg: 'rgba(255,61,0,0.08)', pts: 30, type: 'post_ticker', proofType: 'url', proofLabel: 'URL of your post', oneTime: false, daily: true, quality: 'medium', order: 3, active: true, unlockAt: null },
-        { name: 'Share quality content (no AI slop)', desc: 'Post original quality content about Staccana — image, thread, or video. Must be authentic.', icon: '🎨', iconBg: 'rgba(155,111,255,0.1)', pts: 60, type: 'quality_content', proofType: 'url', proofLabel: 'URL of your post or content', oneTime: false, daily: true, quality: 'high', order: 4, active: true, unlockAt: null },
-        { name: 'Attend a Stacverse Twitter Space', desc: 'Join the live Space — submit the Space URL or a screenshot as proof', icon: '🎙️', iconBg: 'rgba(155,111,255,0.1)', pts: 50, type: 'space_attend', proofType: 'url', proofLabel: 'Twitter Space URL or screenshot link', oneTime: false, quality: 'high', order: 5, active: true, unlockAt: null },
-        { name: 'Ask a question in the Space', desc: 'Ask a genuine question during a Stacverse Space — type it below', icon: '❓', iconBg: 'rgba(155,111,255,0.1)', pts: 75, type: 'space_question', proofType: 'text', proofLabel: 'Type the question you asked in the Space...', minLength: 20, oneTime: false, quality: 'high', order: 6, active: true, unlockAt: null },
-        { name: 'HOST your own Staccana Space', desc: 'Host a Twitter Space about Staccana with 10+ listeners — massive points. Submit proof link.', icon: '🎤', iconBg: 'rgba(255,213,79,0.1)', pts: 300, type: 'host_space', proofType: 'url', proofLabel: 'Link to your hosted Space recording or tweet', oneTime: false, quality: 'high', order: 7, active: true, unlockAt: null },
-        { name: 'Hold $STACCANA in your wallet', desc: 'Any amount — your wallet address is proof', icon: '💎', iconBg: 'rgba(255,213,79,0.08)', pts: 30, type: 'hold_token', proofType: 'wallet', proofLabel: 'Solana wallet holding $STACCANA', oneTime: true, quality: 'medium', link: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr', order: 8, active: true, unlockAt: null },
-        { name: 'Visit stacsol.app & mint StacSOL', desc: 'Visit stacsol.app and mint any amount of StacSOL — submit your wallet as proof', icon: '⚡', iconBg: 'rgba(0,230,118,0.08)', pts: 100, type: 'mint_stacsol', proofType: 'wallet', proofLabel: 'Wallet you used to mint StacSOL', oneTime: true, quality: 'high', link: 'https://stacsol.app', order: 9, active: true, unlockAt: null },
-        { name: 'Why are you bullish on Staccana?', desc: 'Write a genuine response (min 50 chars) — thoughtful responses rank higher', icon: '📝', iconBg: 'rgba(255,61,0,0.08)', pts: 40, type: 'written_response', proofType: 'text', proofLabel: 'Write your genuine response here...', minLength: 50, oneTime: true, quality: 'high', order: 10, active: true, unlockAt: null },
-        { name: 'Join the Staccana Telegram', desc: 'Join the official community', icon: '✈️', iconBg: 'rgba(34,158,217,0.1)', pts: 15, type: 'join_tg', proofType: 'username', proofLabel: 'Your Telegram username', oneTime: true, quality: 'low', link: 'https://t.me/Staccana', order: 11, active: true, unlockAt: null }
-      ];
-      for (const m of defaultMissions) {
-        await addDoc(collection(db, 'missions'), { ...m, campaignId: ref.id });
-      }
-    }
-
-    campaign = found;
-    applyCampaignBranding();
-    startTimer();
-    loadMissions();
-    listenLeaderboard();
-
-  } catch(err) {
-    console.error('Load error:', err);
-    toast('Failed to load campaign', 'err');
+  if (!found) {
+    const def = {
+      name:'$STACCANA Launch Giveaway',description:'Complete quests. Stack XP. The Stacverse rewards its soldiers.',
+      prizeAmount:'$500',prizeToken:'in $STACCANA Tokens',prizeIcon:'💎',
+      endDate:new Date(Date.now()+7*86400000).toISOString(),status:'active',
+      accentColor:'#00FF41',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
+      projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
+      headerLinks:[{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'Chart',url:'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t'}],
+      tokenInfo:{name:'$STACCANA',contract:'73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',price:'$0.000403',change:'+109%',buyUrl:'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t',siteUrl:'https://www.stacverse.com',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',chartUrl:'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t'},
+      aboutText:'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated.',
+      aboutLinks:[{label:'@stacverse',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'stacsol.app',url:'https://stacsol.app'}],
+      referralBonus:25,totalEntries:0,totalEntrants:0
+    };
+    const ref = await addDoc(collection(db,'campaigns'),def);
+    found = {id:ref.id,...def};
+    const quests = [
+      {name:'Follow @stacverse on X',desc:'Follow the official Stacverse Twitter',icon:'𝕏',iconBg:'rgba(255,255,255,0.06)',pts:15,type:'follow_x',proofType:'username',proofLabel:'Your X/Twitter @username',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:1,active:true,unlockAt:null},
+      {name:'Retweet the giveaway post',desc:'RT the pinned tweet — paste URL as proof',icon:'🔁',iconBg:'rgba(0,255,65,0.06)',pts:20,type:'retweet',proofType:'url',proofLabel:'URL of your retweet',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:2,active:true,unlockAt:null},
+      {name:'Post with $STACCANA ticker',desc:'Post on X using $STACCANA or $STACSOL — paste your post URL',icon:'📢',iconBg:'rgba(255,49,49,0.08)',pts:30,type:'post_ticker',proofType:'url',proofLabel:'URL of your post',oneTime:false,daily:true,quality:'medium',order:3,active:true,unlockAt:null},
+      {name:'Share quality original content',desc:'Post original content — image, thread, video. No AI slop. Authentic only.',icon:'🎨',iconBg:'rgba(204,0,255,0.1)',pts:60,type:'quality_content',proofType:'url',proofLabel:'URL of your content',oneTime:false,daily:true,quality:'high',order:4,active:true,unlockAt:null},
+      {name:'Attend a Stacverse Twitter Space',desc:'Join a live Space — submit the Space URL or screenshot as proof',icon:'🎙️',iconBg:'rgba(204,0,255,0.1)',pts:50,type:'space_attend',proofType:'url',proofLabel:'Twitter Space URL or screenshot link',oneTime:false,quality:'high',order:5,active:true,unlockAt:null},
+      {name:'Ask a question in the Space',desc:'Ask a genuine question during a Stacverse Space — type it below',icon:'❓',iconBg:'rgba(204,0,255,0.1)',pts:75,type:'space_question',proofType:'text',proofLabel:'Type the question you asked in the Space...',minLength:20,oneTime:false,quality:'high',order:6,active:true,unlockAt:null},
+      {name:'HOST your own Staccana Space',desc:'Host a Twitter Space about Staccana with 10+ listeners. MEGA XP. Submit proof.',icon:'🎤',iconBg:'rgba(255,230,0,0.08)',pts:300,type:'host_space',proofType:'url',proofLabel:'Link to your hosted Space',oneTime:false,quality:'high',order:7,active:true,unlockAt:null},
+      {name:'Hold $STACCANA in your wallet',desc:'Any amount — wallet address is your proof',icon:'💎',iconBg:'rgba(255,230,0,0.06)',pts:30,type:'hold_token',proofType:'wallet',proofLabel:'Solana wallet holding $STACCANA',oneTime:true,quality:'medium',link:'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t',order:8,active:true,unlockAt:null},
+      {name:'Visit stacsol.app & mint StacSOL',desc:'Mint any amount of StacSOL at stacsol.app — submit your wallet as proof',icon:'⚡',iconBg:'rgba(0,255,65,0.06)',pts:100,type:'mint_stacsol',proofType:'wallet',proofLabel:'Wallet you used to mint StacSOL',oneTime:true,quality:'high',link:'https://stacsol.app',order:9,active:true,unlockAt:null},
+      {name:'Why are you bullish on Staccana?',desc:'Write a genuine response (min 50 chars) — quality answers rank higher',icon:'📝',iconBg:'rgba(255,49,49,0.06)',pts:40,type:'written_response',proofType:'text',proofLabel:'Write your genuine response here...',minLength:50,oneTime:true,quality:'high',order:10,active:true,unlockAt:null},
+      {name:'Join the Staccana Telegram',desc:'Join the official community',icon:'✈️',iconBg:'rgba(34,158,217,0.08)',pts:15,type:'join_tg',proofType:'username',proofLabel:'Your Telegram username',oneTime:true,quality:'low',link:'https://t.me/Staccana',order:11,active:true,unlockAt:null}
+    ];
+    for (const q of quests) await addDoc(collection(db,'missions'),{...q,campaignId:ref.id});
   }
 
+  campaign = found;
+  applyBranding();
+  startTimer();
+  loadQuests();
+  listenLeaderboard();
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
 
-// ============================================================
-// BRANDING
-// ============================================================
-function applyCampaignBranding() {
+function applyBranding() {
   if (!campaign) return;
-  document.getElementById('page-title').textContent = campaign.name || 'GrowthMonster';
-  document.getElementById('og-title').content = campaign.name || 'GrowthMonster';
-  document.getElementById('og-desc').content = campaign.description || '';
-  document.getElementById('hero-title').textContent = campaign.name || 'Enter to Win';
-  document.getElementById('hero-desc').textContent = campaign.description || '';
-  document.getElementById('prize-icon').textContent = campaign.prizeIcon || '🏆';
-  document.getElementById('prize-amount').textContent = campaign.prizeAmount || 'TBA';
-  document.getElementById('prize-token').textContent = campaign.prizeToken || 'Tokens';
-  const p = campaign.prizes || {};
-  if (document.getElementById('prize-sol')) document.getElementById('prize-sol').textContent = p.sol || 'SOL';
-  if (document.getElementById('prize-usd')) document.getElementById('prize-usd').textContent = p.usd || 'USD';
-  if (document.getElementById('prize-poke')) document.getElementById('prize-poke').textContent = p.poke || 'Cards';
-  const numWinners = campaign.numWinners || 3;
-  document.getElementById('stat-winners').textContent = numWinners;
-  const wInput = document.getElementById('pf-input-winners');
-  if (wInput) wInput.value = numWinners;
-  document.getElementById('hdr-name').textContent = campaign.projectName || 'GrowthMonster';
-  document.getElementById('sc-title').textContent = campaign.name || 'Campaign';
-  document.getElementById('ref-badge').textContent = '+' + (campaign.referralBonus || 25) + ' pts/ref';
-
+  document.getElementById('page-title').textContent = campaign.name + ' | GrowthGenie';
+  document.getElementById('hero-title').innerHTML = campaign.name ? campaign.name.replace(/(\$\w+)/g,'<span class="hl">$1</span>') : 'ENTER TO WIN';
+  document.getElementById('hero-desc').textContent = campaign.description||'';
+  document.getElementById('prize-icon').textContent = campaign.prizeIcon||'🏆';
+  document.getElementById('prize-amount').textContent = campaign.prizeAmount||'???';
+  document.getElementById('prize-token').textContent = campaign.prizeToken||'TOKENS';
+  document.getElementById('hdr-project').textContent = campaign.projectName||'';
+  document.getElementById('sc-title').textContent = campaign.name||'CAMPAIGN';
+  document.getElementById('ref-badge').textContent = '+'+(campaign.referralBonus||25)+' XP/RECRUIT';
+  if (campaign.cheatCode) document.getElementById('cheat-code').textContent = campaign.cheatCode;
+  if (campaign.marqueeText) document.getElementById('marquee-text').textContent = campaign.marqueeText;
   if (campaign.logoUrl) {
-    document.getElementById('hdr-logo').src = campaign.logoUrl;
     document.getElementById('sc-logo').src = campaign.logoUrl;
     document.getElementById('og-img').content = campaign.logoUrl;
-    document.getElementById('hdr-logo').style.display = '';
-    document.getElementById('sc-logo').style.display = '';
   }
-
-  if (campaign.accentColor) {
-    document.documentElement.style.setProperty('--accent', campaign.accentColor);
-    document.documentElement.style.setProperty('--accent-dim', campaign.accentColor + '20');
-    document.documentElement.style.setProperty('--accent-glow', campaign.accentColor + '40');
-  }
-
-  // Header links
-  const linksEl = document.getElementById('hdr-links');
   if (campaign.headerLinks) {
-    linksEl.innerHTML = campaign.headerLinks.map(l => `<a href="${l.url}" target="_blank">${l.label}</a>`).join('');
+    document.getElementById('hdr-links').innerHTML = campaign.headerLinks.map(l=>`<a href="${l.url}" target="_blank">${l.label}</a>`).join('');
   }
-
-  // Token info
-  if (campaign.tokenInfo && campaign.tokenInfo.name) {
+  if (campaign.tokenInfo?.name) {
     const ti = campaign.tokenInfo;
-    document.getElementById('token-panel').style.display = '';
+    document.getElementById('token-panel').style.display='';
     document.getElementById('tk-name').textContent = ti.name;
-    document.getElementById('tk-ca').textContent = ti.contract || '—';
+    const short = ti.contract ? ti.contract.slice(0,8)+'...'+ti.contract.slice(-4) : '';
+    document.getElementById('tk-ca').textContent = short+' ▾';
     document.getElementById('tk-ca').dataset.full = ti.contract;
-    document.getElementById('tk-price').textContent = ti.price || '—';
-    document.getElementById('tk-change').textContent = ti.change || '';
-
-    // fetch live price from DEX Screener API, refresh every 30s
-    if (ti.chartUrl) {
-      const pairAddress = ti.chartUrl.split('/').pop().split('?')[0];
-      fetchLivePrice(pairAddress);
-      clearInterval(window._priceInterval);
-      window._priceInterval = setInterval(() => fetchLivePrice(pairAddress), 30000);
-    }
-    document.getElementById('chart-link').href = ti.chartUrl || '#';
-    if (ti.chartUrl) {
-      const base = ti.chartUrl.split('?')[0];
-      document.getElementById('dex-chart-iframe').src = base + '?embed=1&theme=dark';
-      document.getElementById('chart-embed').style.display = '';
-    }
-    if (ti.logoUrl) {
-      document.getElementById('tk-logo').src = ti.logoUrl;
-      document.getElementById('tk-logo').style.display = '';
-    }
+    document.getElementById('tk-price').textContent = ti.price||'—';
+    document.getElementById('tk-change').textContent = ti.change||'';
+    document.getElementById('chart-link').href = ti.chartUrl||'#';
+    if (ti.logoUrl) { document.getElementById('tk-logo').src = ti.logoUrl; document.getElementById('tk-logo').style.display=''; }
     let btns = '';
-    if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" class="buy-btn" onclick="buyBurst(event)" style="color:#fff">🔥 Buy $STACCANA</a>`;
-    if (ti.siteUrl) btns += `<a href="${ti.siteUrl}" target="_blank" style="background:transparent;border:1px solid var(--border);color:var(--muted)">Site</a>`;
+    if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" style="background:var(--pixel);color:#000;border-color:var(--pixel)">BUY</a>`;
+    if (ti.siteUrl) btns += `<a href="${ti.siteUrl}" target="_blank" style="background:transparent;border-color:var(--dim);color:var(--muted)">SITE</a>`;
     document.getElementById('tk-btns').innerHTML = btns;
   }
-
-  // About
   if (campaign.aboutText) {
-    document.getElementById('about-panel').style.display = '';
+    document.getElementById('about-panel').style.display='';
     let html = `<p>${campaign.aboutText}</p>`;
-    if (campaign.aboutLinks && campaign.aboutLinks.length) {
-      html += '<div class="about-tags">' + campaign.aboutLinks.map(l => `<a href="${l.url}" target="_blank">${l.label}</a>`).join('') + '</div>';
-    }
+    if (campaign.aboutLinks?.length) html += '<div class="about-tags">'+campaign.aboutLinks.map(l=>`<a href="${l.url}" target="_blank">${l.label}</a>`).join('')+'</div>';
     document.getElementById('about-body').innerHTML = html;
   }
 }
 
-// ============================================================
-// TIMER
-// ============================================================
 function startTimer() {
-  if (!campaign || !campaign.endDate) return;
+  if (!campaign?.endDate) return;
   endDate = new Date(campaign.endDate);
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(updateTimer, 1000);
-  updateTimer();
+  const tick = () => {
+    const diff = Math.max(0, endDate-Date.now());
+    document.getElementById('t-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('t-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('t-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('t-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  };
+  setInterval(tick,1000); tick();
 }
 
-function updateTimer() {
-  const diff = Math.max(0, endDate - Date.now());
-  document.getElementById('t-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
-  document.getElementById('t-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
-  document.getElementById('t-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-  document.getElementById('t-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-}
-
-// ============================================================
-// MISSIONS — real-time listener
-// ============================================================
-function loadMissions() {
-  const q = query(collection(db, 'missions'), orderBy('order', 'asc'));
+function loadQuests() {
+  const q = query(collection(db,'missions'),orderBy('order','asc'));
   onSnapshot(q, snap => {
     missions = [];
-    snap.forEach(d => missions.push({ id: d.id, ...d.data() }));
-    document.getElementById('stat-missions').textContent = missions.filter(m => m.active).length;
-    renderMissions();
+    snap.forEach(d => missions.push({id:d.id,...d.data()}));
+    document.getElementById('stat-quests').textContent = missions.filter(m=>m.active).length;
+    renderQuests();
   });
 }
 
-function renderMissions() {
-  const list = document.getElementById('missions-list');
+function getTotalXP() {
+  const now = Date.now();
+  return missions.reduce((s,m) => {
+    if (!completed[m.id]) return s;
+    if (m.daily && !m.oneTime) {
+      const last = new Date(completed[m.id]);
+      if (last.toDateString() !== new Date().toDateString()) return s;
+    }
+    return s + (m.pts||0);
+  },0);
+}
+
+function getMaxXP() { return missions.filter(m=>m.active).reduce((s,m)=>s+(m.pts||0),0); }
+
+function renderQuests() {
+  const list = document.getElementById('quests-list');
   list.innerHTML = '';
   const now = Date.now();
-
-  const active = missions.filter(m => m.active);
-  if (!active.length) {
-    list.innerHTML = '<div style="text-align:center;color:var(--dim);padding:24px;font-size:13px">Missions loading...</div>';
-    return;
-  }
+  const active = missions.filter(m=>m.active);
+  if (!active.length) { list.innerHTML='<div style="text-align:center;color:var(--dim);padding:20px;font-size:16px">QUESTS LOADING...</div>'; return; }
 
   active.forEach(m => {
-    const done = completed[m.id];
     const isLocked = m.unlockAt && new Date(m.unlockAt) > now;
-    const isSpace = m.type && m.type.includes('space');
-    const isHigh = m.quality === 'high';
     const isDaily = m.daily && !m.oneTime;
-
-    // Check daily reset
     let dailyDone = false;
-    if (isDaily && done) {
-      const lastDone = new Date(done);
-      const today = new Date();
-      dailyDone = lastDone.toDateString() === today.toDateString();
+    if (isDaily && completed[m.id]) {
+      dailyDone = new Date(completed[m.id]).toDateString() === new Date().toDateString();
     }
-    const isDone = m.oneTime ? !!done : dailyDone;
-
-    const div = document.createElement('div');
-    div.className = `mission${isDone ? ' done' : ''}${isLocked ? ' locked' : ''}`;
-    div.id = 'mission-' + m.id;
+    const isDone = m.oneTime ? !!completed[m.id] : dailyDone;
+    const isSpace = m.type?.includes('space');
+    const isMega = m.type === 'host_space';
 
     let tags = '';
-    if (isLocked) tags += '<span class="mission-tag tag-locked">LOCKED</span>';
-    else if (isSpace) tags += '<span class="mission-tag tag-space">SPACE</span>';
-    else if (m.type === 'host_space') tags += '<span class="mission-tag tag-hv">MEGA</span>';
-    else if (isHigh) tags += '<span class="mission-tag tag-hv">HIGH VALUE</span>';
-    if (isDaily) tags += '<span class="mission-tag tag-daily">DAILY</span>';
+    if (isMega) tags += '<span class="quest-tag tag-mega">MEGA</span>';
+    else if (isSpace) tags += '<span class="quest-tag tag-space">SPACE</span>';
+    else if (m.quality==='high') tags += '<span class="quest-tag tag-hv">HIGH XP</span>';
+    if (isDaily) tags += '<span class="quest-tag tag-daily">DAILY</span>';
+    if (isLocked) tags += '<span class="quest-tag" style="color:var(--dim);border-color:var(--dim)">LOCKED</span>';
 
-    let lockInfo = '';
-    if (isLocked) {
-      const unlockDate = new Date(m.unlockAt);
-      lockInfo = `<div class="unlock-info">Unlocks ${unlockDate.toLocaleDateString()} at ${unlockDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</div>`;
-    }
-
+    const div = document.createElement('div');
+    div.className = `quest${isDone?' done':''}${isLocked?' locked':''}`;
     div.innerHTML = `
-      <div class="mission-head" onclick="toggleMission('${m.id}')">
-        <div class="mission-icon" style="background:${m.iconBg||'rgba(255,255,255,0.06)'}">${m.icon||'⭐'}</div>
-        <div class="mission-info">
-          <div class="mission-name">${m.name}</div>
-          <div class="mission-desc">${m.desc}</div>
-          ${lockInfo}
+      <div class="quest-head" onclick="toggleQuest('${m.id}')">
+        <div class="quest-icon">${m.icon||'⭐'}</div>
+        <div class="quest-info">
+          <div class="quest-name">${m.name}</div>
+          <div class="quest-desc">${m.desc}${isLocked?` — UNLOCKS ${new Date(m.unlockAt).toLocaleDateString()}`:''}</div>
         </div>
-        <div class="mission-right">
+        <div class="quest-right">
           ${tags}
-          <span class="mission-pts">+${m.pts}</span>
-          ${isDone ? '<span class="mission-check">✓</span>' : ''}
+          <span class="quest-xp">+${m.pts} XP</span>
+          ${isDone?'<span class="quest-check">✓ DONE</span>':''}
         </div>
       </div>
-      ${!isDone && !isLocked ? `
-        <div class="mission-body" id="mbody-${m.id}">
-          ${m.link ? `<a href="${m.link}" target="_blank" class="open-link">Open ↗</a>` : ''}
-          ${m.proofType === 'text' ? `
-            <textarea id="proof-${m.id}" placeholder="${m.proofLabel||'Enter proof...'}" rows="3" style="margin-top:8px" oninput="updateCharCount('${m.id}',${m.minLength||0})"></textarea>
-            <div class="char-count" id="cc-${m.id}">0/${m.minLength||0} chars minimum</div>
-          ` : `
-            <input type="text" id="proof-${m.id}" placeholder="${m.proofLabel||'Enter proof...'}" ${m.proofType==='wallet'?'class="mono"':''} style="margin-top:8px">
-          `}
-          <button class="btn btn-done" onclick="markDone('${m.id}')">✓ Complete — +${m.pts} pts</button>
+      ${!isDone&&!isLocked?`
+        <div class="quest-body" id="qbody-${m.id}">
+          ${m.link?`<a href="${m.link}" target="_blank" class="open-link">▶ OPEN MISSION</a>`:''}
+          ${m.proofType==='text'?`
+            <textarea id="proof-${m.id}" placeholder="${m.proofLabel||'ENTER PROOF...'}" rows="3" style="margin-top:8px" oninput="updateCC('${m.id}',${m.minLength||0})"></textarea>
+            <div class="char-count" id="cc-${m.id}">0/${m.minLength||0} CHARS MINIMUM</div>
+          `:`<input type="text" id="proof-${m.id}" placeholder="${m.proofLabel||'ENTER PROOF...'}" ${m.proofType==='wallet'?'class="mono"':''} style="margin-top:8px">`}
+          <button class="btn btn-quest" onclick="markDone('${m.id}')" style="margin-top:10px">▶ COMPLETE — +${m.pts} XP</button>
         </div>
-      ` : ''}
+      `:''}
     `;
     list.appendChild(div);
   });
 
-  updatePtsBadge();
+  const xp = getTotalXP(), maxXP = getMaxXP();
+  document.getElementById('xp-badge').textContent = xp+' XP';
+  document.getElementById('sc-xp-num').textContent = xp;
+  document.getElementById('xp-progress-text').textContent = xp+' / '+maxXP+' XP';
+  document.getElementById('xp-fill').style.width = (maxXP ? Math.min(100,(xp/maxXP)*100) : 0)+'%';
 }
 
-window.updateCharCount = function(id, min) {
-  const ta = document.getElementById('proof-' + id);
-  const cc = document.getElementById('cc-' + id);
-  if (!ta || !cc) return;
+window.updateCC = (id,min) => {
+  const ta = document.getElementById('proof-'+id), cc = document.getElementById('cc-'+id);
+  if (!ta||!cc) return;
   const len = ta.value.length;
-  cc.textContent = len + '/' + min + ' chars minimum';
-  cc.style.color = len >= min ? 'var(--green)' : 'var(--dim)';
+  cc.textContent = len+'/'+min+' CHARS MINIMUM';
+  cc.style.color = len>=min ? 'var(--pixel)' : 'var(--dim)';
 };
 
-window.toggleMission = function(id) {
+window.toggleQuest = id => {
   if (completed[id]) return;
-  const body = document.getElementById('mbody-' + id);
+  const body = document.getElementById('qbody-'+id);
   if (!body) return;
-  const isOpen = body.classList.contains('open');
-  document.querySelectorAll('.mission-body').forEach(b => b.classList.remove('open'));
-  if (!isOpen) body.classList.add('open');
+  const open = body.classList.contains('open');
+  document.querySelectorAll('.quest-body').forEach(b=>b.classList.remove('open'));
+  if (!open) body.classList.add('open');
 };
 
-window.markDone = function(id) {
-  const proof = document.getElementById('proof-' + id);
-  if (!proof || !proof.value.trim()) { toast('Enter your proof first', 'err'); return; }
-  const mission = missions.find(m => m.id === id);
-  if (!mission) return;
-  if (mission.proofType === 'text' && mission.minLength && proof.value.length < mission.minLength) {
-    toast('Minimum ' + mission.minLength + ' characters required', 'err');
-    return;
-  }
+window.markDone = id => {
+  const proof = document.getElementById('proof-'+id);
+  if (!proof||!proof.value.trim()) { toast('ENTER PROOF FIRST','err'); return; }
+  const m = missions.find(x=>x.id===id);
+  if (!m) return;
+  if (m.proofType==='text' && m.minLength && proof.value.length<m.minLength) { toast('MINIMUM '+m.minLength+' CHARS REQUIRED','err'); return; }
   proofs[id] = proof.value.trim();
   completed[id] = new Date().toISOString();
   saveLocal();
-
-  // dopamine sequence
-  const btn = document.querySelector(`#mbody-${id} .btn-done`);
-  const rect = btn ? btn.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0 };
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top + rect.height / 2;
-  ptsPopAt(cx, cy, '+' + mission.pts);
-  particleBurst(cx, cy);
-  const doneCount = Object.keys(completed).length;
-  if (doneCount >= 3) showStreak(doneCount);
-  toast('+' + mission.pts + ' points! 🎯', 'ok');
-
-  renderMissions();
-  // flash the card
-  setTimeout(() => {
-    const card = document.getElementById('mission-' + id);
-    if (card) { card.classList.add('just-done'); card.addEventListener('animationend', () => card.classList.remove('just-done'), { once: true }); }
-  }, 50);
+  toast('+'+m.pts+' XP EARNED!','ok');
+  renderQuests();
 };
 
-function getTotalPts() {
-  const now = Date.now();
-  return missions.reduce((s, m) => {
-    if (!completed[m.id]) return s;
-    if (m.daily && !m.oneTime) {
-      const lastDone = new Date(completed[m.id]);
-      const today = new Date();
-      if (lastDone.toDateString() !== today.toDateString()) return s;
-    }
-    return s + (m.pts || 0);
-  }, 0);
-}
-
-function getQualityScore() {
-  let totalW = 0, earnedW = 0;
-  missions.forEach(m => {
-    const w = m.quality === 'high' ? 1.5 : m.quality === 'medium' ? 1.0 : 0.5;
-    totalW += m.pts * w;
-    if (completed[m.id]) earnedW += m.pts * w;
-  });
-  return totalW ? Math.round((earnedW / totalW) * 100) : 0;
-}
-
-function updatePtsBadge() {
-  const pts = getTotalPts();
-  const badge = document.getElementById('pts-badge');
-  const prev = parseInt(badge.dataset.pts || '0');
-  badge.textContent = pts + ' pts';
-  badge.dataset.pts = pts;
-  document.getElementById('sc-pts').textContent = pts;
-  if (pts > prev) {
-    badge.classList.remove('badge-bounce');
-    void badge.offsetWidth;
-    badge.classList.add('badge-bounce');
-    badge.addEventListener('animationend', () => badge.classList.remove('badge-bounce'), { once: true });
-  }
-}
-
-// ============================================================
-// SUBMIT
-// ============================================================
-window.submitEntry = async function() {
+window.submitEntry = async () => {
   const name = document.getElementById('inp-name').value.trim();
   const email = document.getElementById('inp-email').value.trim();
   const wallet = document.getElementById('inp-wallet').value.trim();
-
-  if (!name || !email || !wallet) { toast('Name, email, and wallet required', 'err'); return; }
-  if (!email.includes('@')) { toast('Enter a valid email', 'err'); return; }
-  if (Object.keys(completed).length === 0) { toast('Complete at least one mission first', 'err'); return; }
+  if (!name||!email||!wallet) { toast('ALL FIELDS REQUIRED','err'); return; }
+  if (!email.includes('@')) { toast('INVALID EMAIL','err'); return; }
+  if (!Object.keys(completed).length) { toast('COMPLETE A QUEST FIRST','err'); return; }
 
   const btn = document.getElementById('btn-submit');
-  btn.disabled = true;
-  btn.textContent = 'Submitting...';
+  btn.disabled = true; btn.textContent = 'SAVING SCORE...';
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const referredBy = urlParams.get('ref') || '';
+  const urlP = new URLSearchParams(window.location.search);
+  const referredBy = urlP.get('ref')||'';
   const refCode = Math.random().toString(36).substr(2,8).toUpperCase();
-  const pts = getTotalPts();
-  const qualityScore = getQualityScore();
-  const actionsCompleted = Object.keys(completed).length;
+  const pts = getTotalXP();
+  const qualityScore = (() => {
+    let tw=0,ew=0;
+    missions.forEach(m=>{const w=m.quality==='high'?1.5:m.quality==='medium'?1:0.5;tw+=m.pts*w;if(completed[m.id])ew+=m.pts*w;});
+    return tw?Math.round((ew/tw)*100):0;
+  })();
 
   try {
-    // Check if email already entered
-    const existingSnap = await getDocs(collection(db, 'entries'));
+    const snap = await getDocs(collection(db,'entries'));
     let existingId = null;
-    existingSnap.forEach(d => { if (d.data().email === email) existingId = d.id; });
+    snap.forEach(d=>{if(d.data().email===email)existingId=d.id;});
 
-    const entryData = {
-      name, email,
-      wallet: wallet.slice(0,4) + '...' + wallet.slice(-4),
-      walletFull: wallet,
-      pts, qualityScore, actionsCompleted,
-      proofs: JSON.stringify(proofs),
-      completedMissions: Object.keys(completed),
-      refCode, referredBy,
-      campaignId: campaign?.id || '',
-      campaignName: campaign?.name || '',
-      flagged: false,
-      timestamp: new Date().toISOString()
-    };
+    const data = {name,email,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),walletFull:wallet,pts,qualityScore,actionsCompleted:Object.keys(completed).length,proofs:JSON.stringify(proofs),completedMissions:Object.keys(completed),refCode,referredBy,campaignId:campaign?.id||'',campaignName:campaign?.name||'',flagged:false,timestamp:new Date().toISOString()};
 
-    if (existingId) {
-      await updateDoc(doc(db, 'entries', existingId), entryData);
-    } else {
-      await addDoc(collection(db, 'entries'), entryData);
-    }
+    if (existingId) { await updateDoc(doc(db,'entries',existingId),data); }
+    else { await addDoc(collection(db,'entries'),data); }
+    if (campaign?.id) await updateDoc(doc(db,'campaigns',campaign.id),{totalEntries:increment(pts),totalEntrants:increment(existingId?0:1)});
 
-    // Update campaign stats
-    if (campaign?.id) {
-      await updateDoc(doc(db, 'campaigns', campaign.id), {
-        totalEntries: increment(pts),
-        totalEntrants: increment(existingId ? 0 : 1)
-      });
-    }
-
-    // Handle referral bonus
     if (referredBy) {
-      const refSnap = await getDocs(collection(db, 'entries'));
-      refSnap.forEach(async d => {
-        if (d.data().refCode === referredBy) {
-          await updateDoc(doc(db, 'entries', d.id), {
-            pts: increment(campaign?.referralBonus || 25)
-          });
-        }
-      });
+      const rs = await getDocs(collection(db,'entries'));
+      rs.forEach(async d=>{if(d.data().refCode===referredBy)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});
     }
 
-    myEntry = { name, wallet: wallet.slice(0,4)+'...'+wallet.slice(-4), pts, refCode };
+    myEntry = {name,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),pts,refCode};
     saveLocal();
 
-    const refUrl = window.location.origin + window.location.pathname + '?ref=' + refCode;
+    const refUrl = window.location.origin+window.location.pathname+'?ref='+refCode;
     document.getElementById('ref-link-display').textContent = refUrl;
     document.getElementById('success-ref-display').textContent = refUrl;
     document.getElementById('ref-box').style.display = 'block';
-    document.getElementById('success-pts-num').textContent = pts;
-
+    document.getElementById('success-xp-num').textContent = pts;
     document.getElementById('form-body').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
-    toast('You\'re in! 🚀', 'ok');
-    confettiBurst();
-
+    toast('SCORE SAVED! 🚀','ok');
   } catch(err) {
-    console.error(err);
-    btn.disabled = false;
-    btn.textContent = '🚀 Lock In My Points';
-    toast('Submission failed — try again', 'err');
+    console.error(err); btn.disabled=false; btn.textContent='▶ SUBMIT SCORE';
+    toast('ERROR — TRY AGAIN','err');
   }
 };
 
-// ============================================================
-// LEADERBOARD — real-time
-// ============================================================
 function listenLeaderboard() {
-  const q = query(collection(db, 'entries'), orderBy('pts', 'desc'), limit(20));
+  const q = query(collection(db,'entries'),orderBy('pts','desc'),limit(20));
   onSnapshot(q, snap => {
-    const entries = [];
-    let totalPts = 0, totalEntrants = 0;
-    snap.forEach(d => {
-      const data = d.data();
-      entries.push(data);
-      totalPts += data.pts || 0;
-      totalEntrants++;
-    });
-    document.getElementById('stat-entries').textContent = totalPts.toLocaleString();
-    document.getElementById('stat-entrants').textContent = totalEntrants;
+    const entries = []; let totalXP=0, players=0;
+    snap.forEach(d=>{const data=d.data();entries.push(data);totalXP+=data.pts||0;players++;});
+    document.getElementById('stat-xp').textContent = totalXP.toLocaleString();
+    document.getElementById('stat-players').textContent = players;
     renderLeaderboard(entries);
   });
 }
 
 function renderLeaderboard(entries) {
   const lb = document.getElementById('leaderboard');
-  const colors = ['#FF3D00','#9B6FFF','#448AFF','#00E676','#FFD54F','#FF6B9D','#00BCD4'];
-  document.getElementById('lb-count').textContent = entries.length + ' member' + (entries.length !== 1 ? 's' : '');
-
-  if (!entries.length) {
-    lb.innerHTML = '<div class="lb-empty">No entries yet. Be the first.</div>';
-    return;
-  }
-
-  lb.innerHTML = entries.map((e, i) => {
-    const rank = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
-    const isMe = myEntry && e.name === myEntry.name;
-    const color = colors[i % colors.length];
-    return `<div class="lb-row" ${isMe ? 'style="background:rgba(255,61,0,0.08)"' : ''}>
-      <div class="lb-rank">${rank}</div>
-      <div class="lb-av" style="background:${color}">${e.name.charAt(0).toUpperCase()}</div>
+  document.getElementById('lb-count').textContent = entries.length+' PLAYERS';
+  if (!entries.length) { lb.innerHTML='<div class="lb-empty">NO SCORES YET. BE PLAYER ONE.</div>'; return; }
+  const colors = ['var(--yellow)','var(--pixel)','var(--blue)','var(--red)','var(--purple)'];
+  const medals = ['🥇','🥈','🥉'];
+  lb.innerHTML = entries.map((e,i)=>{
+    const isMe = myEntry&&e.name===myEntry.name;
+    return `<div class="lb-row"${isMe?' style="background:rgba(0,255,65,0.06)"':''}>
+      <div class="lb-rank" style="color:${colors[i%colors.length]}">${medals[i]||i+1}</div>
+      <div class="lb-av" style="border-color:${colors[i%colors.length]};color:${colors[i%colors.length]}">${e.name.charAt(0).toUpperCase()}</div>
       <div class="lb-nc">
-        <div class="lb-name">${e.name}${isMe ? ' <span style="font-size:9px;background:var(--accent);color:#fff;border-radius:3px;padding:1px 5px">YOU</span>' : ''}</div>
-        <div class="lb-wallet">${e.wallet || '—'}</div>
+        <div class="lb-name">${e.name}${isMe?' <span style="font-size:11px;background:var(--pixel);color:#000;padding:1px 4px">YOU</span>':''}</div>
+        <div class="lb-wallet">${e.wallet||'—'}</div>
       </div>
-      <div class="lb-pts">${e.pts}</div>
+      <div class="lb-xp">${e.pts} XP</div>
     </div>`;
   }).join('');
 }
 
-// ============================================================
-// SHARE
-// ============================================================
-function getShareData() {
-  const pts = myEntry ? myEntry.pts : 0;
-  const ref = myEntry ? myEntry.refCode : '';
-  const url = window.location.origin + window.location.pathname + (ref ? '?ref=' + ref : '');
-  const text = `💎 I just joined the ${campaign?.name || 'Stacverse community rewards'} with ${pts} points!\n\nCome earn yours 👇\n#STACCANA #Stacverse #Solana`;
-  return { url, text };
-}
-
-window.shareX = function() {
-  const { url, text } = getShareData();
-  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
+const getShareData = () => {
+  const xp = myEntry?.pts||0, ref = myEntry?.refCode||'';
+  const url = window.location.origin+window.location.pathname+(ref?'?ref='+ref:'');
+  return {url,text:`🕹️ I'm playing the ${campaign?.name||'GrowthGenie'} quest with ${xp} XP!\n\nThe cheat code for community growth. Join me 👇\n#STACCANA #Stacverse #GrowthGenie`};
 };
 
-window.shareTelegram = function() {
-  const { url, text } = getShareData();
-  window.open('https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(text), '_blank');
+window.shareX = () => { const {url,text}=getShareData(); window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank'); };
+window.shareTelegram = () => { const {url,text}=getShareData(); window.open('https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text),'_blank'); };
+window.copyLink = () => navigator.clipboard.writeText(window.location.href).then(()=>toast('LINK COPIED!','ok'));
+window.copyRef = () => { const t=document.getElementById('ref-link-display').textContent||document.getElementById('success-ref-display').textContent; navigator.clipboard.writeText(t).then(()=>toast('REFERRAL CODE COPIED!','ok')); };
+window.copyCA = () => { const f=document.getElementById('tk-ca').dataset.full; if(f)navigator.clipboard.writeText(f).then(()=>toast('CONTRACT COPIED!','ok')); };
+
+window.toast = (msg,type) => {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show'+(type?' '+type:'');
+  clearTimeout(window._tt); window._tt=setTimeout(()=>{t.className='';},2600);
 };
 
-window.copyLink = function() {
-  navigator.clipboard.writeText(window.location.href).then(() => toast('Link copied!', 'ok'));
-};
+// Handle inbound referral
+const rp = new URLSearchParams(window.location.search).get('ref');
+if (rp) { getDocs(collection(db,'entries')).then(s=>{s.forEach(async d=>{if(d.data().refCode===rp)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});}); }
 
-window.copyRef = function() {
-  const t = document.getElementById('ref-link-display').textContent || document.getElementById('success-ref-display').textContent;
-  navigator.clipboard.writeText(t).then(() => toast('Referral link copied!', 'ok'));
-};
-
-window.copyCA = function() {
-  const full = document.getElementById('tk-ca').dataset.full;
-  if (!full) return;
-  navigator.clipboard.writeText(full).then(() => {
-    toast('Contract address copied!', 'ok');
-    const btn = document.getElementById('ca-copy-btn');
-    if (btn) { btn.textContent = 'Copied!'; btn.style.background = 'var(--green)'; btn.style.color = '#fff'; btn.style.borderColor = 'var(--green)'; setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }, 2000); }
-  });
-};
-
-// ============================================================
-// TOAST
-// ============================================================
-window.toast = function(msg, type) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show' + (type ? ' ' + type : '');
-  clearTimeout(window._tt);
-  window._tt = setTimeout(() => { t.className = ''; }, 2600);
-};
-
-// ============================================================
-// GAMIFICATION
-// ============================================================
-
-// Floating "+pts" pop that rises from a coordinate
-function ptsPopAt(x, y, label) {
-  const el = document.createElement('div');
-  el.className = 'pts-pop';
-  el.textContent = label;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  document.body.appendChild(el);
-  el.addEventListener('animationend', () => el.remove());
-}
-
-// Coloured particle ring burst
-function particleBurst(cx, cy) {
-  const colors = ['#FF3D00','#FFD54F','#9B6FFF','#00E676','#00F5FF'];
-  for (let i = 0; i < 14; i++) {
-    const el = document.createElement('div');
-    el.className = 'particle';
-    const angle = (i / 14) * 2 * Math.PI;
-    const dist = 55 + Math.random() * 40;
-    const tx = Math.cos(angle) * dist;
-    const ty = Math.sin(angle) * dist;
-    el.style.cssText = `left:${cx}px;top:${cy}px;background:${colors[i%colors.length]};--tx:translate(${tx}px,${ty}px)`;
-    document.body.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
-  }
-}
-
-// Streak banner ("X missions done!")
-let _streakTimer;
-function showStreak(count) {
-  const banner = document.getElementById('streak-banner');
-  const msgs = ['','','','🔥 On a roll!','🔥 Heating up!','⚡ 5 done — keep going!','🚀 Crushing it!','💎 Almost there!','🏆 Legend run!'];
-  const msg = msgs[Math.min(count, msgs.length-1)] || `🔥 ${count} missions done!`;
-  document.getElementById('streak-text').textContent = msg;
-  banner.classList.add('show');
-  clearTimeout(_streakTimer);
-  _streakTimer = setTimeout(() => banner.classList.remove('show'), 2800);
-}
-
-// Full-screen confetti on submit
-function confettiBurst() {
-  const canvas = document.getElementById('confetti-canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const ctx = canvas.getContext('2d');
-  const colors = ['#FF3D00','#FFD54F','#9B6FFF','#00E676','#00F5FF','#fff'];
-  const pieces = Array.from({length:140}, () => ({
-    x: Math.random() * canvas.width,
-    y: -10 - Math.random() * canvas.height * 0.5,
-    r: 4 + Math.random() * 6,
-    d: 2 + Math.random() * 4,
-    color: colors[Math.floor(Math.random()*colors.length)],
-    tilt: Math.random() * 10 - 5,
-    tiltAngle: Math.random() * Math.PI * 2,
-    tiltSpeed: 0.05 + Math.random() * 0.1
-  }));
-  let frame;
-  let elapsed = 0;
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pieces.forEach(p => {
-      p.tiltAngle += p.tiltSpeed;
-      p.y += p.d;
-      p.x += Math.sin(p.tiltAngle) * 1.5;
-      p.tilt = Math.sin(p.tiltAngle) * 12;
-      ctx.beginPath();
-      ctx.lineWidth = p.r;
-      ctx.strokeStyle = p.color;
-      ctx.moveTo(p.x + p.tilt + p.r/2, p.y);
-      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/2);
-      ctx.stroke();
-    });
-    elapsed++;
-    if (elapsed < 160) frame = requestAnimationFrame(draw);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  cancelAnimationFrame(frame);
-  draw();
-}
-
-// Particle burst on buy button click (non-blocking — opens link normally)
-window.buyBurst = function(e) {
-  const rect = e.currentTarget.getBoundingClientRect();
-  particleBurst(rect.left + rect.width/2, rect.top + rect.height/2);
-};
-
-// ============================================================
-// PROVABLY FAIR
-// ============================================================
-window.togglePF = function() {
-  const body = document.getElementById('pf-body');
-  const chev = document.getElementById('pf-chevron');
-  const open = body.classList.toggle('open');
-  chev.textContent = open ? '▲' : '▼';
-};
-
-async function loadSeedHash() {
-  try {
-    const snap = await getDoc(doc(db, 'draw', 'commitment'));
-    if (snap.exists()) {
-      document.getElementById('pf-seed-hash').textContent = snap.data().seedHash || 'Not yet committed';
-    } else {
-      document.getElementById('pf-seed-hash').textContent = 'Not yet committed — will appear here before the draw closes';
-    }
-  } catch(e) {
-    document.getElementById('pf-seed-hash').textContent = 'Not yet committed';
-  }
-}
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-window.pfVerify = async function() {
-  const seed = document.getElementById('pf-input-seed').value.trim();
-  const slot = document.getElementById('pf-input-slot').value.trim();
-  const total = parseInt(document.getElementById('pf-input-total').value.trim());
-  const numWinners = Math.max(1, parseInt(document.getElementById('pf-input-winners').value.trim()) || 1);
-  const result = document.getElementById('pf-result');
-
-  if (!seed || !slot || !total || total < 1) {
-    result.className = 'pf-verify-result err';
-    result.textContent = 'Fill in server seed, slot hash, and total points to verify.';
-    return;
-  }
-
-  try {
-    const computedSeedHash = await sha256(seed);
-    const committedHash = document.getElementById('pf-seed-hash').textContent.trim();
-    const seedVerified = !committedHash.startsWith('Not yet') && committedHash === computedSeedHash;
-
-    // simulate pool — track removed indices across rounds
-    const winners = [];
-    const removed = new Set();
-    let remaining = total;
-
-    for (let round = 1; round <= numWinners; round++) {
-      if (remaining <= 0) break;
-      const combined = await sha256(seed + slot + String(round));
-      // map the raw index into the remaining pool (skip already-drawn)
-      let pick = Number(BigInt('0x' + combined) % BigInt(remaining));
-      // walk the full list counting only non-removed entries
-      let count = -1;
-      let globalIndex = 0;
-      while (globalIndex < total) {
-        if (!removed.has(globalIndex)) { count++; }
-        if (count === pick) break;
-        globalIndex++;
-      }
-      removed.add(globalIndex);
-      remaining--;
-      winners.push({ round, index: globalIndex + 1, hash: combined.slice(0, 20) + '…' });
-    }
-
-    result.className = 'pf-verify-result ok';
-    result.style.flexDirection = 'column';
-    result.style.alignItems = 'flex-start';
-    result.style.gap = '6px';
-    result.innerHTML =
-      (seedVerified ? '<span style="color:var(--green);font-weight:700">✓ Seed hash matches commitment</span>' : '') +
-      winners.map(w =>
-        `<span>🏆 Draw ${w.round}: participant <strong>#${w.index}</strong> of ${total} &nbsp;<span style="color:var(--dim);font-size:10px">${w.hash}</span></span>`
-      ).join('');
-  } catch(e) {
-    result.className = 'pf-verify-result err';
-    result.textContent = 'Verification error — check your inputs.';
-  }
-};
-
-// ============================================================
-// SESSION RESTORE
-// ============================================================
-window.showRestore = function() {
-  const box = document.getElementById('restore-box');
-  box.style.display = box.style.display === 'none' ? '' : 'none';
-};
-
-window.restoreSession = async function() {
-  const email = document.getElementById('restore-email').value.trim();
-  if (!email) { toast('Enter your email', 'err'); return; }
-  try {
-    const snap = await getDocs(collection(db, 'entries'));
-    let found = null;
-    snap.forEach(d => { if (d.data().email === email) found = d.data(); });
-    if (!found) { toast('No submission found for that email', 'err'); return; }
-    myEntry = { name: found.name, wallet: found.wallet, pts: found.pts, refCode: found.refCode };
-    saveLocal();
-    document.getElementById('inp-name').value = found.name || '';
-    document.getElementById('inp-email').value = email;
-    document.getElementById('inp-wallet').value = found.walletFull || '';
-    const refUrl = window.location.origin + window.location.pathname + '?ref=' + found.refCode;
-    document.getElementById('ref-link-display').textContent = refUrl;
-    document.getElementById('ref-box').style.display = 'block';
-    document.getElementById('restore-box').style.display = 'none';
-    toast('Session restored — ' + found.name + ' (' + found.pts + ' pts) ✓', 'ok');
-  } catch(e) {
-    toast('Restore failed — try again', 'err');
-  }
-};
-
-// ============================================================
-// LIVE PRICE
-// ============================================================
-async function fetchLivePrice(pairAddress) {
-  if (!pairAddress) return;
-  try {
-    const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`);
-    const data = await res.json();
-    const pair = data?.pairs?.[0];
-    if (!pair) return;
-
-    const price = pair.priceUsd ? '$' + parseFloat(pair.priceUsd).toPrecision(4) : null;
-    const change = pair.priceChange?.h24 != null
-      ? (pair.priceChange.h24 >= 0 ? '+' : '') + pair.priceChange.h24.toFixed(2) + '%'
-      : null;
-    const isUp = pair.priceChange?.h24 >= 0;
-
-    if (price) document.getElementById('tk-price').textContent = price;
-    if (change) {
-      const el = document.getElementById('tk-change');
-      el.textContent = change;
-      el.className = isUp ? 'price-up' : 'price-down';
-    }
-    document.getElementById('price-live-badge').style.display = '';
-  } catch(e) {
-    // silently fall back to static values
-  }
-}
-
-// ============================================================
-// INIT
-// ============================================================
-loadCampaign();
-loadSeedHash();
+init();
 </script>
 </body>
 </html>
