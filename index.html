@@ -320,6 +320,10 @@ textarea{resize:vertical;min-height:68px}
         </div>
       </div>
     </div>
+    <div style="margin-bottom:24px">
+      <a id="hero-buy-btn" href="https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:var(--pixel);color:#000;border:2px solid var(--pixel);padding:14px 36px;font-family:'Press Start 2P',monospace;font-size:13px;letter-spacing:.08em;text-decoration:none;animation:buy-pulse 1.5s ease-in-out infinite">⚡ BUY $STACCANA</a>
+    </div>
+
     <div class="timer">
       <div class="tblock"><div class="tnum" id="t-d">--</div><div class="tlbl">DAYS</div></div>
       <div class="tblock"><div class="tnum" id="t-h">--</div><div class="tlbl">HRS</div></div>
@@ -644,7 +648,10 @@ function applyBranding() {
     document.getElementById('tk-logo').src = 'assets/staccana-logo.jpg';
     document.getElementById('tk-logo').style.display='';
     let btns = '';
-    if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" class="btn-buy-animated" style="background:var(--pixel);color:#000;border-color:var(--pixel)">⚡ BUY</a>`;
+    if (ti.buyUrl) {
+      btns += `<a href="${ti.buyUrl}" target="_blank" class="btn-buy-animated" style="background:var(--pixel);color:#000;border-color:var(--pixel)">⚡ BUY</a>`;
+      document.getElementById('hero-buy-btn').href = ti.buyUrl;
+    }
     if (ti.siteUrl) btns += `<a href="${ti.siteUrl}" target="_blank" style="background:transparent;border-color:var(--dim);color:var(--muted)">SITE</a>`;
     document.getElementById('tk-btns').innerHTML = btns;
   }
