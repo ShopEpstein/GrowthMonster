@@ -570,7 +570,7 @@ async function init() {
   }
 
   campaign = found;
-  await upsertNewMissions(found.id);
+  upsertNewMissions(found.id); // fire and forget — don't block loading
   applyBranding();
   fetchLivePrice();
   startTimer();
@@ -592,18 +592,7 @@ async function upsertNewMissions(campaignId) {
   try {
     const existing = await getDocs(collection(db,'missions'));
     const existingTypes = new Set();
-    const seenTypes = new Set();
-    const toDelete = [];
-    existing.forEach(d => {
-      const t = d.data().type;
-      if (seenTypes.has(t)) { toDelete.push(d.id); }
-      else { seenTypes.add(t); existingTypes.add(t); }
-    });
-    // Delete duplicates
-    for (const id of toDelete) {
-      try { await updateDoc(doc(db,'missions',id),{active:false,_dup:true}); } catch(e){}
-    }
-    // Add missing missions
+    existing.forEach(d => existingTypes.add(d.data().type));
     for (const m of newMissions) {
       if (!existingTypes.has(m.type)) {
         await addDoc(collection(db,'missions'), {...m, campaignId});
@@ -707,7 +696,11 @@ function renderQuests() {
   const list = document.getElementById('quests-list');
   list.innerHTML = '';
   const now = Date.now();
-  const active = missions.filter(m=>m.active);
+  const seenTypes = new Set();
+  const active = missions.filter(m => {
+    if (!m.active || seenTypes.has(m.type)) return false;
+    seenTypes.add(m.type); return true;
+  });
   if (!active.length) { list.innerHTML='<div style="text-align:center;color:var(--dim);padding:20px;font-size:16px">QUESTS LOADING...</div>'; return; }
 
   active.forEach(m => {
