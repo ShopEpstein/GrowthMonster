@@ -322,6 +322,15 @@ textarea{resize:vertical;min-height:72px}
           <div class="price-up" id="tk-change">—</div>
         </div>
         <div class="token-btns" id="tk-btns"></div>
+        <div id="chart-embed" style="display:none;margin-top:12px;border-radius:8px;overflow:hidden">
+          <iframe
+            id="dex-chart-iframe"
+            src="https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr?embed=1&theme=dark&trades=0&info=0"
+            style="width:100%;height:340px;border:none"
+            allow="clipboard-write"
+            allowfullscreen
+          ></iframe>
+        </div>
       </div>
 
       <!-- SHARE -->
@@ -430,17 +439,17 @@ async function loadCampaign() {
         headerLinks: [
           { label: 'Twitter', url: 'https://x.com/stacverse' },
           { label: 'Telegram', url: 'https://t.me/Staccana' },
-          { label: 'Chart', url: 'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t' }
+          { label: 'Chart', url: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr' }
         ],
         tokenInfo: {
           name: '$STACCANA',
           contract: '73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',
           price: '$0.000403',
           change: '+109%',
-          buyUrl: 'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t',
+          buyUrl: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',
           siteUrl: 'https://www.stacverse.com',
           logoUrl: 'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
-          chartUrl: 'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t'
+          chartUrl: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'
         },
         aboutText: 'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated.',
         aboutLinks: [
@@ -464,7 +473,7 @@ async function loadCampaign() {
         { name: 'Attend a Stacverse Twitter Space', desc: 'Join the live Space — submit the Space URL or a screenshot as proof', icon: '🎙️', iconBg: 'rgba(155,111,255,0.1)', pts: 50, type: 'space_attend', proofType: 'url', proofLabel: 'Twitter Space URL or screenshot link', oneTime: false, quality: 'high', order: 5, active: true, unlockAt: null },
         { name: 'Ask a question in the Space', desc: 'Ask a genuine question during a Stacverse Space — type it below', icon: '❓', iconBg: 'rgba(155,111,255,0.1)', pts: 75, type: 'space_question', proofType: 'text', proofLabel: 'Type the question you asked in the Space...', minLength: 20, oneTime: false, quality: 'high', order: 6, active: true, unlockAt: null },
         { name: 'HOST your own Staccana Space', desc: 'Host a Twitter Space about Staccana with 10+ listeners — massive points. Submit proof link.', icon: '🎤', iconBg: 'rgba(255,213,79,0.1)', pts: 300, type: 'host_space', proofType: 'url', proofLabel: 'Link to your hosted Space recording or tweet', oneTime: false, quality: 'high', order: 7, active: true, unlockAt: null },
-        { name: 'Hold $STACCANA in your wallet', desc: 'Any amount — your wallet address is proof', icon: '💎', iconBg: 'rgba(255,213,79,0.08)', pts: 30, type: 'hold_token', proofType: 'wallet', proofLabel: 'Solana wallet holding $STACCANA', oneTime: true, quality: 'medium', link: 'https://dexscreener.com/solana/aoqxsejdb5fcdqawylishysffuew5gsp7ttvbdndnt8t', order: 8, active: true, unlockAt: null },
+        { name: 'Hold $STACCANA in your wallet', desc: 'Any amount — your wallet address is proof', icon: '💎', iconBg: 'rgba(255,213,79,0.08)', pts: 30, type: 'hold_token', proofType: 'wallet', proofLabel: 'Solana wallet holding $STACCANA', oneTime: true, quality: 'medium', link: 'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr', order: 8, active: true, unlockAt: null },
         { name: 'Visit stacsol.app & mint StacSOL', desc: 'Visit stacsol.app and mint any amount of StacSOL — submit your wallet as proof', icon: '⚡', iconBg: 'rgba(0,230,118,0.08)', pts: 100, type: 'mint_stacsol', proofType: 'wallet', proofLabel: 'Wallet you used to mint StacSOL', oneTime: true, quality: 'high', link: 'https://stacsol.app', order: 9, active: true, unlockAt: null },
         { name: 'Why are you bullish on Staccana?', desc: 'Write a genuine response (min 50 chars) — quality entries rank higher', icon: '📝', iconBg: 'rgba(255,61,0,0.08)', pts: 40, type: 'written_response', proofType: 'text', proofLabel: 'Write your genuine response here...', minLength: 50, oneTime: true, quality: 'high', order: 10, active: true, unlockAt: null },
         { name: 'Join the Staccana Telegram', desc: 'Join the official community', icon: '✈️', iconBg: 'rgba(34,158,217,0.1)', pts: 15, type: 'join_tg', proofType: 'username', proofLabel: 'Your Telegram username', oneTime: true, quality: 'low', link: 'https://t.me/Staccana', order: 11, active: true, unlockAt: null }
@@ -537,6 +546,11 @@ function applyCampaignBranding() {
     document.getElementById('tk-price').textContent = ti.price || '—';
     document.getElementById('tk-change').textContent = ti.change || '';
     document.getElementById('chart-link').href = ti.chartUrl || '#';
+    if (ti.chartUrl) {
+      const embedUrl = ti.chartUrl.replace('dexscreener.com/', 'dexscreener.com/') + '?embed=1&theme=dark&trades=0&info=0';
+      document.getElementById('dex-chart-iframe').src = embedUrl;
+      document.getElementById('chart-embed').style.display = '';
+    }
     if (ti.logoUrl) {
       document.getElementById('tk-logo').src = ti.logoUrl;
       document.getElementById('tk-logo').style.display = '';
