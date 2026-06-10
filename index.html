@@ -499,7 +499,7 @@ YOU WIN!<br>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBHxMmNQSKr2JgsPgIpbnLzaXXYTw8kBMk",
@@ -967,7 +967,6 @@ window.pfVerify = async function() {
 // Load provably fair seed hash commitment
 async function loadSeedHash() {
   try {
-    const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const d = await getDoc(doc(db,'draw','commitment'));
     if (d.exists() && d.data().seedHash) {
       document.getElementById('pf-seed-hash').textContent = d.data().seedHash;
@@ -975,7 +974,7 @@ async function loadSeedHash() {
   } catch(e) {}
 }
 
-init().then ? init() : init();
+init();
 loadSeedHash();
 setInterval(fetchLivePrice, 30000);
 </script>
