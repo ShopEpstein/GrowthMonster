@@ -4,10 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title id="page-title">GrowthGenie — Cheat Code for Growth</title>
-<meta property="og:title" id="og-title" content="GrowthGenie — Cheat Code for Growth">
-<meta property="og:description" id="og-desc" content="Complete quests. Earn XP. Climb the leaderboard. The ultimate cheat code for community growth.">
-<meta property="og:image" id="og-img" content="assets/banner.jpg">
+<meta property="og:title" id="og-title" content="$STACCANA Community Appreciation — Gotta Stacc 'Em All!">
+<meta property="og:description" id="og-desc" content="Complete quests. Stack XP. Win 20x Pokémon TCG Packs, SOL, CashApp USD + daily $STACCANA prizes. No purchase necessary.">
+<meta property="og:image" id="og-img" content="https://growth-monster.vercel.app/assets/prize-banner.jpg">
+<meta property="og:url" content="https://growth-monster.vercel.app">
+<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="$STACCANA — Gotta Stacc 'Em All!">
+<meta name="twitter:description" content="Complete quests. Stack XP. Win 20x Pokémon TCG Packs + SOL + daily $STACCANA. No purchase necessary.">
+<meta name="twitter:image" content="https://growth-monster.vercel.app/assets/prize-banner.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -742,8 +747,7 @@ window.submitEntry = async () => {
   const btn = document.getElementById('btn-submit');
   btn.disabled = true; btn.textContent = 'SAVING SCORE...';
 
-  const urlP = new URLSearchParams(window.location.search);
-  const referredBy = urlP.get('ref')||'';
+  const referredBy = inboundRef;
   const refCode = Math.random().toString(36).substr(2,8).toUpperCase();
   const pts = getTotalXP();
   const qualityScore = (() => {
@@ -763,7 +767,8 @@ window.submitEntry = async () => {
     else { await addDoc(collection(db,'entries'),data); }
     if (campaign?.id) await updateDoc(doc(db,'campaigns',campaign.id),{totalEntries:increment(pts),totalEntrants:increment(existingId?0:1)});
 
-    if (referredBy) {
+    // Only credit referrer on brand-new entry (not updates)
+    if (referredBy && !existingId) {
       const rs = await getDocs(collection(db,'entries'));
       rs.forEach(async d=>{if(d.data().refCode===referredBy)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});
     }
@@ -834,9 +839,8 @@ window.toast = (msg,type) => {
   clearTimeout(window._tt); window._tt=setTimeout(()=>{t.className='';},2600);
 };
 
-// Handle inbound referral
-const rp = new URLSearchParams(window.location.search).get('ref');
-if (rp) { getDocs(collection(db,'entries')).then(s=>{s.forEach(async d=>{if(d.data().refCode===rp)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});}); }
+// Store inbound ref code for use at submission time only
+const inboundRef = new URLSearchParams(window.location.search).get('ref') || '';
 
 // LIVE PRICE FEED
 async function fetchLivePrice() {
