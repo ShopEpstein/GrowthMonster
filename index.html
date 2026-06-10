@@ -563,7 +563,7 @@ async function init() {
       {name:'Create $STACCANA content with Grok Imagine',desc:'Use Grok Imagine to create original $STACCANA artwork or content and post on X — paste post URL. Daily.',icon:'🎨',iconBg:'rgba(204,0,255,0.1)',pts:55,type:'grok_imagine',proofType:'url',proofLabel:'URL of your Grok Imagine post on X',oneTime:false,daily:true,quality:'high',link:'https://x.com/i/grok',order:15,active:true,unlockAt:null},
       {name:'Post a $STACCANA TikTok',desc:'Create and post a TikTok about $STACCANA or Stacverse — mention $STACCANA in the caption. Paste your TikTok URL. Daily.',icon:'🎵',iconBg:'rgba(255,0,80,0.1)',pts:70,type:'tiktok_post',proofType:'url',proofLabel:'Your TikTok video URL',oneTime:false,daily:true,quality:'high',order:16,active:true,unlockAt:null},
       {name:'Duet or Stitch a $STACCANA TikTok',desc:'Duet or Stitch any Stacverse/STACCANA TikTok and post your version — paste URL. Daily.',icon:'🎬',iconBg:'rgba(255,0,80,0.08)',pts:50,type:'tiktok_duet',proofType:'url',proofLabel:'Your Duet/Stitch TikTok URL',oneTime:false,daily:true,quality:'medium',order:17,active:true,unlockAt:null},
-      {name:'Watch & Like a STACCANA YouTube video',desc:'Watch and like any STACCANA or Stacverse YouTube video — paste the video URL. Once per video.',icon:'▶️',iconBg:'rgba(255,0,0,0.08)',pts:20,type:'youtube_like',proofType:'url',proofLabel:'YouTube video URL you liked',oneTime:false,daily:true,quality:'low',link:'https://www.youtube.com/@stacverse',order:18,active:true,unlockAt:null},
+      {name:'Watch & Like a STACCANA YouTube video',desc:'Watch and like any STACCANA or Stacverse YouTube video — paste the video URL. Once per video.',icon:'▶️',iconBg:'rgba(255,0,0,0.08)',pts:20,type:'youtube_like',proofType:'url',proofLabel:'YouTube video URL you liked',oneTime:false,daily:true,quality:'low',link:'https://www.youtube.com/@staccana',order:18,active:true,unlockAt:null},
       {name:'Comment on a STACCANA YouTube video',desc:'Leave a genuine comment on a Stacverse YouTube video — paste the video URL and type your comment below.',icon:'💬',iconBg:'rgba(255,0,0,0.06)',pts:35,type:'youtube_comment',proofType:'text',proofLabel:'Paste video URL then write your comment here...',minLength:20,oneTime:false,daily:true,quality:'medium',order:19,active:true,unlockAt:null}
     ];
     for (const q of quests) await addDoc(collection(db,'missions'),{...q,campaignId:ref.id});
@@ -586,12 +586,31 @@ async function upsertNewMissions(campaignId) {
     {name:'Create $STACCANA content with Grok Imagine',desc:'Use Grok Imagine to create original $STACCANA artwork or content and post on X — paste post URL. Daily.',icon:'🎨',iconBg:'rgba(204,0,255,0.1)',pts:55,type:'grok_imagine',proofType:'url',proofLabel:'URL of your Grok Imagine post on X',oneTime:false,daily:true,quality:'high',link:'https://x.com/i/grok',order:15,active:true,unlockAt:null},
     {name:'Post a $STACCANA TikTok',desc:'Create and post a TikTok about $STACCANA or Stacverse — mention $STACCANA in the caption. Paste your TikTok URL. Daily.',icon:'🎵',iconBg:'rgba(255,0,80,0.1)',pts:70,type:'tiktok_post',proofType:'url',proofLabel:'Your TikTok video URL',oneTime:false,daily:true,quality:'high',order:16,active:true,unlockAt:null},
     {name:'Duet or Stitch a $STACCANA TikTok',desc:'Duet or Stitch any Stacverse/STACCANA TikTok and post your version — paste URL. Daily.',icon:'🎬',iconBg:'rgba(255,0,80,0.08)',pts:50,type:'tiktok_duet',proofType:'url',proofLabel:'Your Duet/Stitch TikTok URL',oneTime:false,daily:true,quality:'medium',order:17,active:true,unlockAt:null},
-    {name:'Watch & Like a STACCANA YouTube video',desc:'Watch and like any STACCANA or Stacverse YouTube video — paste the video URL. Once per video.',icon:'▶️',iconBg:'rgba(255,0,0,0.08)',pts:20,type:'youtube_like',proofType:'url',proofLabel:'YouTube video URL you liked',oneTime:false,daily:true,quality:'low',link:'https://www.youtube.com/@stacverse',order:18,active:true,unlockAt:null},
-    {name:'Comment on a STACCANA YouTube video',desc:'Leave a genuine comment on a Stacverse YouTube video — paste the video URL and type your comment below.',icon:'💬',iconBg:'rgba(255,0,0,0.06)',pts:35,type:'youtube_comment',proofType:'text',proofLabel:'Paste video URL then write your comment here...',minLength:20,oneTime:false,daily:true,quality:'medium',order:19,active:true,unlockAt:null},
-    {name:'Buy $STACCANA on DEX',desc:'Buy any amount of $STACCANA — paste your transaction URL from DEX Screener as proof',icon:'💸',iconBg:'rgba(0,255,65,0.08)',pts:50,type:'buy_token',proofType:'url',proofLabel:'DEX Screener transaction URL',oneTime:false,daily:true,quality:'high',link:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',order:12,active:true,unlockAt:null},
-    {name:'Create a $STACCANA meme',desc:'Post an original meme about $STACCANA or the Stacverse on X — paste your post URL. Once daily.',icon:'😂',iconBg:'rgba(255,230,0,0.08)',pts:40,type:'meme_post',proofType:'url',proofLabel:'URL of your meme post on X',oneTime:false,daily:true,quality:'medium',order:13,active:true,unlockAt:null},
-    {name:'Post a video with Grok Imagine & tag @stacverse',desc:'Create a video or image using Grok AI and post it on X tagging @stacverse — paste post URL. Up to 3x daily.',icon:'🤖',iconBg:'rgba(204,0,255,0.1)',pts:60,type:'grok_video',proofType:'url',proofLabel:'URL of your @stacverse tagged post',oneTime:false,daily:true,maxDaily:3,quality:'high',order:14,active:true,unlockAt:null}
+    {name:'Watch & Like a STACCANA YouTube video',desc:'Watch and like any STACCANA or Stacverse YouTube video — paste the video URL.',icon:'▶️',iconBg:'rgba(255,0,0,0.08)',pts:20,type:'youtube_like',proofType:'url',proofLabel:'YouTube video URL you liked',oneTime:false,daily:true,quality:'low',link:'https://www.youtube.com/@staccana',order:18,active:true,unlockAt:null},
+    {name:'Comment on a STACCANA YouTube video',desc:'Leave a genuine comment on a Stacverse YouTube video — paste the video URL and your comment below.',icon:'💬',iconBg:'rgba(255,0,0,0.06)',pts:35,type:'youtube_comment',proofType:'text',proofLabel:'Paste video URL then write your comment here...',minLength:20,oneTime:false,daily:true,quality:'medium',order:19,active:true,unlockAt:null}
   ];
+  try {
+    const existing = await getDocs(collection(db,'missions'));
+    const existingTypes = new Set();
+    const seenTypes = new Set();
+    const toDelete = [];
+    existing.forEach(d => {
+      const t = d.data().type;
+      if (seenTypes.has(t)) { toDelete.push(d.id); }
+      else { seenTypes.add(t); existingTypes.add(t); }
+    });
+    // Delete duplicates
+    for (const id of toDelete) {
+      try { await updateDoc(doc(db,'missions',id),{active:false,_dup:true}); } catch(e){}
+    }
+    // Add missing missions
+    for (const m of newMissions) {
+      if (!existingTypes.has(m.type)) {
+        await addDoc(collection(db,'missions'), {...m, campaignId});
+      }
+    }
+  } catch(e) { console.warn('upsertMissions:', e); }
+}
   try {
     const existing = await getDocs(collection(db,'missions'));
     const existingTypes = new Set();
