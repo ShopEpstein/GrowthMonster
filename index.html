@@ -309,7 +309,7 @@ textarea{resize:vertical;min-height:68px}
         <div class="prize-icon" id="prize-icon">💎</div>
         <div>
           <div class="prize-amount" id="prize-amount">PRIZES</div>
-          <div class="prize-meta"><div class="top">IN <span id="prize-token">$STACCANA</span></div><div class="bot">SOL + CASH</div></div>
+          <div class="prize-meta"><div class="top"><span id="prize-token">$STACCANA</span></div><div class="bot">SOL + Cash (US Only)</div></div>
         </div>
       </div>
       <div class="prize-box" style="padding:10px 18px;border-color:var(--pixel)">
@@ -533,7 +533,7 @@ async function init() {
   if (!found) {
     const def = {
       name:'$STACCANA Launch Giveaway',description:'Complete quests. Stack XP. The Stacverse rewards its soldiers.',
-      prizeAmount:'PRIZES',prizeToken:'in $STACCANA Tokens',prizeIcon:'💎',
+      prizeAmount:'PRIZES',prizeToken:'$STACCANA',prizeIcon:'💎',
       endDate:new Date(Date.now()+7*86400000).toISOString(),status:'active',
       accentColor:'#00FF41',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
       projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
