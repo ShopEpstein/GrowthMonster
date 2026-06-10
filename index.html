@@ -160,8 +160,12 @@ textarea{resize:vertical;min-height:72px}
 .token-row{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--border)}
 .token-row img{width:36px;height:36px;border-radius:50%;border:1px solid var(--purple);object-fit:cover}
 .token-name{font-size:14px;font-weight:700}
-.token-ca{font-size:10px;color:var(--muted);font-family:monospace;cursor:pointer}
-.token-ca:hover{color:var(--cyan)}
+.ca-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.ca-row:hover{background:rgba(155,111,255,.06)}
+.ca-row:hover .ca-copy-btn{opacity:1}
+.token-ca{font-size:10px;color:var(--cyan);font-family:monospace;word-break:break-all;line-height:1.4}
+.ca-copy-btn{flex-shrink:0;font-size:10px;font-weight:600;padding:4px 9px;border-radius:6px;border:1px solid var(--purple);background:transparent;color:var(--purple);cursor:pointer;opacity:.6;transition:opacity .15s,background .15s,color .15s}
+.ca-copy-btn:hover{background:var(--purple);color:#fff;opacity:1}
 .price-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px}
 .price-val{font-size:15px;font-weight:700;color:var(--cyan);font-family:monospace}
 .price-up{font-size:13px;font-weight:600;color:var(--green)}
@@ -311,8 +315,14 @@ textarea{resize:vertical;min-height:72px}
           <img id="tk-logo" src="" alt="" onerror="this.style.display='none'">
           <div>
             <div class="token-name" id="tk-name">—</div>
-            <div class="token-ca" id="tk-ca" onclick="copyCA()">—</div>
           </div>
+        </div>
+        <div class="ca-row" onclick="copyCA()" title="Click to copy contract address">
+          <div>
+            <div style="font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Contract Address</div>
+            <div class="token-ca" id="tk-ca">—</div>
+          </div>
+          <button class="ca-copy-btn" id="ca-copy-btn" tabindex="-1">Copy</button>
         </div>
         <div class="price-row">
           <div>
@@ -540,8 +550,7 @@ function applyCampaignBranding() {
     const ti = campaign.tokenInfo;
     document.getElementById('token-panel').style.display = '';
     document.getElementById('tk-name').textContent = ti.name;
-    const shortCa = ti.contract ? ti.contract.slice(0,8) + '...' + ti.contract.slice(-4) : '';
-    document.getElementById('tk-ca').textContent = shortCa + ' ▾';
+    document.getElementById('tk-ca').textContent = ti.contract || '—';
     document.getElementById('tk-ca').dataset.full = ti.contract;
     document.getElementById('tk-price').textContent = ti.price || '—';
     document.getElementById('tk-change').textContent = ti.change || '';
@@ -912,7 +921,12 @@ window.copyRef = function() {
 
 window.copyCA = function() {
   const full = document.getElementById('tk-ca').dataset.full;
-  if (full) navigator.clipboard.writeText(full).then(() => toast('Contract copied!', 'ok'));
+  if (!full) return;
+  navigator.clipboard.writeText(full).then(() => {
+    toast('Contract address copied!', 'ok');
+    const btn = document.getElementById('ca-copy-btn');
+    if (btn) { btn.textContent = 'Copied!'; btn.style.background = 'var(--green)'; btn.style.color = '#fff'; btn.style.borderColor = 'var(--green)'; setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; }, 2000); }
+  });
 };
 
 // ============================================================
