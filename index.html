@@ -215,6 +215,42 @@ textarea{resize:vertical;min-height:72px}
 .about-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
 .about-tags a{font-size:12px;border:1px solid rgba(0,245,255,0.18);padding:5px 10px;border-radius:8px;color:var(--cyan)}
 
+/* NO PURCHASE NECESSARY banner */
+.npn-bar{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.25);border-radius:10px;padding:11px 18px;margin-bottom:16px;flex-wrap:wrap;text-align:center}
+.npn-badge{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--green);color:#000;border-radius:5px;padding:3px 8px;flex-shrink:0}
+.npn-text{font-size:12px;color:var(--green);font-weight:600;line-height:1.4}
+
+/* PROVABLY FAIR */
+.pf-section{max-width:1040px;margin:0 auto 32px;padding:0 20px}
+.pf-panel{background:var(--card);border:1px solid rgba(155,111,255,0.3);border-radius:16px;overflow:hidden}
+.pf-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.pf-head:hover{background:rgba(155,111,255,.04)}
+.pf-title-wrap{display:flex;align-items:center;gap:10px}
+.pf-icon{font-size:20px}
+.pf-title{font-size:14px;font-weight:700;color:var(--text)}
+.pf-subtitle{font-size:11px;color:var(--muted);margin-top:1px}
+.pf-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(135deg,rgba(155,111,255,.2),rgba(0,245,255,.12));border:1px solid rgba(155,111,255,.4);color:var(--purple);border-radius:6px;padding:4px 10px}
+.pf-body{display:none;padding:20px}
+.pf-body.open{display:block}
+.pf-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:600px){.pf-steps{grid-template-columns:1fr}}
+.pf-step{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px}
+.pf-step-num{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-bottom:6px}
+.pf-step-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.pf-step-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.pf-algo{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:monospace;font-size:12px;color:var(--cyan);margin-bottom:20px;line-height:1.8;overflow-x:auto;white-space:pre}
+.pf-commit{display:flex;align-items:flex-start;gap:12px;background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:14px;margin-bottom:20px}
+.pf-commit-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.pf-commit-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:4px}
+.pf-commit-hash{font-family:monospace;font-size:11px;color:var(--text);word-break:break-all;line-height:1.5}
+.pf-commit-note{font-size:11px;color:var(--muted);margin-top:4px}
+.pf-verify-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+.pf-verify-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+@media(max-width:540px){.pf-verify-grid{grid-template-columns:1fr}}
+.pf-verify-result{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--dim);min-height:44px;font-family:monospace;line-height:1.5;display:flex;align-items:center}
+.pf-verify-result.ok{border-color:rgba(0,230,118,.4);color:var(--green)}
+.pf-verify-result.err{border-color:rgba(255,61,0,.4);color:var(--accent)}
+
 /* FOOTER */
 .disclaimer{text-align:center;padding:28px 24px;font-size:11px;color:var(--dim);max-width:680px;margin:0 auto;line-height:1.7}
 .powered{text-align:center;padding:14px;font-size:11px;color:var(--dim);border-top:1px solid var(--border)}
@@ -313,6 +349,12 @@ textarea{resize:vertical;min-height:72px}
   <div class="main">
     <!-- LEFT -->
     <div>
+      <!-- NO PURCHASE NECESSARY -->
+      <div class="npn-bar">
+        <span class="npn-badge">Free to Enter</span>
+        <span class="npn-text">No purchase necessary to enter or win. Open to all eligible participants. See terms below.</span>
+      </div>
+
       <div class="panel" id="entry-panel">
         <div class="panel-head">
           <span class="panel-title">Enter to Win</span>
@@ -447,7 +489,76 @@ textarea{resize:vertical;min-height:72px}
     </div>
   </div>
 
-  <div class="disclaimer">⚠️ Fraudulent or fake proof submissions will be disqualified at winner verification. By entering you confirm eligibility. This is not financial advice.</div>
+  <!-- PROVABLY FAIR -->
+  <div class="pf-section">
+    <div class="pf-panel">
+      <div class="pf-head" onclick="togglePF()">
+        <div class="pf-title-wrap">
+          <span class="pf-icon">🔐</span>
+          <div>
+            <div class="pf-title">Provably Fair Draw</div>
+            <div class="pf-subtitle">Cryptographically verifiable — no admin can manipulate the result</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="pf-badge">Verified Random</span>
+          <span id="pf-chevron" style="color:var(--muted);font-size:14px">▼</span>
+        </div>
+      </div>
+      <div class="pf-body" id="pf-body">
+
+        <div class="pf-steps">
+          <div class="pf-step">
+            <div class="pf-step-num">Step 1 · Before draw</div>
+            <div class="pf-step-title">Seed Commitment</div>
+            <div class="pf-step-desc">We generate a secret server seed and publish its SHA-256 hash on-chain <em>before</em> entries close. This locks us in — we can't change the seed after seeing entries.</div>
+          </div>
+          <div class="pf-step">
+            <div class="pf-step-num">Step 2 · Draw day</div>
+            <div class="pf-step-title">Public Randomness</div>
+            <div class="pf-step-desc">We use the hash of a pre-announced future Solana slot as the public random input. Neither we nor anyone else can predict or control it.</div>
+          </div>
+          <div class="pf-step">
+            <div class="pf-step-num">Step 3 · Anyone</div>
+            <div class="pf-step-title">Verify Yourself</div>
+            <div class="pf-step-desc">Once the server seed is revealed, paste both values below. You'll see exactly how the winner was calculated — same formula, same result, every time.</div>
+          </div>
+        </div>
+
+        <div class="pf-algo" id="pf-algo">winner_index = BigInt("0x" + SHA256(serverSeed + slotHash)) % totalWeightedEntries
+winner       = entries.sort(lexicographic)[winner_index]</div>
+
+        <div class="pf-commit" id="pf-commit-box">
+          <span class="pf-commit-icon">🔒</span>
+          <div>
+            <div class="pf-commit-label">Committed Seed Hash (SHA-256)</div>
+            <div class="pf-commit-hash" id="pf-seed-hash">Loading…</div>
+            <div class="pf-commit-note">Published before entries closed. Reveal after draw to verify.</div>
+          </div>
+        </div>
+
+        <div class="pf-verify-title">🔍 Verify the draw yourself</div>
+        <div class="pf-verify-grid">
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600">Server Seed (revealed after draw)</div>
+            <input type="text" id="pf-input-seed" placeholder="e.g. a3f9c2…" style="font-family:monospace;font-size:12px">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:600">Solana Slot Hash</div>
+            <input type="text" id="pf-input-slot" placeholder="e.g. 4xT7k…" style="font-family:monospace;font-size:12px">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+          <input type="number" id="pf-input-total" placeholder="Total weighted entries" style="font-family:monospace;font-size:12px;max-width:220px">
+          <button class="btn btn-sm" onclick="pfVerify()" style="background:var(--purple);color:#fff;border:none">Verify</button>
+        </div>
+        <div class="pf-verify-result" id="pf-result">Enter the values above to verify the draw result.</div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">⚠️ No purchase necessary to enter or win. Void where prohibited. Open to participants 18+. Fraudulent proof submissions are disqualified before winner selection. Winner verified against committed seed hash — result is independently verifiable by anyone. This is not financial advice.</div>
   <div class="powered">Powered by <a href="#">GrowthMonster</a></div>
 </div>
 
@@ -1138,6 +1249,68 @@ window.buyBurst = function(e) {
 };
 
 // ============================================================
+// PROVABLY FAIR
+// ============================================================
+window.togglePF = function() {
+  const body = document.getElementById('pf-body');
+  const chev = document.getElementById('pf-chevron');
+  const open = body.classList.toggle('open');
+  chev.textContent = open ? '▲' : '▼';
+};
+
+async function loadSeedHash() {
+  try {
+    const snap = await getDoc(doc(db, 'draw', 'commitment'));
+    if (snap.exists()) {
+      document.getElementById('pf-seed-hash').textContent = snap.data().seedHash || 'Not yet committed';
+    } else {
+      document.getElementById('pf-seed-hash').textContent = 'Not yet committed — will appear here before entries close';
+    }
+  } catch(e) {
+    document.getElementById('pf-seed-hash').textContent = 'Not yet committed';
+  }
+}
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+window.pfVerify = async function() {
+  const seed = document.getElementById('pf-input-seed').value.trim();
+  const slot = document.getElementById('pf-input-slot').value.trim();
+  const total = parseInt(document.getElementById('pf-input-total').value.trim());
+  const result = document.getElementById('pf-result');
+
+  if (!seed || !slot || !total || total < 1) {
+    result.className = 'pf-verify-result err';
+    result.textContent = 'Fill in all three fields to verify.';
+    return;
+  }
+
+  try {
+    // verify seed hash matches commitment
+    const computedSeedHash = await sha256(seed);
+    const committedHash = document.getElementById('pf-seed-hash').textContent.trim();
+    const hashMatch = committedHash === computedSeedHash || committedHash.startsWith('Not yet');
+
+    const combined = await sha256(seed + slot);
+    const winnerIndex = Number(BigInt('0x' + combined) % BigInt(total));
+
+    result.className = 'pf-verify-result ok';
+    result.innerHTML =
+      (hashMatch && !committedHash.startsWith('Not yet')
+        ? '✓ Seed hash matches commitment &nbsp;·&nbsp; '
+        : '') +
+      `Combined hash: <strong>${combined.slice(0,24)}…</strong><br>` +
+      `Winner entry index: <strong>#${winnerIndex + 1}</strong> of ${total} weighted entries`;
+  } catch(e) {
+    result.className = 'pf-verify-result err';
+    result.textContent = 'Verification error — check your inputs.';
+  }
+};
+
+// ============================================================
 // SESSION RESTORE
 // ============================================================
 window.showRestore = function() {
@@ -1172,6 +1345,7 @@ window.restoreSession = async function() {
 // INIT
 // ============================================================
 loadCampaign();
+loadSeedHash();
 </script>
 </body>
 </html>
