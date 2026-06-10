@@ -612,17 +612,6 @@ async function upsertNewMissions(campaignId) {
     }
   } catch(e) { console.warn('upsertMissions:', e); }
 }
-  try {
-    const existing = await getDocs(collection(db,'missions'));
-    const existingTypes = new Set();
-    existing.forEach(d => existingTypes.add(d.data().type));
-    for (const m of newMissions) {
-      if (!existingTypes.has(m.type)) {
-        await addDoc(collection(db,'missions'), {...m, campaignId});
-      }
-    }
-  } catch(e) { console.warn('upsertMissions:', e); }
-}
 
 function applyBranding() {
   if (!campaign) return;
