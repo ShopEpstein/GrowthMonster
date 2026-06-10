@@ -342,7 +342,7 @@ textarea{resize:vertical;min-height:72px}
     <div class="stat-cell"><div class="stat-val" id="stat-entries">0</div><div class="stat-lbl">Total Points</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-entrants">0</div><div class="stat-lbl">Entrants</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-missions">0</div><div class="stat-lbl">Missions</div></div>
-    <div class="stat-cell"><div class="stat-val">1</div><div class="stat-lbl">Winner</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-winners">3</div><div class="stat-lbl">Winners</div></div>
   </div>
 
   <!-- MAIN GRID -->
@@ -525,8 +525,12 @@ textarea{resize:vertical;min-height:72px}
           </div>
         </div>
 
-        <div class="pf-algo" id="pf-algo">winner_index = BigInt("0x" + SHA256(serverSeed + slotHash)) % totalWeightedEntries
-winner       = entries.sort(lexicographic)[winner_index]</div>
+        <div class="pf-algo" id="pf-algo">// One round per winner — previous winner removed before each draw
+for round in 1..numWinners:
+    hash         = SHA256(serverSeed + slotHash + round)
+    winner_index = BigInt("0x" + hash) % remainingWeightedEntries
+    winner       = remaining_entries.sort(lexicographic)[winner_index]
+    remove winner from pool</div>
 
         <div class="pf-commit" id="pf-commit-box">
           <span class="pf-commit-icon">🔒</span>
@@ -548,11 +552,12 @@ winner       = entries.sort(lexicographic)[winner_index]</div>
             <input type="text" id="pf-input-slot" placeholder="e.g. 4xT7k…" style="font-family:monospace;font-size:12px">
           </div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-          <input type="number" id="pf-input-total" placeholder="Total weighted entries" style="font-family:monospace;font-size:12px;max-width:220px">
-          <button class="btn btn-sm" onclick="pfVerify()" style="background:var(--purple);color:#fff;border:none">Verify</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+          <input type="number" id="pf-input-total" placeholder="Total weighted entries" style="font-family:monospace;font-size:12px;max-width:200px">
+          <input type="number" id="pf-input-winners" placeholder="# of winners" min="1" value="3" style="font-family:monospace;font-size:12px;max-width:130px">
+          <button class="btn btn-sm" onclick="pfVerify()" style="background:var(--purple);color:#fff;border:none">Verify All Draws</button>
         </div>
-        <div class="pf-verify-result" id="pf-result">Enter the values above to verify the draw result.</div>
+        <div class="pf-verify-result" id="pf-result">Enter the values above to verify all draw results.</div>
 
       </div>
     </div>
@@ -629,6 +634,7 @@ async function loadCampaign() {
         prizeToken: 'in $STACCANA Tokens',
         prizeIcon: '💎',
         prizes: { sol: '2 SOL', usd: '$100', poke: 'Booster Box' },
+        numWinners: 3,
         endDate: new Date(Date.now() + 7*24*60*60*1000).toISOString(),
         status: 'active',
         accentColor: '#FF3D00',
@@ -713,6 +719,10 @@ function applyCampaignBranding() {
   if (document.getElementById('prize-sol')) document.getElementById('prize-sol').textContent = p.sol || 'SOL';
   if (document.getElementById('prize-usd')) document.getElementById('prize-usd').textContent = p.usd || 'USD';
   if (document.getElementById('prize-poke')) document.getElementById('prize-poke').textContent = p.poke || 'Cards';
+  const numWinners = campaign.numWinners || 3;
+  document.getElementById('stat-winners').textContent = numWinners;
+  const wInput = document.getElementById('pf-input-winners');
+  if (wInput) wInput.value = numWinners;
   document.getElementById('hdr-name').textContent = campaign.projectName || 'GrowthMonster';
   document.getElementById('sc-title').textContent = campaign.name || 'Campaign';
   document.getElementById('ref-badge').textContent = '+' + (campaign.referralBonus || 25) + ' pts/ref';
@@ -1280,30 +1290,52 @@ window.pfVerify = async function() {
   const seed = document.getElementById('pf-input-seed').value.trim();
   const slot = document.getElementById('pf-input-slot').value.trim();
   const total = parseInt(document.getElementById('pf-input-total').value.trim());
+  const numWinners = Math.max(1, parseInt(document.getElementById('pf-input-winners').value.trim()) || 1);
   const result = document.getElementById('pf-result');
 
   if (!seed || !slot || !total || total < 1) {
     result.className = 'pf-verify-result err';
-    result.textContent = 'Fill in all three fields to verify.';
+    result.textContent = 'Fill in server seed, slot hash, and total entries to verify.';
     return;
   }
 
   try {
-    // verify seed hash matches commitment
     const computedSeedHash = await sha256(seed);
     const committedHash = document.getElementById('pf-seed-hash').textContent.trim();
-    const hashMatch = committedHash === computedSeedHash || committedHash.startsWith('Not yet');
+    const seedVerified = !committedHash.startsWith('Not yet') && committedHash === computedSeedHash;
 
-    const combined = await sha256(seed + slot);
-    const winnerIndex = Number(BigInt('0x' + combined) % BigInt(total));
+    // simulate pool — track removed indices across rounds
+    const winners = [];
+    const removed = new Set();
+    let remaining = total;
+
+    for (let round = 1; round <= numWinners; round++) {
+      if (remaining <= 0) break;
+      const combined = await sha256(seed + slot + String(round));
+      // map the raw index into the remaining pool (skip already-drawn)
+      let pick = Number(BigInt('0x' + combined) % BigInt(remaining));
+      // walk the full list counting only non-removed entries
+      let count = -1;
+      let globalIndex = 0;
+      while (globalIndex < total) {
+        if (!removed.has(globalIndex)) { count++; }
+        if (count === pick) break;
+        globalIndex++;
+      }
+      removed.add(globalIndex);
+      remaining--;
+      winners.push({ round, index: globalIndex + 1, hash: combined.slice(0, 20) + '…' });
+    }
 
     result.className = 'pf-verify-result ok';
+    result.style.flexDirection = 'column';
+    result.style.alignItems = 'flex-start';
+    result.style.gap = '6px';
     result.innerHTML =
-      (hashMatch && !committedHash.startsWith('Not yet')
-        ? '✓ Seed hash matches commitment &nbsp;·&nbsp; '
-        : '') +
-      `Combined hash: <strong>${combined.slice(0,24)}…</strong><br>` +
-      `Winner entry index: <strong>#${winnerIndex + 1}</strong> of ${total} weighted entries`;
+      (seedVerified ? '<span style="color:var(--green);font-weight:700">✓ Seed hash matches commitment</span>' : '') +
+      winners.map(w =>
+        `<span>🏆 Draw ${w.round}: entry <strong>#${w.index}</strong> of ${total} &nbsp;<span style="color:var(--dim);font-size:10px">${w.hash}</span></span>`
+      ).join('');
   } catch(e) {
     result.className = 'pf-verify-result err';
     result.textContent = 'Verification error — check your inputs.';
