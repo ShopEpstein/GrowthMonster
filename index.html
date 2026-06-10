@@ -68,7 +68,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 @keyframes marquee{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
 
 /* HERO */
-.hero{text-align:center;padding:52px 24px 40px;max-width:820px;margin:0 auto;position:relative}
+.hero{text-align:center;padding:28px 24px 32px;max-width:820px;margin:0 auto;position:relative}
 .insert-coin{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--yellow);padding:6px 16px;font-size:14px;color:var(--yellow);letter-spacing:.08em;margin-bottom:24px;text-shadow:0 0 8px var(--yellow);animation:coinblink 1.5s infinite}
 @keyframes coinblink{0%,100%{opacity:1;box-shadow:0 0 10px var(--yellow-dim)}50%{opacity:.6;box-shadow:none}}
 .hero-title{font-family:'Press Start 2P',monospace;font-size:clamp(18px,4vw,36px);line-height:1.4;letter-spacing:.02em;margin-bottom:16px;color:var(--pixel);text-shadow:2px 2px 0 #005500,0 0 20px var(--pixel)}
@@ -276,7 +276,7 @@ textarea{resize:vertical;min-height:68px}
 </div>
 
 <div class="hero-banner-wrap">
-  <img src="assets/banner.jpg" alt="Stacverse" class="hero-banner" onerror="this.style.display='none'">
+  <img src="assets/prize-banner.jpg" alt="Gotta Stacc Em All" class="hero-banner" onerror="this.style.display='none'">
 </div>
 
 <div id="app" style="display:none">
@@ -285,9 +285,6 @@ textarea{resize:vertical;min-height:68px}
     <div class="hero-title" id="hero-title">ENTER THE <span class="hl">STACVERSE</span></div>
     <p class="hero-sub" id="hero-desc">Complete quests. Stack XP. The Stacverse rewards its soldiers.</p>
     <div class="cheat-code" id="cheat-code">↑ ↑ ↓ ↓ ← → ← → B A START</div>
-    <div style="margin-bottom:16px">
-      <img src="assets/prize-banner.jpg" alt="Prizes" style="max-width:480px;width:100%;height:auto;border:2px solid var(--yellow);box-shadow:0 0 20px var(--yellow-dim)" onerror="this.style.display='none'">
-    </div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px">
       <div class="prize-box" style="padding:10px 18px">
         <div class="prize-icon">🃏</div>
@@ -479,6 +476,9 @@ YOU WIN!<br>
     </div>
   </div>
 
+  <div style="text-align:center;padding:0 20px 24px">
+    <img src="assets/banner.jpg" alt="Stacverse" style="max-width:820px;width:100%;height:auto;border:2px solid var(--pixel);box-shadow:0 0 20px var(--pixel-dim)" onerror="this.style.display='none'">
+  </div>
   <div class="disclaimer">⚠ FAKE OR FRAUDULENT PROOF SUBMISSIONS WILL BE DISQUALIFIED BEFORE WINNER SELECTION. BY ENTERING YOU CONFIRM ELIGIBILITY. NOT FINANCIAL ADVICE.</div>
   <div class="powered">POWERED BY <a href="#">GROWTHGENIE</a> — THE CHEAT CODE FOR COMMUNITY GROWTH</div>
 </div>
