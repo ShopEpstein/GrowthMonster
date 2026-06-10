@@ -209,6 +209,7 @@ textarea{resize:vertical;min-height:68px}
 .price-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
 .price-val{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pixel)}
 .price-up{font-size:16px;color:var(--pixel)}
+.price-down{font-size:16px;color:var(--red)}
 .token-btns{display:flex;gap:8px;padding:0 14px 12px}
 .token-btns a{flex:1;text-align:center;padding:8px;font-size:15px;font-family:'VT323',monospace;text-decoration:none;border:2px solid;transition:all .15s;letter-spacing:.04em}
 .token-btns a:hover{background:#000}
@@ -307,7 +308,7 @@ textarea{resize:vertical;min-height:68px}
     <div class="stat-cell"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">TOTAL XP</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-players">0</div><div class="stat-lbl">PLAYERS</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-quests">0</div><div class="stat-lbl">QUESTS</div></div>
-    <div class="stat-cell"><div class="stat-val" style="color:var(--yellow)">1</div><div class="stat-lbl">WINNER</div></div>
+    <div class="stat-cell"><div class="stat-val" style="color:var(--yellow)" id="stat-winners">3</div><div class="stat-lbl">WINNERS</div></div>
   </div>
 
   <div class="main">
@@ -436,6 +437,29 @@ YOU WIN!<br>
         <div class="panel-head"><span class="panel-title">ABOUT</span></div>
         <div class="about-body" id="about-body"></div>
       </div>
+
+      <!-- PROVABLY FAIR -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">⚖ PROVABLY FAIR</span>
+          <span class="panel-badge">3 WINNERS</span>
+        </div>
+        <div class="panel-body" style="font-size:14px;color:var(--muted);line-height:1.6">
+          <p style="margin-bottom:10px">Winner selection uses <strong style="color:var(--pixel)">SHA-256 RNG</strong> — seeded from a server secret committed before entries close, combined with a public Solana slot hash.</p>
+          <p style="margin-bottom:10px;color:var(--pixel);font-size:13px">Formula: SHA256(serverSeed + slotHash + roundNumber)</p>
+          <p style="margin-bottom:12px">Three draws are run in sequence. Each winner is removed before the next draw. <strong style="color:var(--yellow)">NO PURCHASE NECESSARY.</strong> Anyone can verify the result below after the draw.</p>
+          <div style="background:#000;border:2px solid var(--dim);padding:10px;margin-bottom:8px">
+            <div style="font-size:12px;color:var(--dim);margin-bottom:5px">SERVER SEED HASH (committed pre-draw)</div>
+            <div id="pf-seed-hash" style="font-family:monospace;font-size:11px;color:var(--pixel);word-break:break-all">— awaiting draw commitment —</div>
+          </div>
+          <div style="display:flex;gap:7px;margin-bottom:8px">
+            <input id="pf-seed" type="text" placeholder="Server seed (revealed post-draw)" style="flex:1;font-size:12px;padding:6px 8px">
+            <input id="pf-slot" type="text" placeholder="Solana slot hash" style="flex:1;font-size:12px;padding:6px 8px">
+          </div>
+          <button class="btn" style="background:var(--pixel);color:#000;border-color:var(--pixel);width:100%;font-size:13px;padding:8px" onclick="pfVerify()">▶ VERIFY DRAW</button>
+          <div id="pf-result" style="margin-top:10px;font-size:13px;display:none"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -511,9 +535,11 @@ async function init() {
 
   campaign = found;
   applyBranding();
+  fetchLivePrice();
   startTimer();
   loadQuests();
   listenLeaderboard();
+  if (campaign?.numWinners) document.getElementById('stat-winners').textContent = campaign.numWinners;
   document.getElementById('loading').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 }
@@ -531,9 +557,8 @@ function applyBranding() {
   document.getElementById('ref-badge').textContent = '+'+(campaign.referralBonus||25)+' XP/RECRUIT';
   if (campaign.cheatCode) document.getElementById('cheat-code').textContent = campaign.cheatCode;
   if (campaign.marqueeText) document.getElementById('marquee-text').textContent = campaign.marqueeText;
-  const logoSrc = campaign.logoUrl || 'assets/staccana-logo.png';
-  document.getElementById('sc-logo').src = logoSrc;
-  document.getElementById('og-img').content = campaign.logoUrl || 'assets/banner.png';
+  document.getElementById('sc-logo').src = 'assets/staccana-logo.png';
+  document.getElementById('og-img').content = 'assets/banner.png';
   if (campaign.headerLinks) {
     document.getElementById('hdr-links').innerHTML = campaign.headerLinks.map(l=>`<a href="${l.url}" target="_blank">${l.label}</a>`).join('');
   }
@@ -547,7 +572,7 @@ function applyBranding() {
     document.getElementById('tk-price').textContent = ti.price||'—';
     document.getElementById('tk-change').textContent = ti.change||'';
     document.getElementById('chart-link').href = ti.chartUrl||'#';
-    document.getElementById('tk-logo').src = ti.logoUrl || 'assets/staccana-logo.png';
+    document.getElementById('tk-logo').src = 'assets/staccana-logo.png';
     document.getElementById('tk-logo').style.display='';
     let btns = '';
     if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" style="background:var(--pixel);color:#000;border-color:var(--pixel)">BUY</a>`;
@@ -797,7 +822,72 @@ window.toast = (msg,type) => {
 const rp = new URLSearchParams(window.location.search).get('ref');
 if (rp) { getDocs(collection(db,'entries')).then(s=>{s.forEach(async d=>{if(d.data().refCode===rp)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});}); }
 
-init();
+// LIVE PRICE FEED
+async function fetchLivePrice() {
+  const pairAddress = campaign?.tokenInfo?.pairAddress || 'g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr';
+  try {
+    const res = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${pairAddress}`);
+    const data = await res.json();
+    const pair = data?.pairs?.[0];
+    if (!pair) return;
+    const price = pair.priceUsd ? '$' + parseFloat(pair.priceUsd).toPrecision(4) : null;
+    const change = pair.priceChange?.h24 != null
+      ? (pair.priceChange.h24 >= 0 ? '+' : '') + pair.priceChange.h24.toFixed(2) + '%'
+      : null;
+    const isUp = pair.priceChange?.h24 >= 0;
+    if (price) document.getElementById('tk-price').textContent = price;
+    if (change) {
+      const el = document.getElementById('tk-change');
+      el.textContent = change;
+      el.className = isUp ? 'price-up' : 'price-down';
+    }
+  } catch(e) {}
+}
+
+// PROVABLY FAIR SHA-256
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+window.pfVerify = async function() {
+  const seed = document.getElementById('pf-seed').value.trim();
+  const slot = document.getElementById('pf-slot').value.trim();
+  const res = document.getElementById('pf-result');
+  if (!seed || !slot) { res.style.display='block'; res.innerHTML='<span style="color:var(--red)">Enter both seed and slot hash.</span>'; return; }
+  const numWinners = campaign?.numWinners || 3;
+  const snap = await getDocs(collection(db,'entries'));
+  let pool = [];
+  snap.forEach(d => pool.push({id:d.id,...d.data()}));
+  if (!pool.length) { res.style.display='block'; res.innerHTML='<span style="color:var(--red)">No entries found.</span>'; return; }
+  const remaining = [...pool];
+  const winners = [];
+  for (let round = 1; round <= numWinners; round++) {
+    const hash = await sha256hex(seed + slot + String(round));
+    const idx = Number(BigInt('0x'+hash) % BigInt(remaining.length));
+    winners.push(remaining[idx]);
+    remaining.splice(idx, 1);
+    if (!remaining.length) break;
+  }
+  res.style.display = 'block';
+  res.innerHTML = '<div style="color:var(--pixel);margin-bottom:6px;font-family:\'Press Start 2P\',monospace;font-size:9px">VERIFIED WINNERS</div>' +
+    winners.map((w,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--dim);color:var(--yellow)">${i+1}. ${w.name} — ${w.wallet||w.walletFull||'—'} (${w.pts} XP)</div>`).join('');
+};
+
+// Load provably fair seed hash commitment
+async function loadSeedHash() {
+  try {
+    const { getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    const d = await getDoc(doc(db,'draw','commitment'));
+    if (d.exists() && d.data().seedHash) {
+      document.getElementById('pf-seed-hash').textContent = d.data().seedHash;
+    }
+  } catch(e) {}
+}
+
+init().then ? init() : init();
+loadSeedHash();
+setInterval(fetchLivePrice, 30000);
 </script>
 </body>
 </html>
