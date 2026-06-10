@@ -526,6 +526,13 @@ function saveLocal() {
 }
 
 async function init() {
+  // Safety net — never leave user on loading screen
+  const loadTimeout = setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }, 8000);
+
+  try {
   const snap = await getDocs(collection(db, 'campaigns'));
   let found = null;
   snap.forEach(d => { if (d.data().status === 'active') found = {id:d.id,...d.data()}; });
@@ -577,8 +584,13 @@ async function init() {
   loadQuests();
   listenLeaderboard();
   if (campaign?.numWinners) document.getElementById('stat-winners').textContent = campaign.numWinners;
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+
+  } catch(err) { console.error('init error:', err); }
+  finally {
+    clearTimeout(loadTimeout);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
 }
 
 async function upsertNewMissions(campaignId) {
