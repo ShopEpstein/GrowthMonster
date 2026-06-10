@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrowthMonster Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08080F;--surface:#111120;--card:#161625;--border:#22223A;
+  --text:#F0F0F5;--muted:#7777AA;--dim:#44445A;
+  --red:#FF3D00;--red-dim:rgba(255,61,0,0.12);--red-glow:rgba(255,61,0,0.25);
+  --green:#00E676;--green-dim:rgba(0,230,118,0.1);
+  --gold:#FFD54F;--cyan:#00F5FF;--purple:#9B6FFF;--r:10px;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px;width:100%;max-width:360px}
+.lmark{width:42px;height:42px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin:0 auto 10px}
+.ltitle{font-size:21px;font-weight:800;text-align:center;margin-bottom:4px;letter-spacing:-.02em}
+.lsub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+
+/* SHELL */
+.shell{display:grid;grid-template-columns:210px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-logo{padding:18px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+.sb-mark{width:28px;height:28px;background:var(--red);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.sb-name{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.sb-sub{font-size:9px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+nav{padding:10px 8px;flex:1}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .12s;user-select:none}
+.ni:hover{background:var(--card);color:var(--text)}
+.ni.active{background:var(--red-dim);color:var(--red)}
+.sb-bot{padding:11px;border-top:1px solid var(--border)}
+.uchip{display:flex;align-items:center;gap:8px;padding:9px;background:var(--card);border-radius:8px;cursor:pointer}
+.uchip:hover{background:var(--border)}
+.uav{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--red),#FF8C42);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.un{font-size:12px;font-weight:600}
+.ur{font-size:10px;color:var(--dim)}
+main{overflow-x:hidden;min-height:100vh}
+
+/* PAGES */
+.page{padding:26px 30px;max-width:1100px;display:none}
+.page.active{display:block}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap}
+.pt{font-size:23px;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.ps{font-size:13px;color:var(--muted)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.shell{grid-template-columns:1fr}.sidebar{display:none}}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px}
+.sl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
+.sv{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.sn{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:13px;overflow:hidden;margin-bottom:18px}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 17px;border-bottom:1px solid var(--border)}
+.ct{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+/* INPUTS */
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=url],input[type=datetime-local],textarea,select{
+  width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--r);
+  padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s
+}
+input:focus,textarea:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2377779A' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px}
+select option{background:var(--card);color:var(--text)}
+textarea{resize:vertical;min-height:64px}
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.fhint{font-size:11px;color:var(--dim);margin-top:4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .13s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:#FF5722;transform:translateY(-1px);box-shadow:0 4px 16px var(--red-glow)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-secondary:hover{border-color:var(--text);color:var(--text)}
+.btn-green{background:var(--green-dim);border:1px solid rgba(0,230,118,0.3);color:var(--green)}
+.btn-green:hover{background:rgba(0,230,118,0.2)}
+.btn-danger{background:var(--red-dim);border:1px solid rgba(255,61,0,0.3);color:var(--red)}
+.btn-danger:hover{background:rgba(255,61,0,0.2)}
+.btn-full{width:100%;font-size:14px;padding:11px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-sm{padding:6px 11px;font-size:11px;border-radius:7px}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.toggle-wrap:last-child{border-bottom:none}
+.ti .tit{font-size:13px;font-weight:600;margin-bottom:2px}
+.ti .tid{font-size:12px;color:var(--dim)}
+.tgl{width:34px;height:19px;background:var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .2s;border:none;flex-shrink:0}
+.tgl.on{background:var(--red)}
+.tgl::after{content:'';position:absolute;width:13px;height:13px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s}
+.tgl.on::after{transform:translateX(15px)}
+
+/* TABLE */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+th{font-size:10px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:9px 13px;text-align:left;white-space:nowrap}
+td{padding:11px 13px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:3px 8px;border-radius:100px}
+.bg{background:var(--green-dim);color:var(--green)}
+.br{background:var(--red-dim);color:var(--red)}
+.bp{background:rgba(155,111,255,0.12);color:var(--purple)}
+.bo{background:rgba(255,213,79,0.1);color:var(--gold)}
+.bx{background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid var(--border)}
+
+/* QUALITY */
+.qbar{display:flex;align-items:center;gap:6px}
+.qt{width:44px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.qf{height:100%;border-radius:2px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 0}
+.mt{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.mc{background:none;border:none;color:var(--dim);cursor:pointer;font-size:20px;line-height:1}
+.mc:hover{color:var(--text)}
+.mb{padding:18px 22px 22px}
+
+/* MISSION CARDS */
+.mission-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:10px;transition:border-color .15s}
+.mission-card:hover{border-color:var(--border-light)}
+.mc-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.mc-info{flex:1;min-width:0}
+.mc-name{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mc-meta{font-size:11px;color:var(--muted)}
+.mc-pts{font-size:14px;font-weight:700;color:var(--gold);white-space:nowrap}
+.mc-actions{display:flex;gap:7px;align-items:center;flex-shrink:0}
+
+/* DRAW */
+.draw-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
+.draw-spin{width:72px;height:72px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;margin:0 auto 18px;animation:spin .7s linear infinite}
+.winner-box{border:1px solid var(--gold);border-radius:16px;padding:30px;text-align:center;background:rgba(255,213,79,0.04)}
+
+/* BRANDING PREVIEW */
+.preview-bar{height:48px;border-radius:10px 10px 0 0;display:flex;align-items:center;padding:0 16px;font-weight:700;font-size:14px;gap:10px;margin-bottom:1px}
+.preview-body{background:var(--surface);border:1px solid var(--border);border-radius:0 0 10px 10px;padding:16px;font-size:12px;color:var(--muted)}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:var(--green);color:var(--green)}
+#toast.err{border-color:var(--red);color:var(--red)}
+
+/* REALTIME INDICATOR */
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div style="font-size:13px;color:var(--muted)">Loading...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-wrap" class="login-wrap" style="display:none">
+  <div class="login-card">
+    <div class="lmark">G</div>
+    <div class="ltitle">GrowthMonster</div>
+    <div class="lsub">Admin Dashboard</div>
+    <div class="fg">
+      <label class="fl">Password</label>
+      <input type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Sign In</button>
+    <div style="margin-top:14px;text-align:center;font-size:11px;color:var(--dim)">Default: <strong style="color:var(--muted)">admin123</strong></div>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div id="shell" class="shell" style="display:none">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-mark">G</div>
+      <div>
+        <div class="sb-name">GrowthMonster</div>
+        <div class="sb-sub">Admin</div>
+      </div>
+    </div>
+    <nav>
+      <div class="ni active" onclick="nav('dashboard')" id="nav-dashboard">⚡ Dashboard</div>
+      <div class="ni" onclick="nav('missions')" id="nav-missions">🎯 Missions</div>
+      <div class="ni" onclick="nav('entries')" id="nav-entries">📋 Entries</div>
+      <div class="ni" onclick="nav('draw')" id="nav-draw">🎲 Winner Draw</div>
+      <div class="ni" onclick="nav('branding')" id="nav-branding">🎨 Branding</div>
+      <div class="ni" onclick="nav('settings')" id="nav-settings">⚙️ Settings</div>
+    </nav>
+    <div class="sb-bot">
+      <div class="uchip" onclick="doLogout()">
+        <div class="uav">A</div>
+        <div><div class="un">Admin</div><div class="ur">Sign out</div></div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="ph">
+        <div><div class="pt">Dashboard</div><div class="ps"><span class="live-dot"></span>Live — updates in real time</div></div>
+        <div style="display:flex;gap:10px">
+          <a href="index.html" target="_blank" class="btn btn-secondary">View Campaign ↗</a>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="sc"><div class="sl">Total Points</div><div class="sv" id="d-pts" style="color:var(--cyan)">—</div><div class="sn">across all entrants</div></div>
+        <div class="sc"><div class="sl">Entrants</div><div class="sv" id="d-entrants">—</div><div class="sn">unique people</div></div>
+        <div class="sc"><div class="sl">Avg Quality</div><div class="sv" id="d-quality" style="color:var(--green)">—</div><div class="sn">out of 100</div></div>
+        <div class="sc"><div class="sl">Active Missions</div><div class="sv" id="d-missions" style="color:var(--purple)">—</div><div class="sn">live right now</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">Recent Entries</span><button class="btn btn-sm btn-secondary" onclick="nav('entries')">View all →</button></div>
+        <div class="tw"><table id="dash-table"><tbody><tr><td colspan="6" style="text-align:center;color:var(--dim);padding:28px">Loading...</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- MISSIONS -->
+    <div class="page" id="page-missions">
+      <div class="ph">
+        <div><div class="pt">Missions</div><div class="ps">Add, edit, schedule, and toggle missions live</div></div>
+        <button class="btn btn-primary" onclick="openAddMission()">+ Add Mission</button>
+      </div>
+      <div id="missions-list-admin"></div>
+    </div>
+
+    <!-- ENTRIES -->
+    <div class="page" id="page-entries">
+      <div class="ph">
+        <div><div class="pt">Entries</div><div class="ps" id="entries-count">Loading...</div></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-secondary" onclick="exportCSV()">↓ CSV</button>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <input type="text" id="search" placeholder="Search name, email, or wallet..." oninput="filterEntries()" style="max-width:340px">
+      </div>
+      <div class="card">
+        <div class="tw">
+          <table>
+            <thead><tr><th>Entrant</th><th>Points</th><th>Quality</th><th>Missions</th><th>Ref Code</th><th>Timestamp</th><th>Status</th><th></th></tr></thead>
+            <tbody id="entries-tbody"><tr><td colspan="8" style="text-align:center;color:var(--dim);padding:28px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- WINNER DRAW -->
+    <div class="page" id="page-draw">
+      <div class="ph"><div><div class="pt">Winner Draw</div><div class="ps">Weighted random — more points = better odds. Flagged entries excluded.</div></div></div>
+      <div style="max-width:580px">
+        <div class="card" style="margin-bottom:16px">
+          <div class="ch"><span class="ct">Pool Info</span></div>
+          <div style="padding:16px">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+              <div style="background:var(--surface);border-radius:8px;padding:9px 14px;font-size:12px"><span style="color:var(--dim)">Eligible: </span><span id="draw-elig" style="font-weight:700;color:var(--green)">—</span></div>
+              <div style="background:var(--surface);border-radius:8px;padding:9px 14px;font-size:12px"><span style="color:var(--dim)">Excluded: </span><span id="draw-excl" style="font-weight:700;color:var(--red)">—</span></div>
+              <div style="background:var(--surface);border-radius:8px;padding:9px 14px;font-size:12px"><span style="color:var(--dim)">Tickets: </span><span id="draw-tix" style="font-weight:700;color:var(--gold)">—</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:14px">Each point = one ticket in the draw. Higher quality entries naturally earn more points and get proportionally better odds.</div>
+            <button class="btn btn-primary btn-full" id="draw-btn" onclick="doDraw()">🎲 Draw Winner</button>
+          </div>
+        </div>
+        <div id="draw-result"></div>
+      </div>
+    </div>
+
+    <!-- BRANDING -->
+    <div class="page" id="page-branding">
+      <div class="ph"><div><div class="pt">Branding</div><div class="ps">Customize the campaign page — changes go live instantly</div></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:900px">
+        <div>
+          <div class="card">
+            <div class="ch"><span class="ct">Campaign Info</span></div>
+            <div style="padding:16px">
+              <div class="fg"><label class="fl">Campaign Name</label><input type="text" id="b-name" placeholder="$STACCANA Launch Giveaway"></div>
+              <div class="fg"><label class="fl">Description</label><textarea id="b-desc" placeholder="Complete missions. Earn entries..."></textarea></div>
+              <div class="form-row">
+                <div class="fg"><label class="fl">Prize Amount</label><input type="text" id="b-prize" placeholder="$500"></div>
+                <div class="fg"><label class="fl">Prize Token</label><input type="text" id="b-prize-token" placeholder="in $STACCANA"></div>
+              </div>
+              <div class="form-row">
+                <div class="fg"><label class="fl">Prize Icon</label><input type="text" id="b-prize-icon" placeholder="💎"></div>
+                <div class="fg"><label class="fl">End Date</label><input type="datetime-local" id="b-end-date"></div>
+              </div>
+              <div class="fg"><label class="fl">Referral Bonus (pts)</label><input type="number" id="b-ref-bonus" placeholder="25"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct">Identity</span></div>
+            <div style="padding:16px">
+              <div class="fg"><label class="fl">Project Name</label><input type="text" id="b-proj-name" placeholder="$STACCANA"></div>
+              <div class="fg"><label class="fl">Logo URL</label><input type="url" id="b-logo" placeholder="https://..."></div>
+              <div class="fg"><label class="fl">Accent Color</label><input type="text" id="b-color" placeholder="#FF3D00"><div class="fhint">Hex color — controls buttons, badges, highlights</div></div>
+              <div class="fg"><label class="fl">About Text</label><textarea id="b-about" placeholder="Short description of the project..."></textarea></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="ch"><span class="ct">Header Links (comma separated label:url)</span></div>
+            <div style="padding:16px">
+              <div class="fg"><textarea id="b-links" placeholder="Twitter:https://x.com/stacverse&#10;Telegram:https://t.me/Staccana&#10;Chart:https://dexscreener.com/..." rows="4"></textarea><div class="fhint">One per line: Label:URL</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct">Token Info</span></div>
+            <div style="padding:16px">
+              <div class="fg"><label class="fl">Token Name</label><input type="text" id="b-tk-name" placeholder="$STACCANA"></div>
+              <div class="fg"><label class="fl">Contract Address</label><input type="text" id="b-tk-ca" placeholder="73edX6x..."></div>
+              <div class="form-row">
+                <div class="fg"><label class="fl">Price</label><input type="text" id="b-tk-price" placeholder="$0.000403"></div>
+                <div class="fg"><label class="fl">24h Change</label><input type="text" id="b-tk-change" placeholder="+109%"></div>
+              </div>
+              <div class="fg"><label class="fl">Buy URL</label><input type="url" id="b-tk-buy" placeholder="https://dexscreener.com/..."></div>
+              <div class="fg"><label class="fl">Token Logo URL</label><input type="url" id="b-tk-logo" placeholder="https://..."></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ct">About Links (one per line Label:URL)</span></div>
+            <div style="padding:16px">
+              <div class="fg"><textarea id="b-about-links" placeholder="@stacverse:https://x.com/stacverse&#10;Telegram:https://t.me/Staccana&#10;stacsol.app:https://stacsol.app" rows="3"></textarea></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="saveBranding()">💾 Save & Go Live</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="ph"><div><div class="pt">Settings</div></div></div>
+      <div style="max-width:480px">
+        <div class="card">
+          <div class="ch"><span class="ct">Admin Password</span></div>
+          <div style="padding:16px">
+            <div class="fg"><label class="fl">New Password</label><input type="password" id="new-pass" placeholder="Enter new password"></div>
+            <button class="btn btn-primary" onclick="changePass()">Update Password</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="ch"><span class="ct">Quick Actions</span></div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+            <a href="index.html" target="_blank" class="btn btn-secondary">View Public Campaign ↗</a>
+            <button class="btn btn-danger" onclick="if(confirm('Reset all entries? This cannot be undone.'))resetEntries()">⚠️ Reset All Entries</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD/EDIT MISSION MODAL -->
+<div id="mission-modal" class="modal-bg" style="display:none" onclick="if(event.target===this)closeMissionModal()">
+  <div class="modal">
+    <div class="mh">
+      <span class="mt" id="modal-title">Add Mission</span>
+      <button class="mc" onclick="closeMissionModal()">✕</button>
+    </div>
+    <div class="mb">
+      <div class="form-row">
+        <div class="fg"><label class="fl">Mission Name <span style="color:var(--red)">*</span></label><input type="text" id="m-name" placeholder="e.g. Follow @project on X"></div>
+        <div class="fg"><label class="fl">Icon (emoji)</label><input type="text" id="m-icon" placeholder="𝕏" style="font-size:18px"></div>
+      </div>
+      <div class="fg"><label class="fl">Description</label><input type="text" id="m-desc" placeholder="Short instruction for entrants"></div>
+      <div class="fg"><label class="fl">Mission Type</label>
+        <select id="m-type" onchange="onTypeChange()">
+          <option value="follow_x">Follow X Account</option>
+          <option value="retweet">Retweet</option>
+          <option value="post_ticker">Post with Ticker</option>
+          <option value="quality_content">Quality Content Post</option>
+          <option value="space_attend">Attend Twitter Space</option>
+          <option value="space_question">Ask Space Question</option>
+          <option value="host_space">Host a Space</option>
+          <option value="hold_token">Hold Token</option>
+          <option value="mint_token">Mint Token</option>
+          <option value="visit_url">Visit URL</option>
+          <option value="watch_youtube">Watch YouTube Video</option>
+          <option value="like_youtube">Like YouTube Video</option>
+          <option value="join_tg">Join Telegram</option>
+          <option value="written_response">Written Response</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="fg" id="m-link-wrap"><label class="fl">Action Link (optional)</label><input type="url" id="m-link" placeholder="https://..."><div class="fhint">URL to send entrants to complete this action</div></div>
+      <div class="form-row">
+        <div class="fg"><label class="fl">Points</label><input type="number" id="m-pts" placeholder="25" min="1"></div>
+        <div class="fg"><label class="fl">Quality Weight</label>
+          <select id="m-quality">
+            <option value="low">Low — participation</option>
+            <option value="medium">Medium — some effort</option>
+            <option value="high">High — genuine engagement</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">Proof Type</label>
+        <select id="m-proof-type" onchange="onProofTypeChange()">
+          <option value="username">Username</option>
+          <option value="url">URL / Link</option>
+          <option value="wallet">Wallet Address</option>
+          <option value="text">Written Response</option>
+          <option value="screenshot">Screenshot URL</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Proof Label (shown to entrant)</label><input type="text" id="m-proof-label" placeholder="e.g. Your Twitter @username"></div>
+      <div class="fg" id="m-minlen-wrap" style="display:none"><label class="fl">Minimum Characters</label><input type="number" id="m-minlen" placeholder="50" min="1"><div class="fhint">Minimum response length to qualify</div></div>
+      <div class="fg"><label class="fl">Schedule Unlock At (optional)</label><input type="datetime-local" id="m-unlock"><div class="fhint">Leave blank to show immediately. Set a date/time to lock until then (e.g. for a scheduled Space).</div></div>
+      <div class="form-row">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0">
+          <button class="tgl on" id="m-active-toggle" onclick="this.classList.toggle('on')"></button>
+          <div><div style="font-size:13px;font-weight:600">Active</div><div style="font-size:11px;color:var(--dim)">Show on campaign page</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0">
+          <button class="tgl" id="m-onetime-toggle" onclick="this.classList.toggle('on')"></button>
+          <div><div style="font-size:13px;font-weight:600">One-time only</div><div style="font-size:11px;color:var(--dim)">Can only complete once</div></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;margin-bottom:16px">
+        <button class="tgl" id="m-daily-toggle" onclick="this.classList.toggle('on')"></button>
+        <div><div style="font-size:13px;font-weight:600">Daily repeatable</div><div style="font-size:11px;color:var(--dim)">Resets every day — entrants can do this once per day</div></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-primary" style="flex:1" onclick="saveMission()" id="save-mission-btn">Save Mission</button>
+        <button class="btn btn-secondary" onclick="closeMissionModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, getDocs, increment, writeBatch, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHxMmNQSKr2JgsPgIpbnLzaXXYTw8kBMk",
+  authDomain: "growthmonster.firebaseapp.com",
+  projectId: "growthmonster",
+  storageBucket: "growthmonster.firebasestorage.app",
+  messagingSenderId: "97804410543",
+  appId: "1:97804410543:web:ffdefa9ea29b62ce6afe5a"
+};
+
+const fb = initializeApp(firebaseConfig);
+const db = getFirestore(fb);
+
+// ============================================================
+// STATE
+// ============================================================
+let allEntries = [];
+let allMissions = [];
+let campaign = null;
+let editingMissionId = null;
+const ADMIN_PASS_KEY = 'gm_admin_pass';
+
+// ============================================================
+// AUTH
+// ============================================================
+window.doLogin = function() {
+  const pass = document.getElementById('login-pass').value;
+  const stored = localStorage.getItem(ADMIN_PASS_KEY) || 'admin123';
+  if (pass === stored) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('shell').style.display = 'grid';
+    initAdmin();
+  } else {
+    toast('Wrong password', 'err');
+  }
+};
+
+window.doLogout = function() {
+  document.getElementById('shell').style.display = 'none';
+  document.getElementById('login-wrap').style.display = 'flex';
+};
+
+window.changePass = function() {
+  const p = document.getElementById('new-pass').value.trim();
+  if (!p) { toast('Enter a new password', 'err'); return; }
+  localStorage.setItem(ADMIN_PASS_KEY, p);
+  toast('Password updated', 'ok');
+};
+
+// ============================================================
+// NAV
+// ============================================================
+window.nav = function(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  if (page === 'draw') updateDrawInfo();
+  if (page === 'branding') loadBrandingForm();
+};
+
+// ============================================================
+// INIT ADMIN
+// ============================================================
+async function initAdmin() {
+  // Listen to entries
+  const eq = query(collection(db, 'entries'), orderBy('pts', 'desc'));
+  onSnapshot(eq, snap => {
+    allEntries = [];
+    snap.forEach(d => allEntries.push({ id: d.id, ...d.data() }));
+    updateDashboard();
+    renderEntriesTable(allEntries);
+    updateDrawInfo();
+  });
+
+  // Listen to missions
+  const mq = query(collection(db, 'missions'), orderBy('order', 'asc'));
+  onSnapshot(mq, snap => {
+    allMissions = [];
+    snap.forEach(d => allMissions.push({ id: d.id, ...d.data() }));
+    renderMissionsAdmin();
+    document.getElementById('d-missions').textContent = allMissions.filter(m => m.active).length;
+  });
+
+  // Load campaign
+  const cs = await getDocs(collection(db, 'campaigns'));
+  cs.forEach(d => { if (d.data().status === 'active') campaign = { id: d.id, ...d.data() }; });
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function updateDashboard() {
+  const totalPts = allEntries.reduce((s, e) => s + (e.pts || 0), 0);
+  const avgQ = allEntries.length ? Math.round(allEntries.reduce((s, e) => s + (e.qualityScore || 0), 0) / allEntries.length) : 0;
+  document.getElementById('d-pts').textContent = totalPts.toLocaleString();
+  document.getElementById('d-entrants').textContent = allEntries.length;
+  document.getElementById('d-quality').textContent = avgQ;
+
+  const tbody = document.querySelector('#dash-table tbody');
+  if (!allEntries.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:28px">No entries yet. <a href="index.html" target="_blank" style="color:var(--cyan)">View campaign →</a></td></tr>';
+    return;
+  }
+  tbody.innerHTML = allEntries.slice(0, 8).map(e => `
+    <tr>
+      <td><div style="font-weight:600">${e.name||'—'}</div><div style="font-size:11px;color:var(--dim);font-family:monospace">${e.wallet||'—'}</div></td>
+      <td><span style="font-family:monospace;font-weight:700;color:var(--gold)">${e.pts||0}</span></td>
+      <td>${qBar(e.qualityScore||0)}</td>
+      <td><span style="font-size:12px;color:var(--muted)">${e.actionsCompleted||0} done</span></td>
+      <td style="font-size:11px;color:var(--dim);font-family:monospace">${e.refCode||'—'}</td>
+      <td>${e.flagged ? '<span class="badge br">Flagged</span>' : '<span class="badge bg">Clean</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+function qBar(score) {
+  const c = score >= 80 ? '#00E676' : score >= 60 ? '#FFD54F' : score >= 40 ? '#FF8C42' : '#FF3D00';
+  return `<div class="qbar"><div class="qt"><div class="qf" style="width:${score}%;background:${c}"></div></div><span style="font-size:11px;font-family:monospace;color:${c}">${score}</span></div>`;
+}
+
+// ============================================================
+// MISSIONS ADMIN
+// ============================================================
+function renderMissionsAdmin() {
+  const list = document.getElementById('missions-list-admin');
+  if (!allMissions.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--dim);padding:32px;font-size:13px">No missions yet. Click "+ Add Mission" to create your first one.</div>';
+    return;
+  }
+
+  list.innerHTML = allMissions.map(m => {
+    const isLocked = m.unlockAt && new Date(m.unlockAt) > Date.now();
+    const tags = [
+      m.active ? '<span class="badge bg">Active</span>' : '<span class="badge bx">Hidden</span>',
+      m.oneTime ? '<span class="badge bx">One-time</span>' : '',
+      m.daily ? '<span class="badge" style="background:rgba(0,230,118,0.1);color:var(--green)">Daily</span>' : '',
+      isLocked ? '<span class="badge bp">Scheduled</span>' : '',
+      m.quality === 'high' ? '<span class="badge bo">High value</span>' : ''
+    ].filter(Boolean).join('');
+
+    return `
+      <div class="mission-card">
+        <div class="mc-icon" style="background:${m.iconBg||'rgba(255,255,255,0.06)'}">${m.icon||'⭐'}</div>
+        <div class="mc-info">
+          <div class="mc-name">${m.name}</div>
+          <div class="mc-meta">${m.desc||''} ${isLocked ? '· Unlocks: '+new Date(m.unlockAt).toLocaleString() : ''}</div>
+          <div style="margin-top:5px;display:flex;gap:5px;flex-wrap:wrap">${tags}</div>
+        </div>
+        <div class="mc-pts">+${m.pts}</div>
+        <div class="mc-actions">
+          <button class="btn btn-sm btn-secondary" onclick="editMission('${m.id}')">Edit</button>
+          <button class="btn btn-sm ${m.active ? 'btn-danger' : 'btn-green'}" onclick="toggleMissionActive('${m.id}', ${!m.active})">${m.active ? 'Hide' : 'Show'}</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteMission('${m.id}')">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.toggleMissionActive = async function(id, active) {
+  await updateDoc(doc(db, 'missions', id), { active });
+  toast(active ? 'Mission visible' : 'Mission hidden', 'ok');
+};
+
+window.deleteMission = async function(id) {
+  if (!confirm('Delete this mission?')) return;
+  await deleteDoc(doc(db, 'missions', id));
+  toast('Mission deleted', 'ok');
+};
+
+window.editMission = function(id) {
+  const m = allMissions.find(x => x.id === id);
+  if (!m) return;
+  editingMissionId = id;
+  document.getElementById('modal-title').textContent = 'Edit Mission';
+  document.getElementById('m-name').value = m.name || '';
+  document.getElementById('m-icon').value = m.icon || '';
+  document.getElementById('m-desc').value = m.desc || '';
+  document.getElementById('m-type').value = m.type || 'custom';
+  document.getElementById('m-link').value = m.link || '';
+  document.getElementById('m-pts').value = m.pts || 25;
+  document.getElementById('m-quality').value = m.quality || 'medium';
+  document.getElementById('m-proof-type').value = m.proofType || 'url';
+  document.getElementById('m-proof-label').value = m.proofLabel || '';
+  document.getElementById('m-minlen').value = m.minLength || '';
+  document.getElementById('m-unlock').value = m.unlockAt ? new Date(m.unlockAt).toISOString().slice(0,16) : '';
+  document.getElementById('m-active-toggle').className = 'tgl' + (m.active !== false ? ' on' : '');
+  document.getElementById('m-onetime-toggle').className = 'tgl' + (m.oneTime ? ' on' : '');
+  document.getElementById('m-daily-toggle').className = 'tgl' + (m.daily ? ' on' : '');
+  onProofTypeChange();
+  document.getElementById('mission-modal').style.display = 'flex';
+};
+
+window.openAddMission = function() {
+  editingMissionId = null;
+  document.getElementById('modal-title').textContent = 'Add Mission';
+  document.getElementById('m-name').value = '';
+  document.getElementById('m-icon').value = '';
+  document.getElementById('m-desc').value = '';
+  document.getElementById('m-type').value = 'follow_x';
+  document.getElementById('m-link').value = '';
+  document.getElementById('m-pts').value = '25';
+  document.getElementById('m-quality').value = 'medium';
+  document.getElementById('m-proof-type').value = 'username';
+  document.getElementById('m-proof-label').value = '';
+  document.getElementById('m-minlen').value = '';
+  document.getElementById('m-unlock').value = '';
+  document.getElementById('m-active-toggle').className = 'tgl on';
+  document.getElementById('m-onetime-toggle').className = 'tgl';
+  document.getElementById('m-daily-toggle').className = 'tgl';
+  onProofTypeChange();
+  document.getElementById('mission-modal').style.display = 'flex';
+};
+
+window.closeMissionModal = function() {
+  document.getElementById('mission-modal').style.display = 'none';
+  editingMissionId = null;
+};
+
+window.onTypeChange = function() {
+  const type = document.getElementById('m-type').value;
+  const defaults = {
+    follow_x: { proofType: 'username', proofLabel: 'Your X/Twitter @username', quality: 'low' },
+    retweet: { proofType: 'url', proofLabel: 'URL of your retweet', quality: 'low' },
+    post_ticker: { proofType: 'url', proofLabel: 'URL of your post', quality: 'medium' },
+    quality_content: { proofType: 'url', proofLabel: 'URL of your content post', quality: 'high' },
+    space_attend: { proofType: 'url', proofLabel: 'Twitter Space URL or screenshot link', quality: 'high' },
+    space_question: { proofType: 'text', proofLabel: 'Type the question you asked...', quality: 'high' },
+    host_space: { proofType: 'url', proofLabel: 'Link to your hosted Space', quality: 'high' },
+    hold_token: { proofType: 'wallet', proofLabel: 'Wallet address holding the token', quality: 'medium' },
+    mint_token: { proofType: 'wallet', proofLabel: 'Wallet you minted with', quality: 'high' },
+    visit_url: { proofType: 'username', proofLabel: 'Your name or confirm "done"', quality: 'low' },
+    watch_youtube: { proofType: 'username', proofLabel: 'Confirm "watched" or your username', quality: 'low' },
+    like_youtube: { proofType: 'username', proofLabel: 'Your YouTube username', quality: 'low' },
+    join_tg: { proofType: 'username', proofLabel: 'Your Telegram username', quality: 'low' },
+    written_response: { proofType: 'text', proofLabel: 'Write your response here...', quality: 'high' },
+    custom: { proofType: 'url', proofLabel: 'Submit your proof', quality: 'medium' }
+  };
+  const d = defaults[type] || defaults.custom;
+  document.getElementById('m-proof-type').value = d.proofType;
+  document.getElementById('m-proof-label').value = d.proofLabel;
+  document.getElementById('m-quality').value = d.quality;
+  onProofTypeChange();
+};
+
+window.onProofTypeChange = function() {
+  const type = document.getElementById('m-proof-type').value;
+  document.getElementById('m-minlen-wrap').style.display = type === 'text' ? 'block' : 'none';
+};
+
+window.saveMission = async function() {
+  const name = document.getElementById('m-name').value.trim();
+  if (!name) { toast('Mission name required', 'err'); return; }
+
+  const iconBgMap = {
+    follow_x: 'rgba(255,255,255,0.06)', retweet: 'rgba(0,230,118,0.08)',
+    post_ticker: 'rgba(255,61,0,0.08)', quality_content: 'rgba(155,111,255,0.1)',
+    space_attend: 'rgba(155,111,255,0.1)', space_question: 'rgba(155,111,255,0.1)',
+    host_space: 'rgba(255,213,79,0.1)', hold_token: 'rgba(255,213,79,0.08)',
+    mint_token: 'rgba(0,230,118,0.08)', visit_url: 'rgba(68,138,255,0.1)',
+    watch_youtube: 'rgba(255,61,0,0.1)', like_youtube: 'rgba(255,61,0,0.1)',
+    join_tg: 'rgba(34,158,217,0.1)', written_response: 'rgba(255,61,0,0.08)', custom: 'rgba(255,255,255,0.06)'
+  };
+
+  const type = document.getElementById('m-type').value;
+  const unlockVal = document.getElementById('m-unlock').value;
+
+  const data = {
+    name,
+    icon: document.getElementById('m-icon').value.trim() || '⭐',
+    iconBg: iconBgMap[type] || 'rgba(255,255,255,0.06)',
+    desc: document.getElementById('m-desc').value.trim(),
+    type,
+    link: document.getElementById('m-link').value.trim(),
+    pts: parseInt(document.getElementById('m-pts').value) || 25,
+    quality: document.getElementById('m-quality').value,
+    proofType: document.getElementById('m-proof-type').value,
+    proofLabel: document.getElementById('m-proof-label').value.trim(),
+    minLength: parseInt(document.getElementById('m-minlen').value) || 0,
+    unlockAt: unlockVal ? new Date(unlockVal).toISOString() : null,
+    active: document.getElementById('m-active-toggle').classList.contains('on'),
+    oneTime: document.getElementById('m-onetime-toggle').classList.contains('on'),
+    daily: document.getElementById('m-daily-toggle').classList.contains('on'),
+    campaignId: campaign?.id || '',
+    order: editingMissionId ? (allMissions.find(m => m.id === editingMissionId)?.order || 99) : allMissions.length + 1
+  };
+
+  const btn = document.getElementById('save-mission-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    if (editingMissionId) {
+      await updateDoc(doc(db, 'missions', editingMissionId), data);
+      toast('Mission updated — live instantly', 'ok');
+    } else {
+      await addDoc(collection(db, 'missions'), data);
+      toast('Mission added — live instantly', 'ok');
+    }
+    closeMissionModal();
+  } catch(err) {
+    toast('Save failed', 'err');
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Save Mission';
+};
+
+// ============================================================
+// ENTRIES
+// ============================================================
+function renderEntriesTable(entries) {
+  document.getElementById('entries-count').textContent = entries.length + ' entries';
+  const tbody = document.getElementById('entries-tbody');
+  if (!entries.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:28px">No entries yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = entries.map(e => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">${(e.name||'?').charAt(0).toUpperCase()}</div>
+          <div><div style="font-weight:600;font-size:13px">${e.name||'—'}</div><div style="font-size:10px;color:var(--dim);font-family:monospace">${e.wallet||'—'}</div></div>
+        </div>
+      </td>
+      <td><span style="font-family:monospace;font-weight:700;color:var(--gold)">${e.pts||0}</span></td>
+      <td>${qBar(e.qualityScore||0)}</td>
+      <td><span style="font-size:12px;color:var(--muted)">${e.actionsCompleted||0}</span></td>
+      <td><span style="font-size:11px;color:var(--dim);font-family:monospace">${e.refCode||'—'}</span></td>
+      <td style="font-size:11px;color:var(--dim)">${e.timestamp ? new Date(e.timestamp).toLocaleDateString() : '—'}</td>
+      <td>${e.flagged ? '<span class="badge br">⚠ Flagged</span>' : '<span class="badge bg">✓ Clean</span>'}</td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-sm btn-secondary" onclick="viewProofs('${e.id}')">Proof</button>
+          <button class="btn btn-sm ${e.flagged ? 'btn-green' : 'btn-danger'}" onclick="toggleFlag('${e.id}', ${!e.flagged})">${e.flagged ? 'Clear' : 'Flag'}</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+window.filterEntries = function() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = allEntries.filter(e =>
+    (e.name||'').toLowerCase().includes(q) ||
+    (e.email||'').toLowerCase().includes(q) ||
+    (e.wallet||'').toLowerCase().includes(q)
+  );
+  renderEntriesTable(filtered);
+};
+
+window.toggleFlag = async function(id, flagged) {
+  await updateDoc(doc(db, 'entries', id), { flagged });
+  toast(flagged ? 'Entry flagged' : 'Flag cleared', 'ok');
+};
+
+window.viewProofs = function(id) {
+  const e = allEntries.find(x => x.id === id);
+  if (!e) return;
+  try {
+    const proofs = JSON.parse(e.proofs || '{}');
+    const lines = Object.entries(proofs).map(([k, v]) => {
+      const m = allMissions.find(x => x.id === k);
+      return (m ? m.name : k) + ':\n' + v;
+    }).join('\n\n');
+    alert(lines || 'No proof data');
+  } catch(err) { alert(e.proofs || 'No proof data'); }
+};
+
+window.exportCSV = function() {
+  if (!allEntries.length) { toast('No entries', 'err'); return; }
+  const headers = ['Name','Email','Wallet','Points','Quality','Actions','RefCode','ReferredBy','Flagged','Timestamp'];
+  const rows = allEntries.map(e => headers.map((h, i) => {
+    const vals = [e.name,e.email,e.walletFull||e.wallet,e.pts,e.qualityScore,e.actionsCompleted,e.refCode,e.referredBy,e.flagged,e.timestamp];
+    return '"' + String(vals[i]||'').replace(/"/g,'""') + '"';
+  }).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = 'growthmonster-entries.csv';
+  a.click();
+  toast('CSV downloaded', 'ok');
+};
+
+window.resetEntries = async function() {
+  const snap = await getDocs(collection(db, 'entries'));
+  const batch = writeBatch(db);
+  snap.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+  toast('All entries reset', 'ok');
+};
+
+// ============================================================
+// WINNER DRAW
+// ============================================================
+function updateDrawInfo() {
+  const eligible = allEntries.filter(e => !e.flagged);
+  const excluded = allEntries.filter(e => e.flagged);
+  const tickets = eligible.reduce((s, e) => s + (e.pts || 0), 0);
+  document.getElementById('draw-elig').textContent = eligible.length;
+  document.getElementById('draw-excl').textContent = excluded.length;
+  document.getElementById('draw-tix').textContent = tickets.toLocaleString();
+}
+
+window.doDraw = function() {
+  const eligible = allEntries.filter(e => !e.flagged);
+  if (!eligible.length) { toast('No eligible entries', 'err'); return; }
+  document.getElementById('draw-btn').disabled = true;
+  document.getElementById('draw-result').innerHTML = '<div class="draw-box"><div class="draw-spin"></div><div style="font-size:17px;font-weight:800;margin-bottom:8px">Drawing...</div><div style="font-size:12px;color:var(--dim)">Shuffling the pool</div></div>';
+
+  setTimeout(() => {
+    const pool = [];
+    eligible.forEach(e => { for (let i = 0; i < (e.pts || 1); i++) pool.push(e); });
+    const winner = pool[Math.floor(Math.random() * pool.length)];
+    const ts = new Date().toLocaleTimeString();
+    document.getElementById('draw-result').innerHTML = `
+      <div class="winner-box">
+        <div style="font-size:44px;margin-bottom:12px">🏆</div>
+        <div style="font-size:26px;font-weight:800;color:var(--gold);margin-bottom:5px;letter-spacing:-.02em">${winner.name||'Unknown'}</div>
+        <div style="font-size:12px;color:var(--dim);font-family:monospace;margin-bottom:14px">${winner.walletFull||winner.wallet||'—'}</div>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+          <span class="badge bo">🎯 ${winner.pts||0} entries</span>
+          <span class="badge bg">✓ Verified clean</span>
+        </div>
+        <div style="background:var(--surface);border-radius:8px;padding:11px;font-size:12px;color:var(--dim);margin-bottom:14px">Selected from ${pool.length.toLocaleString()} tickets at ${ts}</div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button class="btn btn-primary" onclick="announceWinner('${(winner.name||'').replace(/'/g,"\\'")}')">📣 Announce on X</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('draw-result').innerHTML='';document.getElementById('draw-btn').disabled=false">Clear</button>
+        </div>
+      </div>`;
+  }, 2200);
+};
+
+window.announceWinner = function(name) {
+  const text = `🏆 The winner of the ${campaign?.name || 'GrowthMonster'} giveaway is ${name}!\n\nCongratulations! 🎉\n\n#STACCANA #Stacverse`;
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+};
+
+// ============================================================
+// BRANDING
+// ============================================================
+function loadBrandingForm() {
+  if (!campaign) return;
+  document.getElementById('b-name').value = campaign.name || '';
+  document.getElementById('b-desc').value = campaign.description || '';
+  document.getElementById('b-prize').value = campaign.prizeAmount || '';
+  document.getElementById('b-prize-token').value = campaign.prizeToken || '';
+  document.getElementById('b-prize-icon').value = campaign.prizeIcon || '';
+  document.getElementById('b-end-date').value = campaign.endDate ? new Date(campaign.endDate).toISOString().slice(0,16) : '';
+  document.getElementById('b-ref-bonus').value = campaign.referralBonus || 25;
+  document.getElementById('b-proj-name').value = campaign.projectName || '';
+  document.getElementById('b-logo').value = campaign.logoUrl || '';
+  document.getElementById('b-color').value = campaign.accentColor || '#FF3D00';
+  document.getElementById('b-about').value = campaign.aboutText || '';
+  if (campaign.headerLinks) {
+    document.getElementById('b-links').value = campaign.headerLinks.map(l => l.label + ':' + l.url).join('\n');
+  }
+  if (campaign.aboutLinks) {
+    document.getElementById('b-about-links').value = campaign.aboutLinks.map(l => l.label + ':' + l.url).join('\n');
+  }
+  if (campaign.tokenInfo) {
+    const ti = campaign.tokenInfo;
+    document.getElementById('b-tk-name').value = ti.name || '';
+    document.getElementById('b-tk-ca').value = ti.contract || '';
+    document.getElementById('b-tk-price').value = ti.price || '';
+    document.getElementById('b-tk-change').value = ti.change || '';
+    document.getElementById('b-tk-buy').value = ti.buyUrl || '';
+    document.getElementById('b-tk-logo').value = ti.logoUrl || '';
+  }
+}
+
+window.saveBranding = async function() {
+  if (!campaign?.id) { toast('No active campaign found', 'err'); return; }
+
+  function parseLinks(raw) {
+    return raw.split('\n').filter(l => l.trim() && l.includes(':')).map(l => {
+      const idx = l.indexOf(':');
+      return { label: l.slice(0, idx).trim(), url: l.slice(idx + 1).trim() };
+    });
+  }
+
+  const data = {
+    name: document.getElementById('b-name').value.trim(),
+    description: document.getElementById('b-desc').value.trim(),
+    prizeAmount: document.getElementById('b-prize').value.trim(),
+    prizeToken: document.getElementById('b-prize-token').value.trim(),
+    prizeIcon: document.getElementById('b-prize-icon').value.trim(),
+    endDate: document.getElementById('b-end-date').value ? new Date(document.getElementById('b-end-date').value).toISOString() : campaign.endDate,
+    referralBonus: parseInt(document.getElementById('b-ref-bonus').value) || 25,
+    projectName: document.getElementById('b-proj-name').value.trim(),
+    logoUrl: document.getElementById('b-logo').value.trim(),
+    accentColor: document.getElementById('b-color').value.trim() || '#FF3D00',
+    aboutText: document.getElementById('b-about').value.trim(),
+    headerLinks: parseLinks(document.getElementById('b-links').value),
+    aboutLinks: parseLinks(document.getElementById('b-about-links').value),
+    tokenInfo: {
+      name: document.getElementById('b-tk-name').value.trim(),
+      contract: document.getElementById('b-tk-ca').value.trim(),
+      price: document.getElementById('b-tk-price').value.trim(),
+      change: document.getElementById('b-tk-change').value.trim(),
+      buyUrl: document.getElementById('b-tk-buy').value.trim(),
+      logoUrl: document.getElementById('b-tk-logo').value.trim(),
+      chartUrl: document.getElementById('b-tk-buy').value.trim(),
+      siteUrl: ''
+    }
+  };
+
+  try {
+    await updateDoc(doc(db, 'campaigns', campaign.id), data);
+    campaign = { ...campaign, ...data };
+    toast('Branding saved — live instantly ✓', 'ok');
+  } catch(err) {
+    toast('Save failed', 'err');
+    console.error(err);
+  }
+};
+
+// ============================================================
+// TOAST
+// ============================================================
+window.toast = function(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(() => { t.className = ''; }, 2600);
+};
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('loading').style.display = 'none';
+document.getElementById('login-wrap').style.display = 'flex';
+</script>
+</body>
+</html>
