@@ -6,7 +6,7 @@
 <title id="page-title">GrowthGenie — Cheat Code for Growth</title>
 <meta property="og:title" id="og-title" content="GrowthGenie — Cheat Code for Growth">
 <meta property="og:description" id="og-desc" content="Complete quests. Earn XP. Climb the leaderboard. The ultimate cheat code for community growth.">
-<meta property="og:image" id="og-img" content="assets/banner.png">
+<meta property="og:image" id="og-img" content="assets/banner.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
 <style>
@@ -244,8 +244,8 @@ textarea{resize:vertical;min-height:68px}
 .hero{animation:flicker 8s infinite}
 
 /* HERO BANNER */
-.hero-banner{display:block;width:100%;max-height:320px;object-fit:cover;object-position:center;border-bottom:3px solid var(--pixel);box-shadow:0 0 30px var(--pixel-dim)}
-.hero-banner-wrap{overflow:hidden}
+.hero-banner{display:block;width:100%;height:auto;border-bottom:3px solid var(--pixel);box-shadow:0 0 30px var(--pixel-dim)}
+.hero-banner-wrap{overflow:hidden;background:#000}
 
 /* HEADER LOGO IMG */
 .logo-img{height:36px;width:auto;object-fit:contain;border:2px solid var(--pixel);padding:2px;background:#000;max-width:130px}
@@ -262,7 +262,7 @@ textarea{resize:vertical;min-height:68px}
 
 <header>
   <div class="logo">
-    <img src="assets/stacverse-logo.png" alt="Stacverse" class="logo-img" onerror="this.style.display='none'">
+    <img src="assets/stacverse-logo.jpg" alt="Stacverse" class="logo-img" onerror="this.style.display='none'">
     <div>
       <div class="logo-name">GROWTH<span style="color:var(--yellow)">GENIE</span></div>
     </div>
@@ -276,7 +276,7 @@ textarea{resize:vertical;min-height:68px}
 </div>
 
 <div class="hero-banner-wrap">
-  <img src="assets/banner.png" alt="Stacverse" class="hero-banner" onerror="this.style.display='none'">
+  <img src="assets/banner.jpg" alt="Stacverse" class="hero-banner" onerror="this.style.display='none'">
 </div>
 
 <div id="app" style="display:none">
@@ -285,13 +285,29 @@ textarea{resize:vertical;min-height:68px}
     <div class="hero-title" id="hero-title">ENTER THE <span class="hl">STACVERSE</span></div>
     <p class="hero-sub" id="hero-desc">Complete quests. Stack XP. The Stacverse rewards its soldiers.</p>
     <div class="cheat-code" id="cheat-code">↑ ↑ ↓ ↓ ← → ← → B A START</div>
-    <div class="prize-box">
-      <div class="prize-icon" id="prize-icon">🏆</div>
-      <div>
-        <div class="prize-amount" id="prize-amount">???</div>
-        <div class="prize-meta">
-          <div class="top">PRIZE POOL</div>
-          <div class="bot" id="prize-token">TOKENS</div>
+    <div style="margin-bottom:16px">
+      <img src="assets/prize-banner.jpg" alt="Prizes" style="max-width:480px;width:100%;height:auto;border:2px solid var(--yellow);box-shadow:0 0 20px var(--yellow-dim)" onerror="this.style.display='none'">
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px">
+      <div class="prize-box" style="padding:10px 18px">
+        <div class="prize-icon">🃏</div>
+        <div>
+          <div class="prize-amount" style="font-size:clamp(13px,3vw,20px)">20 PACKS</div>
+          <div class="prize-meta"><div class="top">POKÉMON TCG</div><div class="bot">1 WINNER</div></div>
+        </div>
+      </div>
+      <div class="prize-box" style="padding:10px 18px">
+        <div class="prize-icon" id="prize-icon">💎</div>
+        <div>
+          <div class="prize-amount" id="prize-amount">$500+</div>
+          <div class="prize-meta"><div class="top">IN <span id="prize-token">$STACCANA</span></div><div class="bot">SOL + CASH</div></div>
+        </div>
+      </div>
+      <div class="prize-box" style="padding:10px 18px;border-color:var(--pixel)">
+        <div class="prize-icon">🔥</div>
+        <div>
+          <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--pixel);text-shadow:2px 2px 0 #005500">DAILY</div>
+          <div class="prize-meta"><div class="top">$STACCANA</div><div class="bot">EVERY DAY LIVE</div></div>
         </div>
       </div>
     </div>
@@ -557,8 +573,8 @@ function applyBranding() {
   document.getElementById('ref-badge').textContent = '+'+(campaign.referralBonus||25)+' XP/RECRUIT';
   if (campaign.cheatCode) document.getElementById('cheat-code').textContent = campaign.cheatCode;
   if (campaign.marqueeText) document.getElementById('marquee-text').textContent = campaign.marqueeText;
-  document.getElementById('sc-logo').src = 'assets/staccana-logo.png';
-  document.getElementById('og-img').content = 'assets/banner.png';
+  document.getElementById('sc-logo').src = 'assets/staccana-logo.jpg';
+  document.getElementById('og-img').content = 'assets/banner.jpg';
   if (campaign.headerLinks) {
     document.getElementById('hdr-links').innerHTML = campaign.headerLinks.map(l=>`<a href="${l.url}" target="_blank">${l.label}</a>`).join('');
   }
@@ -572,7 +588,7 @@ function applyBranding() {
     document.getElementById('tk-price').textContent = ti.price||'—';
     document.getElementById('tk-change').textContent = ti.change||'';
     document.getElementById('chart-link').href = ti.chartUrl||'#';
-    document.getElementById('tk-logo').src = 'assets/staccana-logo.png';
+    document.getElementById('tk-logo').src = 'assets/staccana-logo.jpg';
     document.getElementById('tk-logo').style.display='';
     let btns = '';
     if (ti.buyUrl) btns += `<a href="${ti.buyUrl}" target="_blank" style="background:var(--pixel);color:#000;border-color:var(--pixel)">BUY</a>`;
