@@ -1054,7 +1054,7 @@ window.submitEntry = async () => {
 };
 
 function listenLeaderboard() {
-  const q = query(collection(db,'entries'),orderBy('pts','desc'),limit(200));
+  const q = query(collection(db,'entries'),orderBy('pts','desc'));
   onSnapshot(q, snap => {
     const entries = []; let totalXP=0, players=0;
     snap.forEach(d=>{const data=d.data();entries.push(data);totalXP+=data.pts||0;players++;});
@@ -1067,10 +1067,11 @@ function listenLeaderboard() {
 function renderLeaderboard(entries) {
   const lb = document.getElementById('leaderboard');
   document.getElementById('lb-count').textContent = entries.length+' PLAYERS';
+  const visible = entries.slice(0, 100);
   if (!entries.length) { lb.innerHTML='<div class="lb-empty">NO SCORES YET. BE PLAYER ONE.</div>'; return; }
   const colors = ['var(--yellow)','var(--pixel)','var(--blue)','var(--red)','var(--purple)'];
   const medals = ['🥇','🥈','🥉'];
-  lb.innerHTML = entries.map((e,i)=>{
+  lb.innerHTML = visible.map((e,i)=>{
     const isMe = myEntry&&e.name===myEntry.name;
     return `<div class="lb-row"${isMe?' style="background:rgba(0,255,65,0.06)"':''}>
       <div class="lb-rank" style="color:${colors[i%colors.length]}">${medals[i]||i+1}</div>
@@ -1081,7 +1082,7 @@ function renderLeaderboard(entries) {
       </div>
       <div class="lb-xp">${e.pts} XP</div>
     </div>`;
-  }).join('');
+  }).join('') + (entries.length > 100 ? `<div style="padding:12px 14px;text-align:center;font-size:14px;color:var(--dim);border-top:1px solid rgba(0,255,65,0.08)">+ ${entries.length - 100} MORE PLAYERS ON THE BOARD</div>` : '');
 }
 
 const getShareData = () => {
