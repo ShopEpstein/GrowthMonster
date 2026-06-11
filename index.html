@@ -261,6 +261,20 @@ textarea{resize:vertical;min-height:68px}
 
 /* HEADER LOGO IMG */
 .logo-img{height:36px;width:auto;object-fit:contain;border:2px solid var(--pixel);padding:2px;background:#000;max-width:130px}
+
+/* CHAT */
+.chat-messages{height:320px;overflow-y:auto;padding:4px 0;scroll-behavior:smooth}
+.chat-msg{padding:8px 14px;border-bottom:1px solid rgba(0,255,65,0.06);position:relative}
+.chat-msg:last-child{border-bottom:none}
+.chat-msg:hover{background:rgba(0,255,65,0.03)}
+.chat-meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+.chat-author{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--pixel);letter-spacing:.05em}
+.chat-author.is-me{color:var(--yellow)}
+.chat-time{font-size:12px;color:var(--dim)}
+.chat-text{font-size:16px;color:var(--text);line-height:1.4;word-break:break-word}
+.chat-del{font-size:13px;color:var(--red);background:none;border:none;cursor:pointer;padding:0 2px;font-family:'VT323',monospace;opacity:0;transition:opacity .15s;margin-left:auto}
+.chat-msg:hover .chat-del{opacity:.7}
+.chat-del:hover{opacity:1!important}
 </style>
 </head>
 <body>
@@ -363,9 +377,13 @@ textarea{resize:vertical;min-height:68px}
             <label class="fl">EMAIL <span class="req">*</span></label>
             <input type="email" id="inp-email" placeholder="FOR WINNER NOTIFICATION_">
           </div>
-          <div class="fg" style="margin-bottom:18px">
+          <div class="fg">
             <label class="fl">SOLANA WALLET <span class="req">*</span></label>
             <input type="text" id="inp-wallet" class="mono" placeholder="YOUR WALLET ADDRESS_">
+          </div>
+          <div class="fg" style="margin-bottom:18px">
+            <label class="fl">TWITTER / X HANDLE</label>
+            <input type="text" id="inp-twitter" placeholder="@yourhandle (OPTIONAL)_">
           </div>
 
           <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);letter-spacing:.12em;margin-bottom:10px;text-shadow:0 0 6px var(--pixel)">▶ ACTIVE QUESTS</div>
@@ -413,6 +431,22 @@ YOU WIN!<br>
           <span class="panel-badge" id="lb-count">0 PLAYERS</span>
         </div>
         <div id="leaderboard"><div class="lb-empty">NO SCORES YET. BE PLAYER ONE.</div></div>
+      </div>
+
+      <!-- CHAT -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">💬 COMMUNITY CHAT</span>
+          <span class="panel-badge" id="chat-badge">LIVE</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="lb-empty" style="font-size:14px">NO MESSAGES YET. SAY SOMETHING!</div>
+        </div>
+        <div style="padding:10px 14px;border-top:2px solid var(--pixel);display:flex;gap:8px">
+          <input type="text" id="chat-input" placeholder="SAY SOMETHING..." style="flex:1;font-size:15px;padding:8px 10px" maxlength="200" onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="btn" style="background:var(--pixel);color:#000;border-color:var(--pixel);padding:8px 16px;font-family:'Press Start 2P',monospace;font-size:9px;flex-shrink:0" onclick="sendChat()">▶</button>
+        </div>
+        <div style="padding:4px 14px 10px;font-size:13px;color:var(--dim)">Register first to chat · 10s cooldown · keep it clean</div>
       </div>
     </div>
 
@@ -503,7 +537,7 @@ YOU WIN!<br>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, doc, getDoc, addDoc, updateDoc, onSnapshot, query, orderBy, limit, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBHxMmNQSKr2JgsPgIpbnLzaXXYTw8kBMk",
@@ -587,6 +621,7 @@ async function init() {
   startTimer();
   loadQuests();
   listenLeaderboard();
+  listenChat();
   if (campaign?.numWinners) document.getElementById('stat-winners').textContent = campaign.numWinners;
 
   } catch(err) { console.error('init error:', err); }
@@ -818,6 +853,7 @@ window.submitEntry = async () => {
   const name = document.getElementById('inp-name').value.trim();
   const email = document.getElementById('inp-email').value.trim();
   const wallet = document.getElementById('inp-wallet').value.trim();
+  const twitter = document.getElementById('inp-twitter').value.trim().replace(/^@/,'');
   if (!name||!email||!wallet) { toast('ALL FIELDS REQUIRED','err'); return; }
   if (!email.includes('@')) { toast('INVALID EMAIL','err'); return; }
   if (!Object.keys(completed).length) { toast('COMPLETE A QUEST FIRST','err'); return; }
@@ -839,7 +875,7 @@ window.submitEntry = async () => {
     let existingId = null;
     snap.forEach(d=>{if(d.data().email===email)existingId=d.id;});
 
-    const data = {name,email,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),walletFull:wallet,pts,qualityScore,actionsCompleted:Object.keys(completed).length,proofs:JSON.stringify(proofs),completedMissions:Object.keys(completed),refCode,referredBy,campaignId:campaign?.id||'',campaignName:campaign?.name||'',flagged:false,timestamp:new Date().toISOString()};
+    const data = {name,email,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),walletFull:wallet,twitter,pts,qualityScore,actionsCompleted:Object.keys(completed).length,proofs:JSON.stringify(proofs),completedMissions:Object.keys(completed),refCode,referredBy,campaignId:campaign?.id||'',campaignName:campaign?.name||'',flagged:false,timestamp:new Date().toISOString()};
 
     if (existingId) { await updateDoc(doc(db,'entries',existingId),data); }
     else { await addDoc(collection(db,'entries'),data); }
@@ -851,7 +887,7 @@ window.submitEntry = async () => {
       rs.forEach(async d=>{if(d.data().refCode===referredBy)await updateDoc(doc(db,'entries',d.id),{pts:increment(campaign?.referralBonus||25)});});
     }
 
-    myEntry = {name,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),pts,refCode};
+    myEntry = {name,twitter,wallet:wallet.slice(0,4)+'...'+wallet.slice(-4),walletFull:wallet,pts,refCode};
     saveLocal();
 
     const refUrl = window.location.origin+window.location.pathname+'?ref='+refCode;
@@ -892,7 +928,7 @@ function renderLeaderboard(entries) {
       <div class="lb-av" style="border-color:${colors[i%colors.length]};color:${colors[i%colors.length]}">${e.name.charAt(0).toUpperCase()}</div>
       <div class="lb-nc">
         <div class="lb-name">${e.name}${isMe?' <span style="font-size:11px;background:var(--pixel);color:#000;padding:1px 4px">YOU</span>':''}</div>
-        <div class="lb-wallet">${e.wallet||'—'}</div>
+        <div class="lb-wallet">${e.twitter ? '@'+e.twitter : (e.wallet||'—')}</div>
       </div>
       <div class="lb-xp">${e.pts} XP</div>
     </div>`;
@@ -919,6 +955,91 @@ window.toast = (msg,type) => {
 
 // Store inbound ref code for use at submission time only
 const inboundRef = new URLSearchParams(window.location.search).get('ref') || '';
+
+// CHAT
+const MOD_WALLETS = []; // add full wallet addresses here to grant mod delete powers
+let lastChatSent = 0;
+const CHAT_COOLDOWN = 10000;
+
+function timeAgo(date) {
+  const s = Math.floor((Date.now() - date) / 1000);
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function listenChat() {
+  const q = query(collection(db,'chat'), orderBy('ts','asc'), limit(50));
+  onSnapshot(q, snap => {
+    const msgs = [];
+    snap.forEach(d => msgs.push({id:d.id,...d.data()}));
+    document.getElementById('chat-badge').textContent = msgs.length + ' MSGS';
+    renderChat(msgs);
+  });
+}
+
+function renderChat(msgs) {
+  const el = document.getElementById('chat-messages');
+  const atBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 60;
+  if (!msgs.length) {
+    el.innerHTML = '<div class="lb-empty" style="font-size:14px">NO MESSAGES YET. SAY SOMETHING!</div>';
+    return;
+  }
+  const isMod = myEntry?.walletFull && MOD_WALLETS.includes(myEntry.walletFull);
+  el.innerHTML = msgs.map(m => {
+    const isMe = myEntry && m.wallet && m.wallet === myEntry.wallet;
+    const canDelete = isMe || isMod;
+    const ts = m.ts ? timeAgo(new Date(m.ts)) : '';
+    const author = m.author ? '@' + m.author : '???';
+    return `<div class="chat-msg">
+      <div class="chat-meta">
+        <span class="chat-author${isMe?' is-me':''}">${escapeHtml(author)}</span>
+        <span class="chat-time">${ts}</span>
+        ${canDelete ? `<button class="chat-del" onclick="deleteChat('${m.id}')">✕ DEL</button>` : ''}
+      </div>
+      <div class="chat-text">${escapeHtml(m.text)}</div>
+    </div>`;
+  }).join('');
+  if (atBottom) el.scrollTop = el.scrollHeight;
+}
+
+window.sendChat = async function() {
+  if (!myEntry) { toast('REGISTER FIRST TO CHAT', 'err'); return; }
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  if (text.length > 200) { toast('MAX 200 CHARS', 'err'); return; }
+  const now = Date.now();
+  if (now - lastChatSent < CHAT_COOLDOWN) {
+    const wait = Math.ceil((CHAT_COOLDOWN - (now - lastChatSent)) / 1000);
+    toast('SLOW DOWN — WAIT ' + wait + 's', 'err'); return;
+  }
+  lastChatSent = now;
+  input.value = '';
+  try {
+    await addDoc(collection(db,'chat'), {
+      text,
+      author: myEntry.twitter || myEntry.name,
+      wallet: myEntry.wallet,
+      walletFull: myEntry.walletFull || '',
+      ts: new Date().toISOString(),
+      campaignId: campaign?.id || ''
+    });
+  } catch(e) {
+    toast('FAILED TO SEND', 'err');
+    lastChatSent = 0;
+  }
+};
+
+window.deleteChat = async function(msgId) {
+  try { await deleteDoc(doc(db,'chat',msgId)); }
+  catch(e) { toast('CANNOT DELETE', 'err'); }
+};
 
 // LIVE PRICE FEED
 async function fetchLivePrice() {
