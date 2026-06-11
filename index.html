@@ -1054,7 +1054,7 @@ window.submitEntry = async () => {
 };
 
 function listenLeaderboard() {
-  const q = query(collection(db,'entries'),orderBy('pts','desc'),limit(20));
+  const q = query(collection(db,'entries'),orderBy('pts','desc'),limit(200));
   onSnapshot(q, snap => {
     const entries = []; let totalXP=0, players=0;
     snap.forEach(d=>{const data=d.data();entries.push(data);totalXP+=data.pts||0;players++;});
