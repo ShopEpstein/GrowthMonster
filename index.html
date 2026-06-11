@@ -329,7 +329,7 @@ textarea{resize:vertical;min-height:68px}
 </header>
 
 <div class="marquee-wrap">
-  <div class="marquee-inner" id="marquee-text">★ GROWTHGENIE — THE CHEAT CODE FOR COMMUNITY GROWTH ★ COMPLETE QUESTS ★ EARN XP ★ CLIMB THE LEADERBOARD ★ WIN PRIZES ★ INSERT COIN TO PLAY ★ &nbsp;&nbsp;&nbsp;</div>
+  <div class="marquee-inner" id="marquee-text">★ NO WALLET CONNECT — JUST YOUR ADDRESS ★ COMPLETE QUESTS ★ EARN XP ★ SOL DROPS DAILY ★ $STACCANA PRIZES ★ NO DOWNLOADS ★ NO PERMISSIONS ★ 100% FREE TO ENTER ★ &nbsp;&nbsp;&nbsp;</div>
 </div>
 
 <div class="hero-banner-wrap">
@@ -338,9 +338,18 @@ textarea{resize:vertical;min-height:68px}
 
 <div id="app" style="display:none">
   <div class="hero">
-    <div class="insert-coin">▶ INSERT COIN TO PLAY ◀</div>
+    <div class="insert-coin">▶ ENTER YOUR SOLANA WALLET ADDRESS TO PLAY ◀</div>
     <div class="hero-title" id="hero-title">ENTER THE <span class="hl">STACVERSE</span></div>
     <p class="hero-sub" id="hero-desc">Complete quests. Stack XP. The Stacverse rewards its soldiers.</p>
+
+    <!-- TRUST BADGES -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:22px">
+      <div style="display:inline-flex;align-items:center;gap:7px;background:#000;border:1px solid var(--pixel);padding:6px 13px;font-size:15px;color:var(--pixel)">🔒 NO WALLET CONNECT</div>
+      <div style="display:inline-flex;align-items:center;gap:7px;background:#000;border:1px solid var(--pixel);padding:6px 13px;font-size:15px;color:var(--pixel)">✅ NO DOWNLOADS</div>
+      <div style="display:inline-flex;align-items:center;gap:7px;background:#000;border:1px solid var(--pixel);padding:6px 13px;font-size:15px;color:var(--pixel)">🛡 NO PERMISSIONS</div>
+      <div style="display:inline-flex;align-items:center;gap:7px;background:#000;border:1px solid var(--yellow);padding:6px 13px;font-size:15px;color:var(--yellow)">💸 100% FREE</div>
+    </div>
+
     <div class="cheat-code" id="cheat-code">↑ ↑ ↓ ↓ ← → ← → B A START</div>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px">
       <div class="prize-box" style="padding:10px 18px">
@@ -358,9 +367,16 @@ textarea{resize:vertical;min-height:68px}
         </div>
       </div>
       <div class="prize-box" style="padding:10px 18px;border-color:var(--pixel)">
+        <div class="prize-icon">⚡</div>
+        <div>
+          <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--pixel);text-shadow:2px 2px 0 #005500">SOL DROPS</div>
+          <div class="prize-meta"><div class="top">DAILY WHILE LIVE</div><div class="bot">JUST BE ACTIVE</div></div>
+        </div>
+      </div>
+      <div class="prize-box" style="padding:10px 18px;border-color:var(--red)">
         <div class="prize-icon">🔥</div>
         <div>
-          <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--pixel);text-shadow:2px 2px 0 #005500">DAILY</div>
+          <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--red);text-shadow:2px 2px 0 #550000">DAILY</div>
           <div class="prize-meta"><div class="top">$STACCANA</div><div class="bot">EVERY DAY LIVE</div></div>
         </div>
       </div>
@@ -408,9 +424,13 @@ textarea{resize:vertical;min-height:68px}
             <label class="fl">EMAIL <span class="req">*</span></label>
             <input type="email" id="inp-email" placeholder="FOR WINNER NOTIFICATION_">
           </div>
-          <div class="fg">
+          <div class="fg" style="margin-bottom:4px">
             <label class="fl">SOLANA WALLET <span class="req">*</span></label>
-            <input type="text" id="inp-wallet" class="mono" placeholder="YOUR WALLET ADDRESS_">
+            <input type="text" id="inp-wallet" class="mono" placeholder="PASTE YOUR SOL WALLET ADDRESS_">
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:#000;border:1px solid var(--dim);padding:8px 11px;margin-bottom:14px;font-size:14px;color:var(--muted);line-height:1.5">
+            <span style="font-size:17px;flex-shrink:0">🔒</span>
+            <span>We <strong style="color:var(--pixel)">never connect</strong> to your wallet. No extensions, no approvals, no seed phrase — just your public address so we know where to send prizes.</span>
           </div>
           <div class="fg" style="margin-bottom:18px">
             <label class="fl">TWITTER / X HANDLE</label>
@@ -571,7 +591,7 @@ YOU WIN!<br>
   <div style="text-align:center;padding:0 20px 24px">
     <img src="assets/banner.jpg" alt="Stacverse" style="max-width:820px;width:100%;height:auto;border:2px solid var(--pixel);box-shadow:0 0 20px var(--pixel-dim)" onerror="this.style.display='none'">
   </div>
-  <div class="disclaimer">⚠ FAKE OR FRAUDULENT PROOF SUBMISSIONS WILL BE DISQUALIFIED BEFORE WINNER SELECTION. BY ENTERING YOU CONFIRM ELIGIBILITY. NOT FINANCIAL ADVICE.</div>
+  <div class="disclaimer">🔒 WE NEVER CONNECT TO YOUR WALLET, REQUEST APPROVALS, OR CUSTODY YOUR FUNDS. YOUR PUBLIC WALLET ADDRESS IS ONLY USED TO SEND PRIZES. ⚠ FRAUDULENT SUBMISSIONS DISQUALIFIED BEFORE DRAW. NOT FINANCIAL ADVICE. NO PURCHASE NECESSARY.</div>
   <div class="powered">POWERED BY <a href="#">GROWTHGENIE</a> — THE CHEAT CODE FOR COMMUNITY GROWTH</div>
 </div>
 
@@ -605,12 +625,16 @@ YOU WIN!<br>
           <div class="guide-step-desc">When you're done, hit <strong>SUBMIT SCORE</strong> to lock in your XP. <strong>Every 1 XP = 1 raffle ticket.</strong> More quests = better odds to win.</div>
         </div>
       </div>
-      <div class="guide-step" style="border-color:var(--yellow);margin-bottom:0">
+      <div class="guide-step" style="border-color:var(--yellow);margin-bottom:8px">
         <div class="guide-num" style="background:var(--yellow)">🎁</div>
         <div>
           <div class="guide-step-title" style="color:var(--yellow)">THE PRIZES</div>
-          <div class="guide-step-desc">10x Pokémon TCG Packs · SOL · CashApp USD · <strong>Daily $STACCANA</strong> drops while the game is live. No purchase necessary.</div>
+          <div class="guide-step-desc">10x Pokémon TCG Packs · SOL drops · CashApp USD · <strong>$STACCANA daily</strong> while the game is live. More active = better odds. No purchase necessary.</div>
         </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;background:#050505;border:1px solid var(--pixel);padding:12px 14px;font-size:15px;color:var(--muted);line-height:1.5">
+        <span style="font-size:20px;flex-shrink:0">🔒</span>
+        <span><strong style="color:var(--pixel)">Zero risk.</strong> We never connect to your wallet, ask for approvals, or touch your funds. Just paste your public address — that's it.</span>
       </div>
     </div>
     <div class="guide-foot">
