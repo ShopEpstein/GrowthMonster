@@ -51,7 +51,7 @@ nav{padding:10px 8px;flex:1}
 main{overflow-x:hidden;min-height:100vh}
 
 /* PAGES */
-.page{padding:24px 28px;max-width:1100px;display:none}
+.page{padding:24px 28px;max-width:1200px;display:none}
 .page.active{display:block}
 .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:14px;flex-wrap:wrap}
 .pt{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--pixel);text-shadow:0 0 8px var(--pixel);margin-bottom:4px}
@@ -114,7 +114,7 @@ textarea{resize:vertical;min-height:60px}
 table{width:100%;border-collapse:collapse}
 thead tr{border-bottom:2px solid var(--pixel)}
 th{font-size:12px;color:var(--pixel);text-transform:uppercase;letter-spacing:.08em;padding:9px 12px;text-align:left;white-space:nowrap;font-family:'Press Start 2P',monospace;font-size:7px}
-td{padding:10px 12px;font-size:15px;border-bottom:1px solid rgba(0,255,65,0.06);vertical-align:middle}
+td{padding:9px 12px;font-size:15px;border-bottom:1px solid rgba(0,255,65,0.06);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(0,255,65,0.02)}
 
@@ -160,6 +160,47 @@ tr:hover td{background:rgba(0,255,65,0.02)}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.ok{border-color:var(--pixel);color:var(--pixel)}
 #toast.err{border-color:var(--red);color:var(--red)}
+
+/* PLAYER DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:90;display:none;cursor:pointer}
+.drawer-overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:500px;max-width:96vw;background:#000;border-left:2px solid var(--pixel);z-index:91;transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-4px 0 40px var(--pixel-dim)}
+.drawer.open{transform:translateX(0)}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:2px solid var(--pixel);background:#000;position:sticky;top:0;z-index:2}
+.dt{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);text-shadow:0 0 6px var(--pixel)}
+.dc{background:none;border:none;color:var(--dim);cursor:pointer;font-size:22px;font-family:'VT323',monospace;line-height:1;padding:0 4px}
+.dc:hover{color:var(--red)}
+.db{padding:16px 18px 28px}
+.dsec{margin-bottom:18px}
+.dsec-title{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* COPY FIELDS */
+.copy-row{display:flex;align-items:stretch;gap:0;background:#050505;border:2px solid var(--dim);margin-bottom:9px;overflow:hidden;transition:border-color .15s}
+.copy-row:hover{border-color:var(--pixel)}
+.copy-lbl{font-size:12px;color:var(--dim);padding:4px 10px;background:#000;border-right:2px solid var(--dim);letter-spacing:.06em;display:flex;align-items:center;white-space:nowrap;min-width:70px}
+.copy-val{flex:1;font-family:monospace;font-size:14px;color:var(--pixel);padding:8px 10px;word-break:break-all;line-height:1.4}
+.copy-btn{background:var(--pixel);border:none;border-left:2px solid var(--pixel);color:#000;padding:0 12px;font-family:'Press Start 2P',monospace;font-size:7px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .1s;letter-spacing:.06em}
+.copy-btn:hover{background:#000;color:var(--pixel)}
+
+/* PROOF ITEMS */
+.proof-item{background:#050505;border:2px solid var(--dim);padding:11px 13px;margin-bottom:8px;transition:border-color .15s}
+.proof-item:hover{border-color:var(--pixel)}
+.proof-quest-name{font-size:15px;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.proof-xp{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--yellow)}
+.proof-val{font-size:15px;word-break:break-all;line-height:1.5}
+.proof-val a{color:var(--blue);text-decoration:none}
+.proof-val a:hover{text-decoration:underline;color:var(--pixel)}
+.proof-text-val{color:var(--muted);font-style:italic}
+.proof-empty{color:var(--dim);font-size:14px}
+
+/* WALLET COPY CHIP in table */
+.wallet-chip{font-family:monospace;font-size:12px;color:var(--dim);cursor:pointer;transition:color .1s;white-space:nowrap}
+.wallet-chip:hover{color:var(--pixel)}
+.wallet-chip::after{content:' ▾';font-size:10px}
+
+/* PRIZE SEND BOX */
+.prize-send-box{background:#000;border:2px solid var(--pixel);padding:18px;margin-top:14px;box-shadow:0 0 15px var(--pixel-dim)}
+.prize-send-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);margin-bottom:14px;text-shadow:0 0 6px var(--pixel)}
 
 @media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{display:none}.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -253,13 +294,25 @@ tr:hover td{background:rgba(0,255,65,0.02)}
         <button class="btn btn-secondary" onclick="exportCSV()">↓ EXPORT CSV</button>
       </div>
       <div style="margin-bottom:13px">
-        <input type="text" id="search" placeholder="SEARCH PLAYER NAME, EMAIL, WALLET..." oninput="filterPlayers()" style="max-width:380px">
+        <input type="text" id="search" placeholder="SEARCH NAME, EMAIL, WALLET..." oninput="filterPlayers()" style="max-width:420px">
       </div>
       <div class="panel">
         <div class="tw">
           <table>
-            <thead><tr><th>PLAYER</th><th>XP</th><th>QUALITY</th><th>QUESTS</th><th>REF CODE</th><th>DATE</th><th>STATUS</th><th></th></tr></thead>
-            <tbody id="players-tbody"><tr><td colspan="8" style="text-align:center;color:var(--dim);padding:24px">LOADING...</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>PLAYER</th>
+                <th>EMAIL</th>
+                <th>WALLET</th>
+                <th>XP</th>
+                <th>QUALITY</th>
+                <th>QUESTS</th>
+                <th>DATE</th>
+                <th>STATUS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="players-tbody"><tr><td colspan="9" style="text-align:center;color:var(--dim);padding:24px">LOADING...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -268,7 +321,7 @@ tr:hover td{background:rgba(0,255,65,0.02)}
     <!-- WINNER DRAW -->
     <div class="page" id="page-draw">
       <div class="ph"><div><div class="pt">WINNER DRAW</div><div class="ps">WEIGHTED RANDOM — MORE XP = BETTER ODDS. FLAGGED PLAYERS EXCLUDED.</div></div></div>
-      <div style="max-width:560px">
+      <div style="max-width:600px">
         <div class="panel" style="margin-bottom:14px">
           <div class="ph2"><span class="pt2">POOL INFO</span></div>
           <div style="padding:14px">
@@ -303,7 +356,7 @@ tr:hover td{background:rgba(0,255,65,0.02)}
                 <div class="fg"><label class="fl">Prize Icon</label><input type="text" id="b-prize-icon" placeholder="💎"></div>
                 <div class="fg"><label class="fl">End Date</label><input type="datetime-local" id="b-end-date"></div>
               </div>
-              <div class="fg"><label class="fl">Cheat Code Display</label><input type="text" id="b-cheat-code" placeholder="UP UP DOWN DOWN LEFT RIGHT B A START"><div class="fhint">Shown on hero section — customize per campaign</div></div>
+              <div class="fg"><label class="fl">Cheat Code Display</label><input type="text" id="b-cheat-code" placeholder="UP UP DOWN DOWN LEFT RIGHT B A START"><div class="fhint">Shown on hero section</div></div>
               <div class="fg"><label class="fl">Referral Bonus XP</label><input type="number" id="b-ref-bonus" placeholder="25"></div>
             </div>
           </div>
@@ -369,6 +422,16 @@ tr:hover td{background:rgba(0,255,65,0.02)}
       </div>
     </div>
   </main>
+</div>
+
+<!-- PLAYER DETAIL DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="player-drawer">
+  <div class="dh">
+    <span class="dt" id="drawer-player-name">PLAYER DETAILS</span>
+    <button class="dc" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="db" id="drawer-body"></div>
 </div>
 
 <!-- ADD/EDIT QUEST MODAL -->
@@ -470,6 +533,19 @@ let allPlayers = [], allQuests = [], campaign = null;
 let editingQuestId = null;
 const PASS_KEY = 'gg_admin_pass';
 
+// UTILS
+window.copyText = (text, label) => {
+  navigator.clipboard.writeText(text).then(() => toast('✓ ' + (label||'COPIED') + ' COPIED', 'ok'));
+};
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function isUrl(s) {
+  return /^https?:\/\//i.test(String(s||'').trim());
+}
+
 // AUTH
 window.doLogin = () => {
   const p = document.getElementById('login-pass').value;
@@ -537,7 +613,7 @@ function updateDashboard() {
   if (!allPlayers.length) { tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--dim);padding:24px">NO PLAYERS YET. <a href="index.html" target="_blank" style="color:var(--pixel)">VIEW CAMPAIGN →</a></td></tr>'; return; }
   tbody.innerHTML = allPlayers.slice(0,8).map(p=>`
     <tr>
-      <td><div style="font-size:16px">${p.name||'—'}</div><div style="font-size:12px;color:var(--dim);font-family:monospace">${p.wallet||'—'}</div></td>
+      <td><div style="font-size:16px">${esc(p.name||'—')}</div><div style="font-size:12px;color:var(--dim);font-family:monospace">${esc(p.wallet||'—')}</div></td>
       <td><span style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow)">${p.pts||0} XP</span></td>
       <td>${qBar(p.qualityScore||0)}</td>
       <td style="font-size:14px;color:var(--muted)">${p.actionsCompleted||0} DONE</td>
@@ -558,10 +634,10 @@ function renderQuestsAdmin() {
   const isLocked = q => q.unlockAt && new Date(q.unlockAt)>Date.now();
   list.innerHTML = allQuests.map(q=>`
     <div class="qcard">
-      <div class="qcard-icon" style="border-color:${q.active?'var(--pixel)':'var(--dim)'}">${q.icon||'⭐'}</div>
+      <div class="qcard-icon" style="border-color:${q.active?'var(--pixel)':'var(--dim)'}">${esc(q.icon||'⭐')}</div>
       <div class="qcard-info">
-        <div class="qcard-name">${q.name}</div>
-        <div class="qcard-meta">${q.desc||''}${isLocked(q)?' — UNLOCKS: '+new Date(q.unlockAt).toLocaleString():''}</div>
+        <div class="qcard-name">${esc(q.name)}</div>
+        <div class="qcard-meta">${esc(q.desc||'')}${isLocked(q)?' — UNLOCKS: '+new Date(q.unlockAt).toLocaleString():''}</div>
         <div class="qcard-tags">
           ${q.active?'<span class="badge bg">ACTIVE</span>':'<span class="badge bx">HIDDEN</span>'}
           ${q.oneTime?'<span class="badge bx">ONE-TIME</span>':''}
@@ -690,56 +766,160 @@ window.saveQuest = async () => {
   btn.disabled=false; btn.textContent='SAVE QUEST';
 };
 
-// PLAYERS
+// PLAYERS TABLE
 function renderPlayersTable(players) {
   document.getElementById('players-count').textContent = players.length+' PLAYERS';
   const tbody = document.getElementById('players-tbody');
-  if (!players.length) { tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:24px">NO PLAYERS YET.</td></tr>'; return; }
-  tbody.innerHTML = players.map(p=>`
-    <tr>
+  if (!players.length) { tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--dim);padding:24px">NO PLAYERS YET.</td></tr>'; return; }
+  tbody.innerHTML = players.map(p => {
+    const walletFull = p.walletFull || p.wallet || '';
+    const walletShort = p.wallet || (walletFull ? walletFull.slice(0,5)+'...'+walletFull.slice(-4) : '—');
+    const escapedWallet = esc(walletFull).replace(/'/g,"\\'");
+    return `<tr>
       <td>
         <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:28px;height:28px;border:2px solid var(--pixel);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);flex-shrink:0">${(p.name||'?').charAt(0).toUpperCase()}</div>
-          <div><div style="font-size:15px">${p.name||'—'}</div><div style="font-size:12px;color:var(--dim);font-family:monospace">${p.wallet||'—'}</div></div>
+          <div style="width:26px;height:26px;border:2px solid var(--pixel);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);flex-shrink:0">${esc((p.name||'?').charAt(0).toUpperCase())}</div>
+          <div style="font-size:15px">${esc(p.name||'—')}${p.twitter?'<div style="font-size:12px;color:var(--blue)">@'+esc(p.twitter)+'</div>':''}</div>
         </div>
+      </td>
+      <td>
+        <span style="font-size:14px;color:var(--muted);cursor:pointer" onclick="copyText('${esc(p.email||'')}','EMAIL')" title="Click to copy">${esc(p.email||'—')}</span>
+      </td>
+      <td>
+        <span class="wallet-chip" onclick="copyText('${escapedWallet}','WALLET')" title="Click to copy full address">${esc(walletShort)}</span>
       </td>
       <td><span style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow)">${p.pts||0}</span></td>
       <td>${qBar(p.qualityScore||0)}</td>
       <td style="font-size:14px;color:var(--muted)">${p.actionsCompleted||0}</td>
-      <td style="font-size:13px;color:var(--dim);font-family:monospace">${p.refCode||'—'}</td>
       <td style="font-size:13px;color:var(--dim)">${p.timestamp?new Date(p.timestamp).toLocaleDateString():'—'}</td>
       <td>${p.flagged?'<span class="badge br">FLAGGED</span>':'<span class="badge bg">CLEAN</span>'}</td>
       <td>
         <div style="display:flex;gap:5px">
-          <button class="btn btn-sm btn-secondary" onclick="viewProofs('${p.id}')">PROOF</button>
+          <button class="btn btn-sm btn-secondary" onclick="openDrawer('${p.id}')">VIEW ↗</button>
           <button class="btn btn-sm ${p.flagged?'btn-blue':'btn-red'}" onclick="toggleFlag('${p.id}',${!p.flagged})">${p.flagged?'CLEAR':'FLAG'}</button>
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
 }
 
 window.filterPlayers = () => {
   const q = document.getElementById('search').value.toLowerCase();
-  renderPlayersTable(allPlayers.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.email||'').toLowerCase().includes(q)||(p.wallet||'').toLowerCase().includes(q)));
+  renderPlayersTable(allPlayers.filter(p =>
+    (p.name||'').toLowerCase().includes(q) ||
+    (p.email||'').toLowerCase().includes(q) ||
+    (p.wallet||'').toLowerCase().includes(q) ||
+    (p.walletFull||'').toLowerCase().includes(q)
+  ));
 };
 
 window.toggleFlag = async (id,flagged) => { await updateDoc(doc(db,'entries',id),{flagged}); toast(flagged?'PLAYER FLAGGED':'FLAG CLEARED','ok'); };
 
-window.viewProofs = id => {
+// PLAYER DETAIL DRAWER
+window.openDrawer = id => {
   const p = allPlayers.find(x=>x.id===id);
   if (!p) return;
-  try {
-    const proofs = JSON.parse(p.proofs||'{}');
-    const lines = Object.entries(proofs).map(([k,v])=>{const q=allQuests.find(x=>x.id===k);return (q?q.name:k)+':\n'+v;}).join('\n\n');
-    alert(lines||'NO PROOF DATA');
-  } catch(e){alert(p.proofs||'NO PROOF DATA');}
+
+  document.getElementById('drawer-player-name').textContent = (p.name||'PLAYER').toUpperCase();
+
+  let proofMap = {};
+  try { proofMap = JSON.parse(p.proofs||'{}'); } catch(e){}
+
+  const walletFull = p.walletFull || p.wallet || '—';
+  const escapedWallet = walletFull.replace(/'/g,"\\'");
+  const escapedEmail = (p.email||'').replace(/'/g,"\\'");
+
+  // Build completed quests section
+  const completedIds = p.completedMissions || Object.keys(proofMap);
+  const proofItems = completedIds.map(qid => {
+    const q = allQuests.find(x=>x.id===qid);
+    const questName = q ? q.name : qid;
+    const questPts = q ? q.pts : '?';
+    const rawProof = proofMap[qid];
+    // rawProof may be a string, array of strings, or undefined
+    const proofValues = Array.isArray(rawProof) ? rawProof : (rawProof ? [rawProof] : []);
+    const proofHtml = proofValues.length
+      ? proofValues.map(v => {
+          const vs = String(v);
+          if (isUrl(vs)) return `<div class="proof-val"><a href="${esc(vs)}" target="_blank" rel="noopener">${esc(vs)}</a></div>`;
+          return `<div class="proof-val proof-text-val">${esc(vs)}</div>`;
+        }).join('')
+      : `<div class="proof-empty">— no proof submitted —</div>`;
+    return `<div class="proof-item">
+      <div class="proof-quest-name">${esc(questName)}<span class="proof-xp">+${questPts} XP</span></div>
+      ${proofHtml}
+    </div>`;
+  }).join('');
+
+  const qualColor = (p.qualityScore||0)>=80?'var(--pixel)':(p.qualityScore||0)>=60?'var(--yellow)':'var(--red)';
+
+  document.getElementById('drawer-body').innerHTML = `
+    <div class="dsec">
+      <div class="dsec-title">IDENTITY</div>
+      <div class="copy-row">
+        <div class="copy-lbl">WALLET</div>
+        <div class="copy-val">${esc(walletFull)}</div>
+        <button class="copy-btn" onclick="copyText('${escapedWallet}','WALLET')">COPY</button>
+      </div>
+      <div class="copy-row">
+        <div class="copy-lbl">EMAIL</div>
+        <div class="copy-val">${esc(p.email||'—')}</div>
+        <button class="copy-btn" onclick="copyText('${escapedEmail}','EMAIL')">COPY</button>
+      </div>
+      ${p.twitter?`<div class="copy-row">
+        <div class="copy-lbl">TWITTER</div>
+        <div class="copy-val">@${esc(p.twitter)}</div>
+        <button class="copy-btn" onclick="copyText('@${esc(p.twitter)}','TWITTER')">COPY</button>
+      </div>`:''}
+      <div style="font-size:14px;color:var(--dim);margin-top:8px">Registered: ${p.timestamp?new Date(p.timestamp).toLocaleString():'—'}</div>
+    </div>
+
+    <div class="dsec">
+      <div class="dsec-title">PERFORMANCE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:#050505;border:2px solid var(--dim);padding:10px;text-align:center">
+          <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--yellow);margin-bottom:4px">${p.pts||0}</div>
+          <div style="font-size:12px;color:var(--dim)">XP</div>
+        </div>
+        <div style="background:#050505;border:2px solid var(--dim);padding:10px;text-align:center">
+          <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:${qualColor};margin-bottom:4px">${p.qualityScore||0}</div>
+          <div style="font-size:12px;color:var(--dim)">QUALITY</div>
+        </div>
+        <div style="background:#050505;border:2px solid var(--dim);padding:10px;text-align:center">
+          <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--pixel);margin-bottom:4px">${p.actionsCompleted||0}</div>
+          <div style="font-size:12px;color:var(--dim)">QUESTS</div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:var(--dim)">Ref code: <span style="color:var(--blue);font-family:monospace">${p.refCode||'—'}</span></div>
+      ${p.referredBy?`<div style="font-size:14px;color:var(--dim)">Referred by: <span style="color:var(--blue);font-family:monospace">${esc(p.referredBy)}</span></div>`:''}
+    </div>
+
+    <div class="dsec">
+      <div class="dsec-title">COMPLETED QUESTS & PROOF (${completedIds.length})</div>
+      ${proofItems || '<div style="color:var(--dim);font-size:14px;padding:8px 0">No quests completed yet.</div>'}
+    </div>
+
+    <div class="dsec">
+      <div class="dsec-title">ACTIONS</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ${p.flagged?'btn-blue':'btn-red'}" onclick="toggleFlag('${p.id}',${!p.flagged})">${p.flagged?'✓ CLEAR FLAG':'⚠ FLAG PLAYER'}</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('player-drawer').classList.add('open');
+};
+
+window.closeDrawer = () => {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('player-drawer').classList.remove('open');
 };
 
 window.exportCSV = () => {
   if (!allPlayers.length) { toast('NO PLAYERS','err'); return; }
-  const h=['Name','Email','Wallet','XP','Quality','Quests','RefCode','ReferredBy','Flagged','Timestamp'];
-  const rows = allPlayers.map(p=>h.map((_,i)=>{const v=[p.name,p.email,p.walletFull||p.wallet,p.pts,p.qualityScore,p.actionsCompleted,p.refCode,p.referredBy,p.flagged,p.timestamp][i];return'"'+String(v||'').replace(/"/g,'""')+'"';}).join(','));
+  const h=['Name','Email','Wallet','Twitter','XP','Quality','Quests','RefCode','ReferredBy','Flagged','Timestamp'];
+  const rows = allPlayers.map(p=>[p.name,p.email,p.walletFull||p.wallet,p.twitter||'',p.pts,p.qualityScore,p.actionsCompleted,p.refCode,p.referredBy,p.flagged,p.timestamp].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv'}));a.download='growthgenie-players.csv';a.click();
   toast('CSV DOWNLOADED','ok');
 };
@@ -772,18 +952,37 @@ window.doDraw = () => {
     elig.forEach(p=>{for(let i=0;i<(p.pts||1);i++)pool.push(p);});
     const winner=pool[Math.floor(Math.random()*pool.length)];
     const ts=new Date().toLocaleTimeString();
+    const walletFull = winner.walletFull || winner.wallet || '—';
+    const escapedWallet = walletFull.replace(/'/g,"\\'");
+    const escapedEmail = (winner.email||'').replace(/'/g,"\\'");
+
     document.getElementById('draw-result').innerHTML=`
       <div class="winner-box">
         <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--pixel);line-height:2;margin-bottom:12px;text-shadow:0 0 10px var(--pixel)">★ WINNER ★<br>PLAYER ONE</div>
-        <div style="font-family:'Press Start 2P',monospace;font-size:18px;color:var(--yellow);margin-bottom:5px;text-shadow:0 0 15px var(--yellow)">${winner.name||'UNKNOWN'}</div>
-        <div style="font-size:14px;color:var(--dim);font-family:monospace;margin-bottom:14px">${winner.walletFull||winner.wallet||'—'}</div>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+        <div style="font-family:'Press Start 2P',monospace;font-size:18px;color:var(--yellow);margin-bottom:16px;text-shadow:0 0 15px var(--yellow)">${esc(winner.name||'UNKNOWN')}</div>
+
+        <div class="prize-send-box" style="text-align:left">
+          <div class="prize-send-title">📦 SEND PRIZE TO</div>
+          <div class="copy-row" style="margin-bottom:9px">
+            <div class="copy-lbl">WALLET</div>
+            <div class="copy-val">${esc(walletFull)}</div>
+            <button class="copy-btn" onclick="copyText('${escapedWallet}','WALLET')">COPY</button>
+          </div>
+          <div class="copy-row" style="margin-bottom:0">
+            <div class="copy-lbl">EMAIL</div>
+            <div class="copy-val">${esc(winner.email||'—')}</div>
+            <button class="copy-btn" onclick="copyText('${escapedEmail}','EMAIL')">COPY</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin:16px 0 8px">
           <span class="badge bo">🎯 ${winner.pts||0} XP</span>
+          ${winner.twitter?`<span class="badge" style="border-color:var(--blue);color:var(--blue);background:var(--blue-dim)">@${esc(winner.twitter)}</span>`:''}
           <span class="badge bg">✓ VERIFIED</span>
         </div>
         <div style="font-size:14px;color:var(--dim);margin-bottom:14px">SELECTED FROM ${pool.length.toLocaleString()} TICKETS AT ${ts}</div>
-        <div style="display:flex;gap:10px;justify-content:center">
-          <button class="btn btn-yellow" onclick="announceWinner('${(winner.name||'').replace(/'/g,"\\'")}')">📣 ANNOUNCE</button>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-yellow" onclick="announceWinner('${esc(winner.name||'').replace(/'/g,"\\'")}')">📣 ANNOUNCE ON X</button>
           <button class="btn btn-secondary" onclick="document.getElementById('draw-result').innerHTML='';document.getElementById('draw-btn').disabled=false">CLEAR</button>
         </div>
       </div>`;
