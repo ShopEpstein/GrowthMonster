@@ -130,36 +130,31 @@ input::placeholder,textarea::placeholder{color:var(--dim)}
 .quest{background:#000;border:2px solid var(--dim);margin-bottom:10px;transition:border-color .15s,box-shadow .15s;cursor:pointer}
 .quest.done{border-color:var(--pixel);box-shadow:0 0 10px var(--pixel-dim)}
 .quest.locked{opacity:.4;pointer-events:none}
-.quest-head{display:flex;align-items:center;gap:10px;padding:11px 13px}
-.quest-head:hover{background:rgba(0,255,65,0.03)}
-.quest-icon{width:36px;height:36px;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:#111}
+.quest-head{display:flex;align-items:center;gap:12px;padding:13px 14px}
+.quest-head:hover{background:rgba(0,255,65,0.04)}
+.quest-icon{width:40px;height:40px;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:#111}
 .quest.done .quest-icon{border-color:var(--pixel)}
 .quest-info{flex:1;min-width:0}
-.quest-name{font-size:17px;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.quest-desc{font-size:14px;color:var(--dim)}
-.quest-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.quest-name{font-size:18px;color:#ffffff;margin-bottom:4px;line-height:1.35;white-space:normal;word-break:break-word}
+.quest-desc{font-size:15px;color:#aaaaaa;line-height:1.4}
+.quest-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
 .quest-xp{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yellow);white-space:nowrap}
-.quest-check{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel)}
-.quest-tag{font-size:11px;font-weight:700;padding:2px 6px;letter-spacing:.04em;font-family:'Press Start 2P',monospace;font-size:7px}
+.quest-check{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel)}
+.quest-tag{padding:3px 7px;letter-spacing:.04em;font-family:'Press Start 2P',monospace;font-size:7px}
 .tag-space{color:var(--purple);border:1px solid var(--purple)}
 .tag-hv{color:var(--yellow);border:1px solid var(--yellow)}
 .tag-daily{color:var(--pixel);border:1px solid var(--pixel)}
 .tag-mega{color:var(--red);border:1px solid var(--red);animation:megablink 1s infinite}
 @keyframes megablink{0%,100%{opacity:1}50%{opacity:.5}}
-.quest-body{padding:12px 13px;border-top:2px solid var(--dim);display:none;background:#050505}
+.quest-body{padding:14px 14px;border-top:2px solid rgba(0,255,65,0.15);display:none;background:#050505}
 .quest-body.open{display:block}
-.open-link{display:inline-flex;align-items:center;gap:6px;background:#000;border:2px solid var(--pixel);padding:6px 12px;font-size:15px;color:var(--pixel);margin-bottom:10px;text-decoration:none;transition:box-shadow .15s}
-.open-link:hover{box-shadow:0 0 10px var(--pixel-dim);color:var(--pixel)}
-.char-count{font-size:14px;margin-top:5px;margin-bottom:8px;color:var(--dim)}
+.quest-proof-label{font-size:14px;color:#aaaaaa;margin-bottom:6px;margin-top:10px;letter-spacing:.03em}
+.open-link{display:inline-flex;align-items:center;gap:8px;background:rgba(0,255,65,0.07);border:2px solid var(--pixel);padding:9px 16px;font-size:17px;color:var(--pixel);margin-bottom:12px;text-decoration:none;transition:all .15s;width:100%;justify-content:center}
+.open-link:hover{background:var(--pixel);color:#000;box-shadow:0 0 15px var(--pixel-dim)}
+.char-count{font-size:14px;margin-top:6px;margin-bottom:8px;color:var(--dim)}
 textarea{resize:vertical;min-height:68px}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;font-size:16px;font-family:'VT323',monospace;font-weight:400;cursor:pointer;border:2px solid;transition:all .12s;text-decoration:none;letter-spacing:.06em;white-space:nowrap}
-.btn-primary{background:var(--pixel);color:#000;border-color:var(--pixel);width:100%;font-size:19px;padding:13px;box-shadow:0 0 15px var(--pixel-dim);font-family:'Press Start 2P',monospace;font-size:11px;letter-spacing:.08em}
-.btn-primary:hover{background:#000;color:var(--pixel);box-shadow:0 0 25px var(--pixel-glow)}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-quest{background:var(--purple);color:#fff;border-color:var(--purple);padding:7px 13px;font-size:14px}
-.btn-quest:hover{background:#000;color:var(--purple);box-shadow:0 0 10px rgba(204,0,255,0.3)}
+.btn-quest{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--yellow);color:#000;border:2px solid var(--yellow);padding:12px 16px;font-family:'Press Start 2P',monospace;font-size:10px;cursor:pointer;letter-spacing:.06em;margin-top:12px;transition:all .15s}
+.btn-quest:hover{background:#000;color:var(--yellow);box-shadow:0 0 15px var(--yellow-dim)}
 .btn-x{background:#000;border-color:#333;color:#fff;width:100%;margin-bottom:8px}
 .btn-x:hover{border-color:var(--text);color:var(--text)}
 .btn-tg{background:#229ED9;border-color:#229ED9;color:#fff;width:100%;margin-bottom:8px}
@@ -929,12 +924,13 @@ function renderQuests() {
       </div>
       ${!isDone&&!isLocked?`
         <div class="quest-body" id="qbody-${m.id}">
-          ${m.link?`<a href="${m.link}" target="_blank" class="open-link">▶ OPEN MISSION</a>`:''}
+          ${m.link?`<a href="${m.link}" target="_blank" class="open-link">▶ OPEN MISSION ↗</a>`:''}
+          <div class="quest-proof-label">${m.proofLabel||'ENTER PROOF'}</div>
           ${m.proofType==='text'?`
-            <textarea id="proof-${m.id}" placeholder="${m.proofLabel||'ENTER PROOF...'}" rows="3" style="margin-top:8px" oninput="updateCC('${m.id}',${m.minLength||0})"></textarea>
-            <div class="char-count" id="cc-${m.id}">0/${m.minLength||0} CHARS MINIMUM</div>
-          `:`<input type="text" id="proof-${m.id}" placeholder="${m.proofLabel||'ENTER PROOF...'}" ${m.proofType==='wallet'?'class="mono"':''} style="margin-top:8px">`}
-          <button class="btn btn-quest" onclick="markDone('${m.id}')" style="margin-top:10px">▶ COMPLETE — +${m.pts} XP</button>
+            <textarea id="proof-${m.id}" placeholder="Type here..." rows="3" oninput="updateCC('${m.id}',${m.minLength||0})"></textarea>
+            <div class="char-count" id="cc-${m.id}">0 / ${m.minLength||0} chars minimum</div>
+          `:`<input type="text" id="proof-${m.id}" placeholder="Paste here..." ${m.proofType==='wallet'?'class="mono"':''}>`}
+          <button class="btn-quest" onclick="markDone('${m.id}')"><span>✓ MARK COMPLETE</span><span style="background:#000;color:var(--yellow);padding:4px 10px;font-size:9px">+${m.pts} XP</span></button>
         </div>
       `:''}
     `;
