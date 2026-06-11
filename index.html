@@ -747,8 +747,6 @@ async function init() {
   }
 
   campaign = found;
-  upsertNewMissions(found.id); // fire and forget — don't block loading
-  maybeShowGuide();
   applyBranding();
   fetchLivePrice();
   startTimer();

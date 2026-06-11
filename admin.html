@@ -419,6 +419,14 @@ tr:hover td{background:rgba(0,255,65,0.02)}
             <button class="btn btn-red" onclick="if(confirm('RESET ALL PLAYERS? CANNOT UNDO.'))resetPlayers()">⚠ RESET ALL PLAYERS</button>
           </div>
         </div>
+        <div class="panel" style="margin-top:14px">
+          <div class="ph2"><span class="pt2">🧹 MISSION DEDUPLICATOR</span></div>
+          <div style="padding:14px">
+            <div style="font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:12px">Scans the missions collection for duplicate types and removes extras, keeping whichever copy players have already completed. Safe to run — no player XP is lost.</div>
+            <button class="btn btn-yellow" onclick="scanDuplicates()" id="scan-btn">🔍 SCAN FOR DUPLICATES</button>
+            <div id="dedup-result" style="margin-top:12px"></div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -922,6 +930,96 @@ window.exportCSV = () => {
   const rows = allPlayers.map(p=>[p.name,p.email,p.walletFull||p.wallet,p.twitter||'',p.pts,p.qualityScore,p.actionsCompleted,p.refCode,p.referredBy,p.flagged,p.timestamp].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[h.join(','),...rows].join('\n')],{type:'text/csv'}));a.download='growthgenie-players.csv';a.click();
   toast('CSV DOWNLOADED','ok');
+};
+
+// MISSION DEDUPLICATOR
+window.scanDuplicates = async () => {
+  const btn = document.getElementById('scan-btn');
+  const result = document.getElementById('dedup-result');
+  btn.disabled = true; btn.textContent = 'SCANNING...';
+  result.innerHTML = '';
+
+  try {
+    // 1. Load all missions
+    const mSnap = await getDocs(collection(db,'missions'));
+    const missions = [];
+    mSnap.forEach(d => missions.push({id:d.id,...d.data()}));
+
+    // 2. Load all entries to find which mission IDs are actually referenced
+    const eSnap = await getDocs(collection(db,'entries'));
+    const refCount = {};
+    eSnap.forEach(d => {
+      const cm = d.data().completedMissions || [];
+      cm.forEach(mid => { refCount[mid] = (refCount[mid]||0) + 1; });
+    });
+
+    // 3. Group by type
+    const byType = {};
+    missions.forEach(m => { (byType[m.type] = byType[m.type]||[]).push(m); });
+
+    const toDelete = [];
+    const toKeep = [];
+    Object.entries(byType).forEach(([type, docs]) => {
+      if (docs.length === 1) { toKeep.push({...docs[0], refs: refCount[docs[0].id]||0}); return; }
+      // Sort: most player refs first, then alphabetical id for stability
+      const sorted = [...docs].sort((a,b) => (refCount[b.id]||0)-(refCount[a.id]||0) || a.id.localeCompare(b.id));
+      toKeep.push({...sorted[0], refs: refCount[sorted[0].id]||0});
+      sorted.slice(1).forEach(d => toDelete.push(d));
+    });
+
+    const dupeCount = toDelete.length;
+    if (dupeCount === 0) {
+      result.innerHTML = '<div style="color:var(--pixel);font-size:15px;padding:10px 0">✓ NO DUPLICATES FOUND — MISSIONS ARE CLEAN</div>';
+      btn.disabled = false; btn.textContent = '🔍 SCAN FOR DUPLICATES';
+      return;
+    }
+
+    // Store plan for the delete step
+    window._dedupPlan = { toDelete, toKeep };
+
+    result.innerHTML = `
+      <div style="background:#050505;border:2px solid var(--red);padding:12px;margin-bottom:10px">
+        <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--red);margin-bottom:8px">⚠ FOUND ${dupeCount} DUPLICATES</div>
+        <div style="font-size:14px;color:var(--muted);margin-bottom:10px">${toDelete.length} extra mission docs will be deleted. ${toKeep.length} canonical docs kept (prioritising ones players have completed).</div>
+        <div style="font-size:13px;color:var(--dim);margin-bottom:12px;max-height:160px;overflow-y:auto">
+          ${Object.entries(byType).filter(([,d])=>d.length>1).map(([t,d])=>`<div style="padding:3px 0;border-bottom:1px solid var(--border)">${t}: <span style="color:var(--red)">${d.length} copies</span> → keep 1</div>`).join('')}
+        </div>
+        <button class="btn btn-red" onclick="runDedup()" id="dedup-btn" style="font-family:'Press Start 2P',monospace;font-size:8px">🗑 DELETE ${dupeCount} DUPLICATES</button>
+      </div>`;
+  } catch(e) {
+    result.innerHTML = '<div style="color:var(--red);font-size:15px">ERROR: '+e.message+'</div>';
+  }
+  btn.disabled = false; btn.textContent = '🔍 SCAN FOR DUPLICATES';
+};
+
+window.runDedup = async () => {
+  const plan = window._dedupPlan;
+  if (!plan) return;
+  const btn = document.getElementById('dedup-btn');
+  btn.disabled = true; btn.textContent = 'DELETING...';
+  const result = document.getElementById('dedup-result');
+
+  try {
+    // Delete in batches of 500 (Firestore batch limit)
+    const ids = plan.toDelete.map(d => d.id);
+    let deleted = 0;
+    while (ids.length > 0) {
+      const chunk = ids.splice(0, 400);
+      const batch = writeBatch(db);
+      chunk.forEach(id => batch.delete(doc(db,'missions',id)));
+      await batch.commit();
+      deleted += chunk.length;
+    }
+    result.innerHTML = `<div style="background:#050505;border:2px solid var(--pixel);padding:12px">
+      <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);margin-bottom:8px">✓ CLEANUP COMPLETE</div>
+      <div style="font-size:15px;color:var(--muted)">Deleted ${deleted} duplicate mission docs. ${plan.toKeep.length} unique missions remain. Player XP is untouched.</div>
+    </div>`;
+    toast('CLEANUP DONE — '+deleted+' DUPLICATES REMOVED','ok');
+    window._dedupPlan = null;
+  } catch(e) {
+    result.innerHTML = '<div style="color:var(--red);font-size:15px">ERROR: '+e.message+'</div>';
+    btn.disabled = false; btn.textContent = '🗑 DELETE DUPLICATES';
+  }
 };
 
 window.resetPlayers = async () => {
