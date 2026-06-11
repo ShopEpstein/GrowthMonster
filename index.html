@@ -277,8 +277,8 @@ textarea{resize:vertical;min-height:68px}
 .chat-del:hover{opacity:1!important}
 
 /* WELCOME GUIDE */
-#guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px}
-.guide-box{background:#000;border:2px solid var(--pixel);width:100%;max-width:500px;box-shadow:0 0 60px var(--pixel-dim),0 0 120px rgba(0,255,65,0.05);animation:guide-in .3s ease}
+#guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8000;display:flex;align-items:center;justify-content:center;padding:12px;overflow-y:auto}
+.guide-box{background:#000;border:2px solid var(--pixel);width:100%;max-width:500px;box-shadow:0 0 60px var(--pixel-dim),0 0 120px rgba(0,255,65,0.05);animation:guide-in .3s ease;max-height:90vh;overflow-y:auto;position:relative;flex-shrink:0}
 @keyframes guide-in{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
 .guide-head{padding:18px 22px;border-bottom:2px solid var(--pixel);background:#000;text-align:center}
 .guide-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--pixel);text-shadow:0 0 12px var(--pixel);margin-bottom:6px;letter-spacing:.08em}
@@ -598,7 +598,8 @@ YOU WIN!<br>
 <!-- WELCOME GUIDE -->
 <div id="guide-overlay" style="display:none">
   <div class="guide-box">
-    <div class="guide-head">
+    <div class="guide-head" style="position:relative">
+      <button onclick="closeGuide()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:var(--dim);font-size:22px;cursor:pointer;font-family:'VT323',monospace;line-height:1;padding:4px" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--dim)'">✕</button>
       <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow);margin-bottom:10px">★ NEW PLAYER ★</div>
       <div class="guide-title">HOW TO PLAY</div>
       <div class="guide-sub">EARN XP. WIN PRIZES.</div>
