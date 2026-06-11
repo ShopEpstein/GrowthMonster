@@ -275,6 +275,37 @@ textarea{resize:vertical;min-height:68px}
 .chat-del{font-size:13px;color:var(--red);background:none;border:none;cursor:pointer;padding:0 2px;font-family:'VT323',monospace;opacity:0;transition:opacity .15s;margin-left:auto}
 .chat-msg:hover .chat-del{opacity:.7}
 .chat-del:hover{opacity:1!important}
+
+/* WELCOME GUIDE */
+#guide-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8000;display:flex;align-items:center;justify-content:center;padding:20px}
+.guide-box{background:#000;border:2px solid var(--pixel);width:100%;max-width:500px;box-shadow:0 0 60px var(--pixel-dim),0 0 120px rgba(0,255,65,0.05);animation:guide-in .3s ease}
+@keyframes guide-in{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.guide-head{padding:18px 22px;border-bottom:2px solid var(--pixel);background:#000;text-align:center}
+.guide-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--pixel);text-shadow:0 0 12px var(--pixel);margin-bottom:6px;letter-spacing:.08em}
+.guide-sub{font-size:17px;color:var(--yellow)}
+.guide-body{padding:20px 22px}
+.guide-step{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding:14px;border:2px solid var(--dim);background:#050505;transition:border-color .15s}
+.guide-step:hover{border-color:var(--pixel)}
+.guide-num{font-family:'Press Start 2P',monospace;font-size:14px;color:#000;background:var(--pixel);width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-shadow:none}
+.guide-step-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);margin-bottom:6px;letter-spacing:.06em}
+.guide-step-desc{font-size:16px;color:var(--muted);line-height:1.5}
+.guide-step-desc strong{color:var(--yellow)}
+.guide-foot{padding:0 22px 20px}
+
+/* FLOATING XP PARTICLE */
+.xp-particle{position:fixed;pointer-events:none;z-index:7000;font-family:'Press Start 2P',monospace;font-size:13px;color:var(--pixel);text-shadow:0 0 10px var(--pixel);animation:xp-fly 1.4s ease-out forwards;white-space:nowrap}
+@keyframes xp-fly{0%{opacity:1;transform:translateY(0) scale(1)}20%{opacity:1;transform:translateY(-12px) scale(1.2)}100%{opacity:0;transform:translateY(-80px) scale(.8)}}
+.xp-particle.big{font-size:18px;color:var(--yellow);text-shadow:0 0 14px var(--yellow)}
+
+/* XP LOG FEED */
+.xp-log{padding:8px 0;max-height:200px;overflow-y:auto;scroll-behavior:smooth}
+.xp-log-entry{display:flex;align-items:center;gap:9px;padding:7px 14px;border-bottom:1px solid rgba(0,255,65,0.06);animation:log-in .25s ease}
+.xp-log-entry:last-child{border-bottom:none}
+@keyframes log-in{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.xp-log-icon{font-size:15px;flex-shrink:0}
+.xp-log-name{flex:1;font-size:15px;color:var(--text)}
+.xp-log-pts{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);white-space:nowrap}
+.xp-log-empty{padding:16px 14px;font-size:15px;color:var(--dim);text-align:center}
 </style>
 </head>
 <body>
@@ -388,6 +419,17 @@ textarea{resize:vertical;min-height:68px}
 
           <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);letter-spacing:.12em;margin-bottom:10px;text-shadow:0 0 6px var(--pixel)">▶ ACTIVE QUESTS</div>
           <div id="quests-list"></div>
+
+          <!-- XP ACTIVITY LOG -->
+          <div id="xp-log-panel" style="margin-top:14px;border:2px solid var(--dim);display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#000;border-bottom:1px solid var(--dim)">
+              <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--pixel);letter-spacing:.1em">⚡ XP LOG</span>
+              <span id="xp-log-total" style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--yellow)">0 XP</span>
+            </div>
+            <div class="xp-log" id="xp-log-list">
+              <div class="xp-log-empty">Complete a quest to see your XP log here</div>
+            </div>
+          </div>
 
           <button class="btn btn-primary" id="btn-submit" onclick="submitEntry()" style="margin-top:14px">
             ▶ SUBMIT SCORE
@@ -533,6 +575,50 @@ YOU WIN!<br>
   <div class="powered">POWERED BY <a href="#">GROWTHGENIE</a> — THE CHEAT CODE FOR COMMUNITY GROWTH</div>
 </div>
 
+<!-- WELCOME GUIDE -->
+<div id="guide-overlay" style="display:none">
+  <div class="guide-box">
+    <div class="guide-head">
+      <div style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow);margin-bottom:10px">★ NEW PLAYER ★</div>
+      <div class="guide-title">HOW TO PLAY</div>
+      <div class="guide-sub">EARN XP. WIN PRIZES.</div>
+    </div>
+    <div class="guide-body">
+      <div class="guide-step">
+        <div class="guide-num">1</div>
+        <div>
+          <div class="guide-step-title">REGISTER</div>
+          <div class="guide-step-desc">Enter your name, email, and Solana wallet. Your wallet is where prizes get sent — double check it.</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-num">2</div>
+        <div>
+          <div class="guide-step-title">COMPLETE QUESTS</div>
+          <div class="guide-step-desc">Click any quest to open it. Do the action, paste your proof (URL, handle, or text), hit <strong>COMPLETE</strong>. XP stacks instantly.</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-num">3</div>
+        <div>
+          <div class="guide-step-title">SUBMIT YOUR SCORE</div>
+          <div class="guide-step-desc">When you're done, hit <strong>SUBMIT SCORE</strong> to lock in your XP. <strong>Every 1 XP = 1 raffle ticket.</strong> More quests = better odds to win.</div>
+        </div>
+      </div>
+      <div class="guide-step" style="border-color:var(--yellow);margin-bottom:0">
+        <div class="guide-num" style="background:var(--yellow)">🎁</div>
+        <div>
+          <div class="guide-step-title" style="color:var(--yellow)">THE PRIZES</div>
+          <div class="guide-step-desc">10x Pokémon TCG Packs · SOL · CashApp USD · <strong>Daily $STACCANA</strong> drops while the game is live. No purchase necessary.</div>
+        </div>
+      </div>
+    </div>
+    <div class="guide-foot">
+      <button onclick="closeGuide()" style="width:100%;background:var(--pixel);color:#000;border:2px solid var(--pixel);padding:14px;font-family:'Press Start 2P',monospace;font-size:11px;cursor:pointer;letter-spacing:.08em;transition:all .12s" onmouseover="this.style.background='#000';this.style.color='var(--pixel)'" onmouseout="this.style.background='var(--pixel)';this.style.color='#000'">▶ START PLAYING</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script type="module">
@@ -558,6 +644,27 @@ try {
   const s = localStorage.getItem('gg_entry');
   if (s) { const p = JSON.parse(s); myEntry = p.myEntry; completed = p.completed||{}; proofs = p.proofs||{}; }
 } catch(e){}
+
+// Rebuild XP log from saved completions on reload (populated after missions load)
+function rebuildXpLog() {
+  if (!Object.keys(completed).length) return;
+  const panel = document.getElementById('xp-log-panel');
+  const list = document.getElementById('xp-log-list');
+  const entries = Object.keys(completed).map(id => {
+    const m = missions.find(x=>x.id===id);
+    return m ? {icon:m.icon||'⭐', name:m.name, pts:m.pts} : null;
+  }).filter(Boolean).reverse();
+  if (!entries.length) return;
+  panel.style.display = 'block';
+  document.getElementById('xp-log-total').textContent = getTotalXP() + ' XP';
+  list.innerHTML = entries.slice(0,12).map(e =>
+    `<div class="xp-log-entry">
+      <span class="xp-log-icon">${e.icon}</span>
+      <span class="xp-log-name">${e.name}</span>
+      <span class="xp-log-pts">+${e.pts} XP</span>
+    </div>`
+  ).join('');
+}
 
 function saveLocal() {
   try { localStorage.setItem('gg_entry', JSON.stringify({myEntry,completed,proofs})); } catch(e){}
@@ -616,6 +723,7 @@ async function init() {
 
   campaign = found;
   upsertNewMissions(found.id); // fire and forget — don't block loading
+  maybeShowGuide();
   applyBranding();
   fetchLivePrice();
   startTimer();
@@ -815,6 +923,8 @@ function renderQuests() {
   document.getElementById('sc-xp-num').textContent = xp;
   document.getElementById('xp-progress-text').textContent = xp+' / '+maxXP+' XP';
   document.getElementById('xp-fill').style.width = (maxXP ? Math.min(100,(xp/maxXP)*100) : 0)+'%';
+  if (sessionLog.length === 0) rebuildXpLog();
+  if (document.getElementById('xp-log-total')) document.getElementById('xp-log-total').textContent = xp + ' XP';
 }
 
 window.updateCC = (id,min) => {
@@ -859,6 +969,8 @@ window.markDone = id => {
   }
   saveLocal();
   toast('+'+m.pts+' XP EARNED!','ok');
+  spawnXpParticle(m.pts, m.pts >= 50);
+  pushXpLog(m, m.pts);
   renderQuests();
 };
 
@@ -968,6 +1080,49 @@ window.toast = (msg,type) => {
 
 // Store inbound ref code for use at submission time only
 const inboundRef = new URLSearchParams(window.location.search).get('ref') || '';
+
+// WELCOME GUIDE
+function maybeShowGuide() {
+  if (!localStorage.getItem('gg_welcomed')) {
+    document.getElementById('guide-overlay').style.display = 'flex';
+  }
+}
+window.closeGuide = () => {
+  document.getElementById('guide-overlay').style.display = 'none';
+  localStorage.setItem('gg_welcomed', '1');
+};
+
+// FLOATING XP PARTICLE
+function spawnXpParticle(pts, isBig) {
+  const el = document.createElement('div');
+  el.className = 'xp-particle' + (isBig ? ' big' : '');
+  el.textContent = '+' + pts + ' XP';
+  // anchor near the xp badge at top of panel
+  const badge = document.getElementById('xp-badge');
+  const rect = badge ? badge.getBoundingClientRect() : {left: window.innerWidth/2, top: 120};
+  el.style.left = (rect.left + rect.width/2 - 30) + 'px';
+  el.style.top = (rect.top + window.scrollY - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+// XP LOG
+const sessionLog = [];
+function pushXpLog(mission, pts) {
+  sessionLog.unshift({icon: mission.icon || '⭐', name: mission.name, pts});
+  const panel = document.getElementById('xp-log-panel');
+  const list = document.getElementById('xp-log-list');
+  panel.style.display = 'block';
+  const totalXP = getTotalXP();
+  document.getElementById('xp-log-total').textContent = totalXP + ' XP';
+  list.innerHTML = sessionLog.slice(0, 12).map(e =>
+    `<div class="xp-log-entry">
+      <span class="xp-log-icon">${e.icon}</span>
+      <span class="xp-log-name">${e.name}</span>
+      <span class="xp-log-pts">+${e.pts} XP</span>
+    </div>`
+  ).join('');
+}
 
 // CHAT
 const MOD_WALLETS = []; // add full wallet addresses here to grant mod delete powers
