@@ -334,7 +334,7 @@ textarea{resize:vertical;min-height:68px}
 
   <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat-cell"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">TOTAL XP</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stat-xp">0</div><div class="stat-lbl">TICKETS SOLD</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-players">0</div><div class="stat-lbl">PLAYERS</div></div>
     <div class="stat-cell"><div class="stat-val" id="stat-quests">0</div><div class="stat-lbl">QUESTS</div></div>
     <div class="stat-cell"><div class="stat-val" style="color:var(--yellow)" id="stat-winners">3</div><div class="stat-lbl">WINNERS</div></div>
@@ -476,7 +476,7 @@ YOU WIN!<br>
         <div class="panel-body" style="font-size:14px;color:var(--muted);line-height:1.6">
           <p style="margin-bottom:10px">Winner selection uses <strong style="color:var(--pixel)">SHA-256 RNG</strong> — seeded from a server secret committed before entries close, combined with a public Solana slot hash.</p>
           <p style="margin-bottom:10px;color:var(--pixel);font-size:13px">Formula: SHA256(serverSeed + slotHash + roundNumber)</p>
-          <p style="margin-bottom:12px">Three draws are run in sequence. Each winner is removed before the next draw. <strong style="color:var(--yellow)">NO PURCHASE NECESSARY.</strong> Anyone can verify the result below after the draw.</p>
+          <p style="margin-bottom:12px"><strong style="color:var(--yellow)">Every 1 XP = 1 raffle ticket.</strong> More quests = more tickets = better odds. Three draws run in sequence — each winner removed before the next draw. <strong style="color:var(--yellow)">NO PURCHASE NECESSARY.</strong></p>
           <div style="background:#000;border:2px solid var(--dim);padding:10px;margin-bottom:8px">
             <div style="font-size:12px;color:var(--dim);margin-bottom:5px">SERVER SEED HASH (committed pre-draw)</div>
             <div id="pf-seed-hash" style="font-family:monospace;font-size:11px;color:var(--pixel);word-break:break-all">— awaiting draw commitment —</div>
@@ -958,18 +958,29 @@ window.pfVerify = async function() {
   let pool = [];
   snap.forEach(d => pool.push({id:d.id,...d.data()}));
   if (!pool.length) { res.style.display='block'; res.innerHTML='<span style="color:var(--red)">No entries found.</span>'; return; }
-  const remaining = [...pool];
+
+  // Build weighted ticket pool — each XP = 1 ticket
+  let tickets = [];
+  pool.forEach(e => {
+    const count = Math.max(1, Math.floor(e.pts || 0));
+    for (let i = 0; i < count; i++) tickets.push(e);
+  });
+
   const winners = [];
+  const wonIds = new Set();
   for (let round = 1; round <= numWinners; round++) {
+    // Filter out already-won entries from ticket pool
+    const remaining = tickets.filter(t => !wonIds.has(t.id));
+    if (!remaining.length) break;
     const hash = await sha256hex(seed + slot + String(round));
     const idx = Number(BigInt('0x'+hash) % BigInt(remaining.length));
-    winners.push(remaining[idx]);
-    remaining.splice(idx, 1);
-    if (!remaining.length) break;
+    const winner = remaining[idx];
+    winners.push(winner);
+    wonIds.add(winner.id);
   }
   res.style.display = 'block';
   res.innerHTML = '<div style="color:var(--pixel);margin-bottom:6px;font-family:\'Press Start 2P\',monospace;font-size:9px">VERIFIED WINNERS</div>' +
-    winners.map((w,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--dim);color:var(--yellow)">${i+1}. ${w.name} — ${w.wallet||w.walletFull||'—'} (${w.pts} XP)</div>`).join('');
+    winners.map((w,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--dim);color:var(--yellow)">${i+1}. ${w.name} — ${w.wallet||w.walletFull||'—'} (${w.pts} XP / TICKETS)</div>`).join('');
 };
 
 // Load provably fair seed hash commitment
