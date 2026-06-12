@@ -844,7 +844,7 @@ function applyBranding() {
   document.getElementById('hdr-project').textContent = campaign.projectName||'';
   document.getElementById('sc-title').textContent = campaign.name||'CAMPAIGN';
   document.getElementById('ref-badge').textContent = '+'+(campaign.referralBonus||25)+' XP/RECRUIT';
-  if (campaign.cheatCode) document.getElementById('cheat-code').textContent = campaign.cheatCode;
+  const ccEl = document.getElementById('cheat-code'); if (ccEl && campaign.cheatCode) ccEl.textContent = campaign.cheatCode;
   if (campaign.marqueeText) document.getElementById('marquee-text').textContent = campaign.marqueeText;
   document.getElementById('sc-logo').src = 'assets/staccana-logo.jpg';
   document.getElementById('og-img').content = 'assets/banner.jpg';
