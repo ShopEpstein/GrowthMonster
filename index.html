@@ -106,7 +106,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 
 /* MAIN */
 .main{display:grid;grid-template-columns:1fr 300px;gap:24px;max-width:1040px;margin:0 auto;padding:0 20px 80px}
-@media(max-width:960px){.main{grid-template-columns:1fr}.stats-bar{grid-template-columns:repeat(2,1fr)}.hero{padding:36px 20px 28px}}
+@media(max-width:960px){.main{grid-template-columns:1fr}.stats-bar{grid-template-columns:repeat(2,1fr)}.hero{padding:16px 20px 20px}}
 
 /* PANEL */
 .panel{background:var(--bg);border:2px solid var(--pixel);margin-bottom:14px;box-shadow:0 0 15px var(--pixel-dim)}
@@ -350,38 +350,29 @@ textarea{resize:vertical;min-height:68px}
     <div class="hero-title" id="hero-title">ENTER THE <span class="hl">STACVERSE</span></div>
     <p class="hero-sub" id="hero-desc">Complete quests. Stack XP. The Stacverse rewards its soldiers.</p>
 
-    <!-- TRUST STRIP -->
-    <div style="display:inline-flex;flex-wrap:wrap;justify-content:center;gap:0;background:#000;border:2px solid var(--pixel);margin-bottom:22px;box-shadow:0 0 15px var(--pixel-dim)">
-      <div style="padding:7px 16px;font-size:15px;color:var(--pixel);border-right:1px solid var(--dim)">🔒 NO WALLET CONNECT</div>
-      <div style="padding:7px 16px;font-size:15px;color:var(--pixel);border-right:1px solid var(--dim)">✅ NO DOWNLOADS</div>
-      <div style="padding:7px 16px;font-size:15px;color:var(--pixel);border-right:1px solid var(--dim)">🛡 NO PERMISSIONS</div>
-      <div style="padding:7px 16px;font-size:15px;color:var(--yellow)">💸 100% FREE</div>
-    </div>
-
-    <div class="cheat-code" id="cheat-code">↑ ↑ ↓ ↓ ← → ← → B A START</div>
-    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:20px">
-      <div class="prize-box" style="padding:10px 18px">
+    <div style="display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:10px;margin-bottom:20px;padding-bottom:4px;justify-content:flex-start;max-width:100%">
+      <div class="prize-box" style="padding:10px 18px;flex-shrink:0">
         <div class="prize-icon">🃏</div>
         <div>
           <div class="prize-amount" style="font-size:clamp(13px,3vw,20px)">10 PACKS</div>
           <div class="prize-meta"><div class="top">POKÉMON TCG</div><div class="bot">1 WINNER</div></div>
         </div>
       </div>
-      <div class="prize-box" style="padding:10px 18px">
+      <div class="prize-box" style="padding:10px 18px;flex-shrink:0">
         <div class="prize-icon" id="prize-icon">💎</div>
         <div>
           <div class="prize-amount" id="prize-amount">PRIZES</div>
           <div class="prize-meta"><div class="top"><span id="prize-token">$STACCANA</span></div><div class="bot">SOL + Cash (US Only)</div></div>
         </div>
       </div>
-      <div class="prize-box" style="padding:10px 18px;border-color:var(--pixel)">
+      <div class="prize-box" style="padding:10px 18px;border-color:var(--pixel);flex-shrink:0">
         <div class="prize-icon">⚡</div>
         <div>
           <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--pixel);text-shadow:2px 2px 0 #005500">SOL DROPS</div>
           <div class="prize-meta"><div class="top">DAILY WHILE LIVE</div><div class="bot">JUST BE ACTIVE</div></div>
         </div>
       </div>
-      <div class="prize-box" style="padding:10px 18px;border-color:var(--red)">
+      <div class="prize-box" style="padding:10px 18px;border-color:var(--red);flex-shrink:0">
         <div class="prize-icon">🔥</div>
         <div>
           <div class="prize-amount" style="font-size:clamp(13px,3vw,20px);color:var(--red);text-shadow:2px 2px 0 #550000">DAILY</div>
