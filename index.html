@@ -14,6 +14,7 @@
 <meta name="twitter:description" content="Complete quests. Stack XP. Win 20x Pokémon TCG Packs + SOL + daily $STACCANA. No purchase necessary.">
 <meta name="twitter:image" content="https://growth-monster.vercel.app/assets/prize-banner.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -314,6 +315,36 @@ textarea{resize:vertical;min-height:68px}
 .xp-log-name{flex:1;font-size:15px;color:var(--text)}
 .xp-log-pts{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);white-space:nowrap}
 .xp-log-empty{padding:16px 14px;font-size:15px;color:var(--dim);text-align:center}
+
+/* WALLET CONNECT */
+#wallet-connect-section{margin-bottom:14px}
+#btn-wallet-connect{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#000;border:2px solid var(--pixel);padding:12px 16px;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);cursor:pointer;letter-spacing:.08em;transition:all .15s;box-shadow:0 0 10px rgba(0,255,65,0.3)}
+#btn-wallet-connect:hover{background:rgba(0,255,65,0.07);box-shadow:0 0 18px rgba(0,255,65,0.5)}
+#btn-wallet-connect.connected{border-color:var(--yellow);color:var(--yellow);box-shadow:0 0 10px rgba(255,230,0,0.3)}
+#btn-wallet-connect.connected:hover{background:rgba(255,230,0,0.06);box-shadow:0 0 18px rgba(255,230,0,0.4)}
+.wallet-dot{width:8px;height:8px;border-radius:50%;background:var(--pixel);flex-shrink:0;animation:blink 1s infinite}
+.wallet-or-divider{display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--dim);font-size:14px}
+.wallet-or-divider::before,.wallet-or-divider::after{content:'';flex:1;height:1px;background:var(--dim)}
+#wallet-no-ext{font-size:14px;color:var(--muted);margin-bottom:10px;text-align:center;line-height:1.5}
+#wallet-no-ext a{color:var(--pixel);text-decoration:none}
+#wallet-no-ext a:hover{text-shadow:0 0 6px var(--pixel)}
+/* WALLET MODAL */
+#wallet-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px}
+#wallet-modal-overlay.open{display:flex}
+#wallet-modal{background:#000;border:2px solid var(--pixel);width:100%;max-width:360px;box-shadow:0 0 40px var(--pixel-dim)}
+.wm-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:2px solid var(--pixel)}
+.wm-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);letter-spacing:.08em}
+.wm-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 4px}
+.wm-close:hover{color:#fff}
+.wm-list{padding:12px}
+.wm-wallet-btn{display:flex;align-items:center;gap:14px;width:100%;background:#000;border:2px solid var(--dim);padding:12px 16px;color:var(--text);cursor:pointer;margin-bottom:8px;transition:all .15s;text-align:left}
+.wm-wallet-btn:last-child{margin-bottom:0}
+.wm-wallet-btn:hover{border-color:var(--pixel);background:rgba(0,255,65,0.05)}
+.wm-wallet-btn img{width:28px;height:28px;border-radius:4px}
+.wm-wallet-name{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:.06em}
+.wm-wallet-status{font-size:13px;color:var(--dim);margin-top:2px}
+.wm-disconnect-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#000;border:2px solid var(--red);padding:10px 16px;font-family:'Press Start 2P',monospace;font-size:8px;color:var(--red);cursor:pointer;letter-spacing:.06em;transition:all .15s;margin-top:12px}
+.wm-disconnect-btn:hover{background:rgba(255,49,49,0.08)}
 </style>
 </head>
 <body>
@@ -423,9 +454,17 @@ textarea{resize:vertical;min-height:68px}
             <label class="fl">EMAIL <span class="req">*</span></label>
             <input type="email" id="inp-email" placeholder="FOR WINNER NOTIFICATION_">
           </div>
-          <div class="fg" style="margin-bottom:4px">
+          <!-- WALLET CONNECT -->
+          <div id="wallet-connect-section" class="fg">
             <label class="fl">SOLANA WALLET <span class="req">*</span></label>
-            <input type="text" id="inp-wallet" class="mono" placeholder="PASTE YOUR SOL WALLET ADDRESS_">
+            <div id="wallet-connect-ui">
+              <!-- populated by initWalletConnect() -->
+            </div>
+            <div class="wallet-or-divider">OR</div>
+            <div id="wallet-no-ext" style="display:none">
+              No wallet extension detected — <a href="https://phantom.app" target="_blank">install Phantom</a> to connect. You can still enter manually below.
+            </div>
+            <input type="text" id="inp-wallet" class="mono" placeholder="PASTE WALLET ADDRESS MANUALLY_">
           </div>
           <div style="display:flex;align-items:center;gap:8px;background:#000;border:1px solid var(--dim);padding:8px 11px;margin-bottom:14px;font-size:14px;color:var(--muted);line-height:1.5">
             <span style="font-size:17px;flex-shrink:0">🔒</span>
@@ -1309,6 +1348,202 @@ async function loadSeedHash() {
 init();
 loadSeedHash();
 setInterval(fetchLivePrice, 30000);
+</script>
+
+<!-- WALLET CONNECT MODAL -->
+<div id="wallet-modal-overlay">
+  <div id="wallet-modal">
+    <div class="wm-head">
+      <span class="wm-title">SELECT WALLET</span>
+      <button class="wm-close" onclick="closeWalletModal()">✕</button>
+    </div>
+    <div class="wm-list" id="wm-list"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const LS_KEY = 'gg_wallet_adapter';
+
+  // Known wallet identifiers: name → icon URL
+  const KNOWN_WALLETS = [
+    {name:'Phantom',   key:'phantom',   icon:'https://www.phantom.app/img/phantom-logo.png'},
+    {name:'Solflare',  key:'solflare',  icon:'https://solflare.com/favicon.ico'},
+    {name:'Backpack',  key:'backpack',  icon:'https://backpack.app/favicon.ico'},
+  ];
+
+  let _connected = false;
+  let _pubkey = null;
+  let _provider = null;
+
+  function trunc(addr){ return addr.slice(0,4)+'…'+addr.slice(-4); }
+
+  function getProvider(key){
+    if(key==='phantom')  return window.solana   && window.solana.isPhantom  ? window.solana   : null;
+    if(key==='solflare') return window.solflare && window.solflare.isSolflare? window.solflare : null;
+    if(key==='backpack') return window.xnft     && window.xnft.solana       ? window.xnft.solana: null;
+    return null;
+  }
+
+  function detectWallets(){
+    const found = [];
+    for(const w of KNOWN_WALLETS){
+      const p = getProvider(w.key);
+      if(p) found.push({...w, provider:p});
+    }
+    // Solana wallet standard (generic)
+    if(window.navigator.wallets){
+      try{
+        for(const wa of window.navigator.wallets.get()){
+          if(!found.find(f=>f.name.toLowerCase()===wa.name.toLowerCase())){
+            found.push({name:wa.name, key:'standard_'+wa.name, icon:wa.icon||'', provider:wa.accounts?wa:null});
+          }
+        }
+      }catch(e){}
+    }
+    return found;
+  }
+
+  function setConnected(addr, providerKey){
+    _connected = true;
+    _pubkey = addr;
+    const inp = document.getElementById('inp-wallet');
+    if(inp){ inp.value = addr; inp.style.display='none'; }
+    localStorage.setItem(LS_KEY, JSON.stringify({addr, providerKey}));
+    renderButton();
+  }
+
+  function setDisconnected(){
+    _connected = false;
+    _pubkey = null;
+    _provider = null;
+    const inp = document.getElementById('inp-wallet');
+    if(inp){ inp.style.display=''; }
+    localStorage.removeItem(LS_KEY);
+    renderButton();
+  }
+
+  function renderButton(){
+    const ui = document.getElementById('wallet-connect-ui');
+    if(!ui) return;
+    if(_connected){
+      ui.innerHTML = `<button id="btn-wallet-connect" class="connected" onclick="window._walletModal()">
+        <span class="wallet-dot"></span><span>${trunc(_pubkey)}</span><span style="font-size:11px;opacity:.6;margin-left:4px">▼</span>
+      </button>`;
+    } else {
+      const wallets = detectWallets();
+      if(wallets.length===0){
+        ui.innerHTML = '';
+        document.getElementById('wallet-no-ext').style.display='block';
+      } else {
+        document.getElementById('wallet-no-ext').style.display='none';
+        ui.innerHTML = `<button id="btn-wallet-connect" onclick="window._walletModal()">⚡ CONNECT WALLET</button>`;
+      }
+    }
+  }
+
+  window._walletModal = function(){
+    if(_connected){
+      // show disconnect modal
+      const list = document.getElementById('wm-list');
+      list.innerHTML = `<div style="padding:8px 4px 4px;font-size:15px;color:var(--muted);text-align:center">Connected as</div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yellow);text-align:center;padding:6px 4px 14px;word-break:break-all">${_pubkey}</div>
+        <button class="wm-disconnect-btn" onclick="window._walletDisconnect()">✕ DISCONNECT</button>`;
+      document.getElementById('wallet-modal-overlay').classList.add('open');
+      return;
+    }
+    const wallets = detectWallets();
+    const list = document.getElementById('wm-list');
+    list.innerHTML = wallets.map(w=>`
+      <button class="wm-wallet-btn" onclick="window._walletConnect('${w.key}')">
+        ${w.icon?`<img src="${w.icon}" onerror="this.style.display='none'" alt="">`:'<div style="width:28px;height:28px;border:2px solid var(--dim);display:flex;align-items:center;justify-content:center;font-size:14px">◎</div>'}
+        <div>
+          <div class="wm-wallet-name">${w.name}</div>
+          <div class="wm-wallet-status">Detected</div>
+        </div>
+      </button>`).join('');
+    document.getElementById('wallet-modal-overlay').classList.add('open');
+  };
+
+  window._walletConnect = async function(key){
+    closeWalletModal();
+    const wallets = detectWallets();
+    const entry = wallets.find(w=>w.key===key);
+    if(!entry){ return; }
+    _provider = entry.provider;
+    try{
+      let addr;
+      if(key.startsWith('standard_')){
+        await _provider.connect();
+        addr = _provider.accounts[0]?.address;
+      } else {
+        const resp = await _provider.connect();
+        addr = resp.publicKey ? resp.publicKey.toString() : _provider.publicKey?.toString();
+      }
+      if(addr) setConnected(addr, key);
+    } catch(e){
+      console.warn('Wallet connect failed', e);
+    }
+  };
+
+  window._walletDisconnect = async function(){
+    closeWalletModal();
+    try{ if(_provider && _provider.disconnect) await _provider.disconnect(); }catch(e){}
+    setDisconnected();
+  };
+
+  window.closeWalletModal = function(){
+    document.getElementById('wallet-modal-overlay').classList.remove('open');
+  };
+
+  document.getElementById('wallet-modal-overlay').addEventListener('click', function(e){
+    if(e.target===this) closeWalletModal();
+  });
+
+  // Auto-reconnect from localStorage
+  function tryAutoReconnect(){
+    const saved = localStorage.getItem(LS_KEY);
+    if(!saved) return;
+    try{
+      const {addr, providerKey} = JSON.parse(saved);
+      const wallets = detectWallets();
+      const entry = wallets.find(w=>w.key===providerKey);
+      if(entry && entry.provider){
+        _provider = entry.provider;
+        // Try silent reconnect (Phantom supports this)
+        const doConnect = async ()=>{
+          try{
+            let connected = false;
+            if(_provider.isConnected){ connected = _provider.isConnected; }
+            if(!connected && _provider.connect){
+              try{ await _provider.connect({onlyIfTrusted:true}); connected=true; }catch(e){}
+            }
+            const pk = _provider.publicKey?.toString();
+            if(pk) setConnected(pk, providerKey);
+            else setConnected(addr, providerKey); // use cached if provider doesn't expose key yet
+          }catch(e){ localStorage.removeItem(LS_KEY); }
+        };
+        doConnect();
+      } else {
+        // Extension not loaded yet, pre-fill address from cache
+        const inp = document.getElementById('inp-wallet');
+        if(inp && addr){ inp.value = addr; }
+      }
+    }catch(e){}
+  }
+
+  // Init after DOM ready (called when page loads)
+  function initWalletConnect(){
+    renderButton();
+    tryAutoReconnect();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', initWalletConnect);
+  } else {
+    initWalletConnect();
+  }
+})();
 </script>
 </body>
 </html>
