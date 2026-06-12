@@ -315,6 +315,14 @@ textarea{resize:vertical;min-height:68px}
 .xp-log-pts{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);white-space:nowrap}
 .xp-log-empty{padding:16px 14px;font-size:15px;color:var(--dim);text-align:center}
 
+/* CLAIM BAR */
+#claim-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:#000;border-top:3px solid var(--pixel);padding:12px 20px;display:none;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 -4px 30px var(--pixel-dim);animation:claim-slide-in .35s ease}
+@keyframes claim-slide-in{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#claim-bar.visible{display:flex}
+#claim-bar-xp{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--pixel);text-shadow:0 0 8px var(--pixel);white-space:nowrap}
+#claim-bar-xp span{color:var(--yellow)}
+#claim-bar-btn{background:var(--pixel);color:#000;border:2px solid var(--pixel);padding:11px 22px;font-family:'Press Start 2P',monospace;font-size:9px;cursor:pointer;letter-spacing:.08em;white-space:nowrap;animation:submit-glow 2s ease-in-out infinite;flex-shrink:0}
+#claim-bar-btn:hover{background:#000;color:var(--pixel)}
 /* WALLET CONNECT */
 #wallet-connect-section{margin-bottom:14px}
 #btn-wallet-connect{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#000;border:2px solid var(--pixel);padding:12px 16px;font-family:'Press Start 2P',monospace;font-size:9px;color:var(--pixel);cursor:pointer;letter-spacing:.08em;transition:all .15s;box-shadow:0 0 10px rgba(0,255,65,0.3)}
@@ -433,6 +441,18 @@ textarea{resize:vertical;min-height:68px}
   <div class="main">
     <!-- LEFT -->
     <div>
+
+      <!-- QUESTS PANEL — visible immediately, no auth needed -->
+      <div class="panel" id="quests-panel">
+        <div class="panel-head">
+          <span class="panel-title">▶ ACTIVE QUESTS</span>
+          <span class="panel-badge" id="quests-panel-badge">EARN XP</span>
+        </div>
+        <div class="panel-body" style="padding-top:12px;padding-bottom:12px">
+          <div id="quests-list"></div>
+        </div>
+      </div>
+
       <div class="panel" id="entry-panel">
         <div class="panel-head">
           <span class="panel-title">PLAYER REGISTRATION</span>
@@ -473,9 +493,6 @@ textarea{resize:vertical;min-height:68px}
             <label class="fl">TWITTER / X HANDLE</label>
             <input type="text" id="inp-twitter" placeholder="@yourhandle (OPTIONAL)_">
           </div>
-
-          <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--pixel);letter-spacing:.12em;margin-bottom:10px;text-shadow:0 0 6px var(--pixel)">▶ ACTIVE QUESTS</div>
-          <div id="quests-list"></div>
 
           <!-- XP ACTIVITY LOG -->
           <div id="xp-log-panel" style="margin-top:14px;border:2px solid var(--dim);display:none">
@@ -790,6 +807,8 @@ async function init() {
   loadQuests();
   listenLeaderboard();
   listenChat();
+  // Restore claim bar for returning users with unsaved XP
+  if (!myEntry) setTimeout(() => nudgeRegister(), 1200);
   if (campaign?.numWinners) document.getElementById('stat-winners').textContent = campaign.numWinners;
 
   } catch(err) { console.error('init error:', err); }
@@ -986,6 +1005,11 @@ function renderQuests() {
   document.getElementById('xp-fill').style.width = (maxXP ? Math.min(100,(xp/maxXP)*100) : 0)+'%';
   if (sessionLog.length === 0) rebuildXpLog();
   if (document.getElementById('xp-log-total')) document.getElementById('xp-log-total').textContent = xp + ' XP';
+  // keep claim bar in sync
+  const cbPts = document.getElementById('claim-bar-pts');
+  if (cbPts) cbPts.textContent = xp;
+  const qBadge = document.getElementById('quests-panel-badge');
+  if (qBadge && xp > 0) qBadge.textContent = xp + ' XP';
 }
 
 window.updateCC = (id,min) => {
@@ -1033,6 +1057,22 @@ window.markDone = id => {
   spawnXpParticle(m.pts, m.pts >= 50);
   pushXpLog(m, m.pts);
   renderQuests();
+  nudgeRegister();
+};
+
+function nudgeRegister() {
+  if (myEntry) return; // already submitted
+  const xp = getTotalXP();
+  if (!xp) return;
+  const bar = document.getElementById('claim-bar');
+  const pts = document.getElementById('claim-bar-pts');
+  if (bar) { pts.textContent = xp; bar.classList.add('visible'); }
+}
+
+window.claimBarClick = function() {
+  const panel = document.getElementById('entry-panel');
+  if (panel) panel.scrollIntoView({behavior:'smooth', block:'start'});
+  setTimeout(() => { const n = document.getElementById('inp-name'); if(n) n.focus(); }, 400);
 };
 
 window.submitEntry = async () => {
@@ -1083,6 +1123,7 @@ window.submitEntry = async () => {
     document.getElementById('success-xp-num').textContent = pts;
     document.getElementById('form-body').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
+    const cb = document.getElementById('claim-bar'); if (cb) cb.classList.remove('visible');
     toast('SCORE SAVED! 🚀','ok');
   } catch(err) {
     console.error(err); btn.disabled=false; btn.textContent='▶ SUBMIT SCORE';
@@ -1348,6 +1389,12 @@ init();
 loadSeedHash();
 setInterval(fetchLivePrice, 30000);
 </script>
+
+<!-- STICKY CLAIM BAR -->
+<div id="claim-bar">
+  <div id="claim-bar-xp">⚡ <span id="claim-bar-pts">0</span> XP EARNED — NOT SAVED YET</div>
+  <button id="claim-bar-btn" onclick="claimBarClick()">▶ CLAIM YOUR XP</button>
+</div>
 
 <!-- WALLET CONNECT MODAL -->
 <div id="wallet-modal-overlay">
