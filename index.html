@@ -759,13 +759,15 @@ async function init() {
   try {
   const snap = await getDocs(collection(db, 'campaigns'));
   let found = null;
+  // Prefer active campaign; fall back to any campaign so we never reset
   snap.forEach(d => { if (d.data().status === 'active') found = {id:d.id,...d.data()}; });
+  if (!found) snap.forEach(d => { if (!found) found = {id:d.id,...d.data()}; });
 
   if (!found) {
     const def = {
       name:'$STACCANA Launch Giveaway',description:'Complete quests. Stack XP. The Stacverse rewards its soldiers.',
       prizeAmount:'PRIZES',prizeToken:'$STACCANA',prizeIcon:'💎',
-      endDate:new Date(Date.now()+7*86400000).toISOString(),status:'active',
+      endDate:new Date(Date.now()+5*86400000).toISOString(),status:'active',
       accentColor:'#00FF41',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
       projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
       headerLinks:[{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'Chart',url:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'}],
@@ -776,6 +778,9 @@ async function init() {
     };
     const ref = await addDoc(collection(db,'campaigns'),def);
     found = {id:ref.id,...def};
+    // Only seed missions if none exist at all
+    const existingM = await getDocs(collection(db,'missions'));
+    if (existingM.empty) {
     const quests = [
       {name:'Follow @stacverse on X',desc:'Follow the official Stacverse Twitter',icon:'𝕏',iconBg:'rgba(255,255,255,0.06)',pts:15,type:'follow_x',proofType:'username',proofLabel:'Your X/Twitter @username',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:1,active:true,unlockAt:null},
       {name:'Retweet the giveaway post',desc:'RT the pinned tweet — paste URL as proof',icon:'🔁',iconBg:'rgba(0,255,65,0.06)',pts:20,type:'retweet',proofType:'url',proofLabel:'URL of your retweet',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:2,active:true,unlockAt:null},
@@ -798,6 +803,12 @@ async function init() {
       {name:'Comment on a STACCANA YouTube video',desc:'Leave a genuine comment on a Stacverse YouTube video — paste the video URL and type your comment below.',icon:'💬',iconBg:'rgba(255,0,0,0.06)',pts:35,type:'youtube_comment',proofType:'text',proofLabel:'Paste video URL then write your comment here...',minLength:20,oneTime:false,daily:true,quality:'medium',order:19,active:true,unlockAt:null}
     ];
     for (const q of quests) await addDoc(collection(db,'missions'),{...q,campaignId:ref.id});
+    } // end if existingM.empty
+  } else if (!found.endDateAdjusted2) {
+    // One-time: subtract 2 days from current endDate
+    const newEnd = new Date(new Date(found.endDate).getTime() - 2*86400000);
+    await updateDoc(doc(db,'campaigns',found.id),{endDate:newEnd.toISOString(),endDateAdjusted2:true});
+    found = {...found, endDate:newEnd.toISOString(), endDateAdjusted2:true};
   }
 
   campaign = found;
