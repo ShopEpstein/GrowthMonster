@@ -1208,7 +1208,7 @@ function listenLeaderboard() {
 function renderLeaderboard(entries) {
   const lb = document.getElementById('leaderboard');
   document.getElementById('lb-count').textContent = entries.length+' PLAYERS';
-  const visible = entries.slice(0, 100);
+  const visible = entries.slice(0, 10);
   if (!entries.length) { lb.innerHTML='<div class="lb-empty">NO SCORES YET. BE PLAYER ONE.</div>'; return; }
   const colors = ['var(--yellow)','var(--pixel)','var(--blue)','var(--red)','var(--purple)'];
   const medals = ['🥇','🥈','🥉'];
