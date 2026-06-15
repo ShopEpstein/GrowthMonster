@@ -842,6 +842,10 @@ async function init() {
     await updateDoc(doc(db,'campaigns',found.id), updatedMission);
     found = {...found, ...updatedMission};
   }
+  if (!found.slug) {
+    await updateDoc(doc(db,'campaigns',found.id), {slug:'stacverse'});
+    found = {...found, slug:'stacverse'};
+  }
 
   campaign = found;
   applyBranding();
