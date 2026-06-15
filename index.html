@@ -442,17 +442,6 @@ textarea{resize:vertical;min-height:68px}
     <!-- LEFT -->
     <div>
 
-      <!-- QUESTS PANEL — visible immediately, no auth needed -->
-      <div class="panel" id="quests-panel">
-        <div class="panel-head">
-          <span class="panel-title">▶ ACTIVE QUESTS</span>
-          <span class="panel-badge" id="quests-panel-badge">EARN XP</span>
-        </div>
-        <div class="panel-body" style="padding-top:12px;padding-bottom:12px">
-          <div id="quests-list"></div>
-        </div>
-      </div>
-
       <div class="panel" id="entry-panel">
         <div class="panel-head">
           <span class="panel-title">PLAYER REGISTRATION</span>
@@ -611,10 +600,41 @@ YOU WIN!<br>
         </div>
       </div>
 
-      <!-- ABOUT -->
+      <!-- QUESTS PANEL — visible immediately, no auth needed -->
+      <div class="panel" id="quests-panel">
+        <div class="panel-head">
+          <span class="panel-title">▶ ACTIVE QUESTS</span>
+          <span class="panel-badge" id="quests-panel-badge">EARN XP</span>
+        </div>
+        <div class="panel-body" style="padding-top:12px;padding-bottom:12px">
+          <div id="quests-list"></div>
+        </div>
+      </div>
+
+      <!-- MISSION / ABOUT -->
       <div class="panel" id="about-panel" style="display:none">
-        <div class="panel-head"><span class="panel-title">ABOUT</span></div>
+        <div class="panel-head"><span class="panel-title">🌐 MISSION</span></div>
         <div class="about-body" id="about-body"></div>
+      </div>
+
+      <!-- EMBED -->
+      <div class="panel" id="embed-panel" style="display:none">
+        <div class="panel-head"><span class="panel-title">🔗 EMBED ON YOUR SITE</span></div>
+        <div class="panel-body" style="font-size:13px;color:var(--muted);line-height:1.7">
+          <p style="margin-bottom:10px">Share the campaign link or embed this widget directly on your website:</p>
+          <div style="margin-bottom:14px">
+            <div class="fl" style="margin-bottom:4px">CAMPAIGN URL</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="embed-url" readonly style="flex:1;background:rgba(0,0,0,0.4);border:2px solid var(--border);color:var(--fg);padding:8px 10px;font-family:monospace;font-size:12px" value="">
+              <button class="btn" style="white-space:nowrap;padding:8px 14px;font-size:11px" onclick="copyEmbedUrl()">COPY</button>
+            </div>
+          </div>
+          <div>
+            <div class="fl" style="margin-bottom:4px">IFRAME EMBED CODE</div>
+            <textarea id="embed-code" readonly rows="4" style="width:100%;box-sizing:border-box;background:rgba(0,0,0,0.4);border:2px solid var(--border);color:var(--muted);padding:8px 10px;font-family:monospace;font-size:11px;resize:none;line-height:1.5"></textarea>
+            <button class="btn" style="margin-top:6px;padding:8px 14px;font-size:11px" onclick="copyEmbedCode()">COPY IFRAME CODE</button>
+          </div>
+        </div>
       </div>
 
       <!-- PROVABLY FAIR -->
@@ -759,8 +779,10 @@ async function init() {
   try {
   const snap = await getDocs(collection(db, 'campaigns'));
   let found = null;
-  // Prefer active campaign; fall back to any campaign so we never reset
-  snap.forEach(d => { if (d.data().status === 'active') found = {id:d.id,...d.data()}; });
+  const urlSlug = window.location.pathname.replace(/^\//, '').split('/')[0] || '';
+  // If URL has a slug, find by slug; otherwise prefer active campaign
+  if (urlSlug) snap.forEach(d => { if (d.data().slug === urlSlug) found = {id:d.id,...d.data()}; });
+  if (!found) snap.forEach(d => { if (d.data().status === 'active') found = {id:d.id,...d.data()}; });
   if (!found) snap.forEach(d => { if (!found) found = {id:d.id,...d.data()}; });
 
   if (!found) {
@@ -772,9 +794,9 @@ async function init() {
       projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
       headerLinks:[{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'Chart',url:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'}],
       tokenInfo:{name:'$STACCANA',contract:'73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',price:'$0.000403',change:'+109%',buyUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',siteUrl:'https://www.stacverse.com',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',chartUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'},
-      aboutText:'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated.',
-      aboutLinks:[{label:'@stacverse',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'stacsol.app',url:'https://stacsol.app'}],
-      referralBonus:25,totalEntries:0,totalEntrants:0
+      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
+      slug:'stacverse',referralBonus:25,totalEntries:0,totalEntrants:0
     };
     const ref = await addDoc(collection(db,'campaigns'),def);
     found = {id:ref.id,...def};
@@ -809,6 +831,16 @@ async function init() {
     const newEnd = new Date(new Date(found.endDate).getTime() - 2*86400000);
     await updateDoc(doc(db,'campaigns',found.id),{endDate:newEnd.toISOString(),endDateAdjusted2:true});
     found = {...found, endDate:newEnd.toISOString(), endDateAdjusted2:true};
+  }
+  if (!found.missionLinksUpdated) {
+    const updatedMission = {
+      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
+      slug:'stacverse',
+      missionLinksUpdated:true
+    };
+    await updateDoc(doc(db,'campaigns',found.id), updatedMission);
+    found = {...found, ...updatedMission};
   }
 
   campaign = found;
@@ -907,7 +939,23 @@ function applyBranding() {
     if (campaign.aboutLinks?.length) html += '<div class="about-tags">'+campaign.aboutLinks.map(l=>`<a href="${l.url}" target="_blank">${l.label}</a>`).join('')+'</div>';
     document.getElementById('about-body').innerHTML = html;
   }
+  if (campaign.slug) {
+    const campaignUrl = `${window.location.origin}/${campaign.slug}`;
+    const iframeCode = `<iframe src="${campaignUrl}" width="100%" height="900" frameborder="0" scrolling="yes" allow="clipboard-write" style="border:none;max-width:680px;display:block;margin:0 auto"></iframe>`;
+    document.getElementById('embed-panel').style.display='';
+    document.getElementById('embed-url').value = campaignUrl;
+    document.getElementById('embed-code').value = iframeCode;
+  }
 }
+
+window.copyEmbedUrl = function() {
+  const el = document.getElementById('embed-url');
+  navigator.clipboard.writeText(el.value).then(()=>{ el.select(); toast('LINK COPIED!','ok'); }).catch(()=>{ el.select(); document.execCommand('copy'); toast('LINK COPIED!','ok'); });
+};
+window.copyEmbedCode = function() {
+  const el = document.getElementById('embed-code');
+  navigator.clipboard.writeText(el.value).then(()=>{ el.select(); toast('EMBED CODE COPIED!','ok'); }).catch(()=>{ el.select(); document.execCommand('copy'); toast('EMBED CODE COPIED!','ok'); });
+};
 
 function startTimer() {
   if (!campaign?.endDate) return;
