@@ -442,17 +442,6 @@ textarea{resize:vertical;min-height:68px}
     <!-- LEFT -->
     <div>
 
-      <!-- QUESTS PANEL — visible immediately, no auth needed -->
-      <div class="panel" id="quests-panel">
-        <div class="panel-head">
-          <span class="panel-title">▶ ACTIVE QUESTS</span>
-          <span class="panel-badge" id="quests-panel-badge">EARN XP</span>
-        </div>
-        <div class="panel-body" style="padding-top:12px;padding-bottom:12px">
-          <div id="quests-list"></div>
-        </div>
-      </div>
-
       <div class="panel" id="entry-panel">
         <div class="panel-head">
           <span class="panel-title">PLAYER REGISTRATION</span>
@@ -611,9 +600,20 @@ YOU WIN!<br>
         </div>
       </div>
 
-      <!-- ABOUT -->
+      <!-- QUESTS PANEL — visible immediately, no auth needed -->
+      <div class="panel" id="quests-panel">
+        <div class="panel-head">
+          <span class="panel-title">▶ ACTIVE QUESTS</span>
+          <span class="panel-badge" id="quests-panel-badge">EARN XP</span>
+        </div>
+        <div class="panel-body" style="padding-top:12px;padding-bottom:12px">
+          <div id="quests-list"></div>
+        </div>
+      </div>
+
+      <!-- MISSION / ABOUT -->
       <div class="panel" id="about-panel" style="display:none">
-        <div class="panel-head"><span class="panel-title">ABOUT</span></div>
+        <div class="panel-head"><span class="panel-title">🌐 MISSION</span></div>
         <div class="about-body" id="about-body"></div>
       </div>
 
@@ -772,8 +772,8 @@ async function init() {
       projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
       headerLinks:[{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'Chart',url:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'}],
       tokenInfo:{name:'$STACCANA',contract:'73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',price:'$0.000403',change:'+109%',buyUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',siteUrl:'https://www.stacverse.com',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',chartUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'},
-      aboutText:'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated.',
-      aboutLinks:[{label:'@stacverse',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'stacsol.app',url:'https://stacsol.app'}],
+      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
       referralBonus:25,totalEntries:0,totalEntrants:0
     };
     const ref = await addDoc(collection(db,'campaigns'),def);
@@ -809,6 +809,15 @@ async function init() {
     const newEnd = new Date(new Date(found.endDate).getTime() - 2*86400000);
     await updateDoc(doc(db,'campaigns',found.id),{endDate:newEnd.toISOString(),endDateAdjusted2:true});
     found = {...found, endDate:newEnd.toISOString(), endDateAdjusted2:true};
+  }
+  if (!found.missionLinksUpdated) {
+    const updatedMission = {
+      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
+      missionLinksUpdated:true
+    };
+    await updateDoc(doc(db,'campaigns',found.id), updatedMission);
+    found = {...found, ...updatedMission};
   }
 
   campaign = found;
