@@ -662,7 +662,7 @@ YOU WIN!<br>
     </div>
   </div>
 
-  <div style="text-align:center;padding:0 20px 24px">
+  <div id="bottom-banner" style="text-align:center;padding:0 20px 24px">
     <img src="assets/banner.jpg" alt="Stacverse" style="max-width:820px;width:100%;height:auto;border:2px solid var(--pixel);box-shadow:0 0 20px var(--pixel-dim)" onerror="this.style.display='none'">
   </div>
   <div class="disclaimer">🔒 WE NEVER CONNECT TO YOUR WALLET, REQUEST APPROVALS, OR CUSTODY YOUR FUNDS. YOUR PUBLIC WALLET ADDRESS IS ONLY USED TO SEND PRIZES. ⚠ FRAUDULENT SUBMISSIONS DISQUALIFIED BEFORE DRAW. NOT FINANCIAL ADVICE. NO PURCHASE NECESSARY.</div>
@@ -900,7 +900,10 @@ function applyBranding() {
   document.getElementById('prize-amount').textContent = campaign.prizeAmount||'???';
   document.getElementById('prize-token').textContent = campaign.prizeToken||'TOKENS';
   // Hide banner and replace prize boxes for campaigns that define their own prizes
-  if (campaign.hideBanner) document.getElementById('hero-banner-wrap').style.display='none';
+  if (campaign.hideBanner) {
+    document.getElementById('hero-banner-wrap').style.display='none';
+    document.getElementById('bottom-banner').style.display='none';
+  }
   if (campaign.prizes?.length) {
     document.getElementById('prize-boxes').innerHTML = campaign.prizes.map(p=>`
       <div class="prize-box" style="padding:10px 18px;flex-shrink:0;${p.color?'border-color:'+p.color:''}">
@@ -1201,7 +1204,7 @@ window.submitEntry = async () => {
 };
 
 function listenLeaderboard() {
-  const q = query(collection(db,'entries'),orderBy('pts','desc'));
+  const q = query(collection(db,'entries'),where('campaignId','==',campaign.id),orderBy('pts','desc'));
   onSnapshot(q, snap => {
     const entries = []; let totalXP=0, players=0;
     snap.forEach(d=>{const data=d.data();entries.push(data);totalXP+=data.pts||0;players++;});
