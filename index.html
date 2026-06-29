@@ -794,8 +794,8 @@ async function init() {
       projectName:'$STACCANA',cheatCode:'UP UP DOWN DOWN LEFT RIGHT B A START',
       headerLinks:[{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'},{label:'Chart',url:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'}],
       tokenInfo:{name:'$STACCANA',contract:'73edX6xoGY4v5y2hzuKdrUbJXLntqgmo74au1Ki1pump',price:'$0.000403',change:'+109%',buyUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',siteUrl:'https://www.stacverse.com',logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',chartUrl:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr'},
-      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
-      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
+      aboutText:'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'}],
       slug:'stacverse',referralBonus:25,totalEntries:0,totalEntrants:0
     };
     const ref = await addDoc(collection(db,'campaigns'),def);
@@ -806,13 +806,13 @@ async function init() {
     const quests = [
       {name:'Follow @stacverse on X',desc:'Follow the official Stacverse Twitter',icon:'𝕏',iconBg:'rgba(255,255,255,0.06)',pts:15,type:'follow_x',proofType:'username',proofLabel:'Your X/Twitter @username',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:1,active:true,unlockAt:null},
       {name:'Retweet the giveaway post',desc:'RT the pinned tweet — paste URL as proof',icon:'🔁',iconBg:'rgba(0,255,65,0.06)',pts:20,type:'retweet',proofType:'url',proofLabel:'URL of your retweet',oneTime:true,quality:'low',link:'https://x.com/stacverse',order:2,active:true,unlockAt:null},
-      {name:'Post with $STACCANA ticker',desc:'Post on X using $STACCANA or $STACSOL — paste your post URL',icon:'📢',iconBg:'rgba(255,49,49,0.08)',pts:30,type:'post_ticker',proofType:'url',proofLabel:'URL of your post',oneTime:false,daily:true,quality:'medium',order:3,active:true,unlockAt:null},
+      {name:'Post with $STACCANA ticker',desc:'Post on X using $STACCANA — paste your post URL',icon:'📢',iconBg:'rgba(255,49,49,0.08)',pts:30,type:'post_ticker',proofType:'url',proofLabel:'URL of your post',oneTime:false,daily:true,quality:'medium',order:3,active:true,unlockAt:null},
       {name:'Share quality original content',desc:'Post original content — image, thread, video. No AI slop. Authentic only.',icon:'🎨',iconBg:'rgba(204,0,255,0.1)',pts:60,type:'quality_content',proofType:'url',proofLabel:'URL of your content',oneTime:false,daily:true,quality:'high',order:4,active:true,unlockAt:null},
       {name:'Attend a Stacverse Twitter Space',desc:'Join a live Space — submit the Space URL or screenshot as proof',icon:'🎙️',iconBg:'rgba(204,0,255,0.1)',pts:50,type:'space_attend',proofType:'url',proofLabel:'Twitter Space URL or screenshot link',oneTime:false,quality:'high',order:5,active:true,unlockAt:null},
       {name:'Ask a question in the Space',desc:'Ask a genuine question during a Stacverse Space — type it below',icon:'❓',iconBg:'rgba(204,0,255,0.1)',pts:75,type:'space_question',proofType:'text',proofLabel:'Type the question you asked in the Space...',minLength:20,oneTime:false,quality:'high',order:6,active:true,unlockAt:null},
       {name:'HOST your own Staccana Space',desc:'Host a Twitter Space about Staccana with 10+ listeners. MEGA XP. Submit proof.',icon:'🎤',iconBg:'rgba(255,230,0,0.08)',pts:300,type:'host_space',proofType:'url',proofLabel:'Link to your hosted Space',oneTime:false,quality:'high',order:7,active:true,unlockAt:null},
       {name:'Hold $STACCANA in your wallet',desc:'Any amount — wallet address is your proof',icon:'💎',iconBg:'rgba(255,230,0,0.06)',pts:30,type:'hold_token',proofType:'wallet',proofLabel:'Solana wallet holding $STACCANA',oneTime:true,quality:'medium',link:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',order:8,active:true,unlockAt:null},
-      {name:'Visit stacsol.app & mint StacSOL',desc:'Mint any amount of StacSOL at stacsol.app — submit your wallet as proof',icon:'⚡',iconImg:'assets/stacsol-logo.png',iconBg:'rgba(0,255,65,0.06)',pts:100,type:'mint_stacsol',proofType:'wallet',proofLabel:'Wallet you used to mint StacSOL',oneTime:true,quality:'high',link:'https://stacsol.app',order:9,active:true,unlockAt:null},
+      {name:'Hold $STACCANA — any amount',desc:'Already holding? Your wallet is your proof. Any amount counts.',icon:'⚡',iconBg:'rgba(0,255,65,0.06)',pts:100,type:'mint_stacsol',proofType:'wallet',proofLabel:'Your Solana wallet address',oneTime:true,quality:'high',link:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',order:9,active:true,unlockAt:null},
       {name:'Bullish or Bearish on $STACCANA? Post your honest take.',desc:'Share your real sentiment — pump it up or tell us what you think needs to change. Post it on X then paste the URL.',icon:'📝',iconBg:'rgba(255,49,49,0.06)',pts:50,type:'written_response',proofType:'url',proofLabel:'URL of your X/Twitter post',oneTime:true,quality:'high',link:'https://x.com/intent/tweet?text=My+honest+take+on+%24STACCANA%3A',order:10,active:true,unlockAt:null},
       {name:'Join the Staccana Telegram',desc:'Join the official community',icon:'✈️',iconBg:'rgba(34,158,217,0.08)',pts:15,type:'join_tg',proofType:'username',proofLabel:'Your Telegram username',oneTime:true,quality:'low',link:'https://t.me/Staccana',order:11,active:true,unlockAt:null},
       {name:'Buy $STACCANA on DEX',desc:'Buy any amount of $STACCANA — paste your transaction URL from DEX Screener as proof',icon:'💸',iconBg:'rgba(0,255,65,0.08)',pts:50,type:'buy_token',proofType:'url',proofLabel:'DEX Screener transaction URL',oneTime:false,daily:true,quality:'high',link:'https://dexscreener.com/solana/g8uquje1rssqbddegmpgqmsukfjuf9zw7wssbrzxc7wr',order:12,active:true,unlockAt:null},
@@ -834,8 +834,8 @@ async function init() {
   }
   if (!found.missionLinksUpdated) {
     const updatedMission = {
-      aboutText:'StacSol will rival BTC as a store of value — powered on the $Staccana blockchain. Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Mint StacSOL via StacSol.app and join the Stacverse community across every platform.',
-      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'},{label:'StacSol.app',url:'https://stacsol.app'}],
+      aboutText:'Staccana is a Solana-compatible chain with confidential token transfers and MEV-resistant trading baked in at genesis. Sniper bots cannot read your size. Sandwich attacks are structurally eliminated. Join the Stacverse community across every platform.',
+      aboutLinks:[{label:'Telegram',url:'https://t.me/Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Stocktwits',url:'https://stocktwits.com/stac_verse'},{label:'TikTok',url:'https://www.tiktok.com/@stacverse'},{label:'Instagram',url:'https://www.instagram.com/stacverse'},{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Staccana.com',url:'https://staccana.com'},{label:'StacVerse.com',url:'https://stacverse.com'}],
       slug:'stacverse',
       missionLinksUpdated:true
     };
@@ -854,6 +854,7 @@ async function init() {
   loadQuests();
   listenLeaderboard();
   listenChat();
+  seedYouTubeCampaign();
   // Restore claim bar for returning users with unsaved XP
   if (!myEntry) setTimeout(() => nudgeRegister(), 1200);
   if (campaign?.numWinners) document.getElementById('stat-winners').textContent = campaign.numWinners;
@@ -897,6 +898,35 @@ async function upsertNewMissions(campaignId) {
       }
     });
   } catch(e) { console.warn('upsertMissions:', e); }
+}
+
+async function seedYouTubeCampaign() {
+  try {
+    const snap = await getDocs(collection(db,'campaigns'));
+    let ytCampaign = null;
+    snap.forEach(d => { if (d.data().slug === 'staccana-youtube') ytCampaign = {id:d.id,...d.data()}; });
+    if (ytCampaign) return;
+    const def = {
+      name:'$STACCANA YouTube — Subscribe & Watch',
+      description:'Subscribe to our YouTube channel and watch our videos. Random $STACCANA drops for active viewers.',
+      prizeAmount:'RANDOM',prizeToken:'$STACCANA',prizeIcon:'▶️',
+      endDate:new Date(Date.now()+30*86400000).toISOString(),status:'active',
+      accentColor:'#FF0000',
+      logoUrl:'https://static.wixstatic.com/media/d74517_1ac061895e124189b55aaa620ee895d4~mv2.png',
+      projectName:'$STACCANA',
+      slug:'staccana-youtube',
+      headerLinks:[{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'}],
+      aboutText:'Subscribe to the official Staccana YouTube channel and watch our videos for random $STACCANA drops. New content dropping regularly — stay active, stay stacked.',
+      aboutLinks:[{label:'YouTube',url:'https://www.youtube.com/@Staccana'},{label:'X / Twitter',url:'https://x.com/stacverse'},{label:'Telegram',url:'https://t.me/Staccana'}],
+      referralBonus:10,totalEntries:0,totalEntrants:0
+    };
+    const ref = await addDoc(collection(db,'campaigns'),def);
+    const ytQuests = [
+      {name:'Subscribe to Staccana on YouTube',desc:'Subscribe to the official Staccana YouTube channel — paste your YouTube username or channel URL as proof.',icon:'▶️',iconBg:'rgba(255,0,0,0.1)',pts:25,type:'yt_subscribe',proofType:'username',proofLabel:'Your YouTube username or channel URL',oneTime:true,quality:'low',link:'https://www.youtube.com/@Staccana',order:1,active:true,unlockAt:null},
+      {name:'Watch a Staccana YouTube video',desc:'Watch any Staccana YouTube video — paste the video URL you watched. Daily.',icon:'👁️',iconBg:'rgba(255,0,0,0.08)',pts:15,type:'yt_watch',proofType:'url',proofLabel:'URL of the Staccana video you watched',oneTime:false,daily:true,quality:'low',link:'https://www.youtube.com/@Staccana',order:2,active:true,unlockAt:null}
+    ];
+    for (const q of ytQuests) await addDoc(collection(db,'missions'),{...q,campaignId:ref.id});
+  } catch(e) { console.warn('seedYouTubeCampaign:', e); }
 }
 
 function applyBranding() {
